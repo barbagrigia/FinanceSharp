@@ -118,12 +118,6 @@ namespace QuantConnect.Data.Consolidators {
         /// <exception cref="InvalidOperationException">Thrown when multiple symbols are being consolidated.</exception>
         /// <param name="data">The new data for the consolidator</param>
         public override void Update(T data) {
-            if (!ShouldProcess(data)) {
-                // first allow the base class a chance to filter out data it doesn't want
-                // before we start incrementing counts and what not
-                return;
-            }
-
             //Decide to fire the event
             var fireDataConsolidated = false;
 
@@ -215,13 +209,6 @@ namespace QuantConnect.Data.Consolidators {
         /// 	 Gets the time period for this consolidator
         /// </summary>
         protected TimeSpan? Period => _period;
-
-        /// <summary>
-        /// 	 Determines whether or not the specified data should be processed
-        /// </summary>
-        /// <param name="data">The data to check</param>
-        /// <returns>True if the consolidator should process this data, false otherwise</returns>
-        protected virtual bool ShouldProcess(T data) => true;
 
         /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be

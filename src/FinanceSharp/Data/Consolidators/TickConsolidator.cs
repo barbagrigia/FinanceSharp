@@ -55,15 +55,6 @@ namespace QuantConnect.Data.Consolidators {
             : base(func) { }
 
         /// <summary>
-        /// 	 Determines whether or not the specified data should be processed
-        /// </summary>
-        /// <param name="data">The data to check</param>
-        /// <returns>True if the consolidator should process this data, false otherwise</returns>
-        protected override bool ShouldProcess(Tick data) {
-            return data.TickType == TickType.Trade;
-        }
-
-        /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be
         /// 	 null following the event firing
         /// </summary>
