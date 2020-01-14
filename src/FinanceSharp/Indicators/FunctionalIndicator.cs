@@ -33,7 +33,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>Action used to reset this indicator completely along with any indicators this one is dependent on</summary>
         private readonly Action _reset;
 
-        /// <summary>function implementation of the IndicatorBase.ComputeNextValue method</summary>
+        /// <summary>function implementation of the IndicatorBase.Forward method</summary>
         private readonly Func<T, double> _computeNextValue;
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(T input) {
+        protected override double Forward(T input) {
             return _computeNextValue(input);
         }
 

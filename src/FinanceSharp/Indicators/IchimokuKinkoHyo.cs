@@ -203,7 +203,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             TenkanMaximum.Update(input.Time, input.High);
             TenkanMinimum.Update(input.Time, input.Low);
             Tenkan.Update(input.Time, input.Close);

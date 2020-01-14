@@ -53,7 +53,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(TradeBar input) {
+        protected override double Forward(TradeBar input) {
             var range = input.High - input.Low;
             return Current.Value + (range > 0 ? ((input.Close - input.Low) - (input.High - input.Close)) / range * input.Volume : 0d);
         }

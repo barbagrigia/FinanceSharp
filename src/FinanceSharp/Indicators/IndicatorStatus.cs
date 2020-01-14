@@ -18,7 +18,7 @@
 
 namespace FinanceSharp.Indicators {
     /// <summary>
-    /// 	 The possible states returned by <see cref="IndicatorBase{T}.ComputeNextValue"/>
+    /// 	 The possible states returned by <see cref="IndicatorBase{T}.Forward"/>
     /// </summary>
     public enum IndicatorStatus {
         /// <summary>

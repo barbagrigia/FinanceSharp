@@ -53,7 +53,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(T input) {
+        protected override double Forward(T input) {
             _window.Add(input);
             return ComputeNextValue(_window, input);
         }

@@ -90,7 +90,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
 
             TypicalPriceAverage.Update(input.Time, typicalPrice);

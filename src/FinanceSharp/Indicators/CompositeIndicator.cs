@@ -106,7 +106,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected override IndicatorResult ValidateAndComputeNextValue(IndicatorDataPoint input) {
+        protected override IndicatorResult ValidateAndForward(IndicatorDataPoint input) {
             return _composer.Invoke(Left, Right);
         }
 
@@ -114,11 +114,11 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <remarks>
-        /// 	 Since this class overrides <see cref="ValidateAndComputeNextValue"/>, this method is a no-op
+        /// 	 Since this class overrides <see cref="ValidateAndForward"/>, this method is a no-op
         /// </remarks>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             // this should never actually be invoked
             return _composer.Invoke(Left, Right).Value;
         }

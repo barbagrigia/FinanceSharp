@@ -86,7 +86,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             // our first data point just return identity
             if (Samples == 1) {
                 return input;

@@ -114,7 +114,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The TradeBar to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             AverageTrueRange.Update(input);
 
             var typicalPrice = (input.High + input.Low + input.Close) / 3d;

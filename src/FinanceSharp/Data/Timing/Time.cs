@@ -24,7 +24,7 @@ namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Time helper class collection for working with trading dates
     /// </summary>
-    public static class Time {
+    public static partial class Time {
         /// <summary>
         /// 	 Provides a value far enough in the future the current computer hardware will have decayed :)
         /// </summary>

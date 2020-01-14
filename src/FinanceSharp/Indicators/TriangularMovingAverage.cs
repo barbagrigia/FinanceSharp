@@ -68,7 +68,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             _sma1.Update(input);
             _sma2.Update(_sma1.Current);
 

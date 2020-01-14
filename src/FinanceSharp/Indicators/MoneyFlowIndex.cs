@@ -94,7 +94,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(TradeBar input) {
+        protected override double Forward(TradeBar input) {
             var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
             var moneyFlow = typicalPrice * input.Volume;
 

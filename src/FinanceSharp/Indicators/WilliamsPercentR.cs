@@ -79,7 +79,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             Minimum.Update(input.Time, input.Low);
             Maximum.Update(input.Time, input.High);
 

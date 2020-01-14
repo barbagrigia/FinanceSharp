@@ -106,7 +106,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             _maximum.Update(input.Time, input.High);
             _minimum.Update(input.Time, input.Low);
             FastStoch.Update(input);

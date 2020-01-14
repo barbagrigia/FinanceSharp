@@ -80,7 +80,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(TradeBar input) {
+        protected override double Forward(TradeBar input) {
             _ema1.Update(input.Time, input.High - input.Low);
             if (_ema2.IsReady) {
                 _sum.Update(input.Time, _ema1.Current / _ema2.Current);

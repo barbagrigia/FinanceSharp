@@ -67,7 +67,7 @@ namespace FinanceSharp.Indicators {
             _smoother = movingAverageType.AsIndicator($"{name}_{movingAverageType}", period);
 
             TrueRange = new FunctionalIndicator<IBaseDataBar>(name + "_TrueRange", currentBar => {
-                    // in our ComputeNextValue function we'll just call the ComputeTrueRange
+                    // in our Forward function we'll just call the ComputeTrueRange
                     var nextValue = ComputeTrueRange(_previous, currentBar);
                     _previous = currentBar;
                     return nextValue;
@@ -112,7 +112,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             // compute the true range and then send it to our smoother
             TrueRange.Update(input);
             _smoother.Update(input.Time, TrueRange);

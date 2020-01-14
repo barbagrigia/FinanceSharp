@@ -69,7 +69,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The data for the calculation</param>
         /// <returns>The average value</returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             var price = (input.High + input.Low) / 2;
             _high.Add(input.High);
             _low.Add(input.Low);

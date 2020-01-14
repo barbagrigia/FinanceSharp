@@ -77,7 +77,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             _priceLag.Update(input);
             _sma.Update(input);
             return _priceLag - _sma;

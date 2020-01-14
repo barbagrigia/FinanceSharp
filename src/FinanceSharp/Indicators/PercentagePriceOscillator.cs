@@ -49,8 +49,8 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
-            var value = base.ComputeNextValue(input);
+        protected override double Forward(IndicatorDataPoint input) {
+            var value = base.Forward(input);
 
             return Slow != 0 ? 100 * value / Slow : 0d;
         }

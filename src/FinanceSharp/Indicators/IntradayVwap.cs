@@ -27,7 +27,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the new VWAP
         /// </summary>
-        protected override IndicatorResult ValidateAndComputeNextValue(BaseData input) {
+        protected override IndicatorResult ValidateAndForward(BaseData input) {
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
                 return new IndicatorResult(0, IndicatorStatus.InvalidInput);
@@ -59,8 +59,8 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(BaseData input) {
-            throw new NotImplementedException($"{nameof(IntradayVwap)}.{nameof(ComputeNextValue)} should never be invoked.");
+        protected override double Forward(BaseData input) {
+            throw new NotImplementedException($"{nameof(IntradayVwap)}.{nameof(Forward)} should never be invoked.");
         }
 
         /// <summary>

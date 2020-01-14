@@ -84,7 +84,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(TradeBar input) {
+        protected override double Forward(TradeBar input) {
             _price.Update(input.EndTime, GetTimeWeightedAveragePrice(input));
             _volume.Update(input.EndTime, input.Volume);
             return _vwap.Current.Value;

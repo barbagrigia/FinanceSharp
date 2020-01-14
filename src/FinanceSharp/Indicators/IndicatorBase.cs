@@ -90,7 +90,7 @@ namespace FinanceSharp.Indicators {
 
                 _previousInput = (T) input;
 
-                var nextResult = ValidateAndComputeNextValue((T) input);
+                var nextResult = ValidateAndForward((T) input);
                 if (nextResult.Status == IndicatorStatus.Success) {
                     Current = new IndicatorDataPoint(input.Time, nextResult.Value);
 
@@ -216,7 +216,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected abstract double ComputeNextValue(T input);
+        protected abstract double Forward(T input);
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
@@ -224,9 +224,9 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected virtual IndicatorResult ValidateAndComputeNextValue(T input) {
+        protected virtual IndicatorResult ValidateAndForward(T input) {
             // default implementation always returns IndicatorStatus.Success
-            return new IndicatorResult(ComputeNextValue(input));
+            return new IndicatorResult(Forward(input));
         }
 
         /// <summary>

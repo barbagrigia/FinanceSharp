@@ -96,7 +96,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             _standardDeviation.Update(input);
             LinearRegression.Update(input);
 

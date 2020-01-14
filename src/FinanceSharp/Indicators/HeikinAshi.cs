@@ -94,7 +94,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns> A new value for this indicator </returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             if (!IsReady) {
                 Open.Update(input.Time, (input.Open + input.Close) / 2);
                 Close.Update(input.Time, (input.Open + input.High + input.Low + input.Close) / 4);

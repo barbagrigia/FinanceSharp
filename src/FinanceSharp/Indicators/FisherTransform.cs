@@ -84,7 +84,7 @@ namespace FinanceSharp.Indicators {
         /// 	 preclude the transform from blowing up by having an input larger than unity.
         /// </summary>
         /// <param name="input">IndicatorDataPoint - the time and value of the next price</param>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             var price = (input.Low + input.High) / 2d;
             _medianMin.Update(input.Time, price);
             _medianMax.Update(input.Time, price);

@@ -85,7 +85,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             _shortRoc.Update(input);
             _longRoc.Update(input);
             if (!_longRoc.IsReady || !_shortRoc.IsReady) {

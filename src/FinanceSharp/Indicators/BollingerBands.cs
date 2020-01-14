@@ -91,7 +91,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>The input is returned unmodified.</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             StandardDeviation.Update(input);
             MiddleBand.Update(input);
             return input;

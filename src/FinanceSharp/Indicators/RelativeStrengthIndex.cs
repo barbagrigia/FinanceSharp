@@ -78,7 +78,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IndicatorDataPoint input) {
+        protected override double Forward(IndicatorDataPoint input) {
             if (_previousInput != null && input.Value >= _previousInput.Value) {
                 AverageGain.Update(input.Time, input.Value - _previousInput.Value);
                 AverageLoss.Update(input.Time, 0d);

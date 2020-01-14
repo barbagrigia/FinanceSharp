@@ -107,7 +107,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(IBaseDataBar input) {
+        protected override double Forward(IBaseDataBar input) {
             var coeff = _width * (input.High - input.Low) / (input.High + input.Low);
 
             LowerBand.Update(input.Time, input.Low * (1 - coeff));

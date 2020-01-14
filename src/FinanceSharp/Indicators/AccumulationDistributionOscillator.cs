@@ -68,7 +68,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(TradeBar input) {
+        protected override double Forward(TradeBar input) {
             _ad.Update(input);
             _emaFast.Update(_ad.Current);
             _emaSlow.Update(_ad.Current);
