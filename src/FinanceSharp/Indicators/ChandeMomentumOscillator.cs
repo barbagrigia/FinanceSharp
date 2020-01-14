@@ -16,7 +16,10 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Chande Momentum Oscillator (CMO).
     /// 	 CMO calculation is mostly identical to RSI.

@@ -16,9 +16,9 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Mass Index uses the high-low range to identify trend reversals based on range expansions.
     /// 	 In this sense, the Mass Index is a volatility indicator that does not have a directional

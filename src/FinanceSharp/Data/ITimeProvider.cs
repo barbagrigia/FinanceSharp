@@ -19,7 +19,7 @@
 
 using System;
 
-namespace QuantConnect {
+namespace FinanceSharp.Data {
     /// <summary>
     /// Provides access to the current time in UTC. This doesn't necessarily
     /// need to be wall-clock time, but rather the current time in some system

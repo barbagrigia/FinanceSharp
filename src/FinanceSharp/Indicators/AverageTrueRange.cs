@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The AverageTrueRange indicator is a measure of volatility introduced by Welles Wilder in his
     /// 	 book: New Concepts in Technical Trading Systems. This indicator computes the TrueRange and then

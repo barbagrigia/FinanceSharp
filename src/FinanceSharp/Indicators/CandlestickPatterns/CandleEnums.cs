@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators.CandlestickPatterns {
+namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Types of candlestick settings
     /// </summary>

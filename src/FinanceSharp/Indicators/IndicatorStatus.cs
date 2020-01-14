@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The possible states returned by <see cref="IndicatorBase{T}.ComputeNextValue"/>
     /// </summary>

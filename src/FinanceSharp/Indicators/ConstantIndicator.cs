@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 An indicator that will always return the same value.
     /// </summary>

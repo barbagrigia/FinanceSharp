@@ -17,8 +17,10 @@
 */
 
 using System;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the n-period population standard deviation.
     /// </summary>

@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Provides an implementation of <see cref="IDataConsolidator"/> that preserve the input
     /// 	 data unmodified. The input data is filtering by the specified predicate function

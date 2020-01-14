@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Util.RateLimit {
+namespace FinanceSharp.Helpers.RateLimit {
     /// <summary>
     /// 	 Provides a strategy for making tokens available for consumption in the <see cref="ITokenBucket"/>
     /// </summary>

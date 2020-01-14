@@ -16,9 +16,10 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Money Flow Index (MFI) is an oscillator that uses both price and volume to
     /// 	 measure buying and selling pressure

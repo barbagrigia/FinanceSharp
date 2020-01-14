@@ -18,9 +18,10 @@
 
 using System;
 using System.Diagnostics;
-using QuantConnect.Data;
+using FinanceSharp.Data;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Provides a base type for all indicators
     /// </summary>

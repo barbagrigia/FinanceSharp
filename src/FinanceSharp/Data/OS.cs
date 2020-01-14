@@ -21,8 +21,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Operating systems class for managing anything that is operation system specific.
     /// </summary>

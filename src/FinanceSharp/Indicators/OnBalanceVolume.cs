@@ -16,9 +16,9 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the On Balance Volume (OBV). 
     /// 	 The On Balance Volume is calculated by determining the price of the current close price and previous close price.

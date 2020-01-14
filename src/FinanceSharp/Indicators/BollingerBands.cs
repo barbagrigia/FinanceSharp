@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator creates a moving average (middle band) with an upper band and lower band
     /// 	 fixed at k standard deviations above and below the moving average.

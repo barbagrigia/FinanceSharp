@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     public class Log {
         public static void Error(Exception exception, string workerthreadExceptionThrownWhenRunningTask = null) {
             throw exception; //TODO

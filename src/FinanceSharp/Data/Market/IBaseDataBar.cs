@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 Represents a type that is both a bar and base data
     /// </summary>

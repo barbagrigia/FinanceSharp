@@ -20,7 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 This worker tread is required to guarantee all python operations are
     /// 	 executed by the same thread, to enable complete debugging functionality.

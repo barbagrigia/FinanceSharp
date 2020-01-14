@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Aroon Oscillator is the difference between AroonUp and AroonDown. The value of this
     /// 	 indicator fluctuates between -100 and +100. An upward trend bias is present when the oscillator

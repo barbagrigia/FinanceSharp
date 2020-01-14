@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the  Relative Strength Index (RSI) developed by K. Welles Wilder.
     /// 	 You can optionally specified a different moving average type to be used in the computation

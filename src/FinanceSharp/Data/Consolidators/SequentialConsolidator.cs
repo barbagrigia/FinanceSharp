@@ -18,7 +18,7 @@
 
 using System;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 This consolidator wires up the events on its First and Second consolidators
     /// 	 such that data flows from the First to Second consolidator. It's output comes

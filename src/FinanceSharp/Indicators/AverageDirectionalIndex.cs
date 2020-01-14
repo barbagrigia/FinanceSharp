@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes Average Directional Index which measures trend strength without regard to trend direction.
     /// 	 Firstly, it calculates the Directional Movement and the True Range value, and then the values are accumulated and smoothed

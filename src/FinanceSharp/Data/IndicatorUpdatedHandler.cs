@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Event handler type for the IndicatorBase.Updated event
     /// </summary>

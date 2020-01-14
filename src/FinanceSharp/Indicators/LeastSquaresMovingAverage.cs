@@ -18,10 +18,12 @@
 
 using System;
 using System.Linq;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Least Squares Moving Average (LSMA) first calculates a least squares regression line
     /// 	 over the preceding time periods, and then projects it forward to the current period. In

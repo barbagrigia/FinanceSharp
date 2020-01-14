@@ -16,7 +16,10 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 An indicator that delays its input for a certain period
     /// </summary>

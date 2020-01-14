@@ -19,7 +19,7 @@
 using System;
 using System.Globalization;
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Provides extension methods for properly parsing and serializing values while properly using
     /// 	 an IFormatProvider/CultureInfo when applicable

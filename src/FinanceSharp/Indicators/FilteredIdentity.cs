@@ -17,10 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents an indicator that is a ready after ingesting a single sample and
     /// 	 always returns the same value as it is given if it passes a filter condition

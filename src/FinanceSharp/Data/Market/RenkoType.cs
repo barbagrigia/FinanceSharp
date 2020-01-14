@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 The type of the RenkoBar
     /// </summary>

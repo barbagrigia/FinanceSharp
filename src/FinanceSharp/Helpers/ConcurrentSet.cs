@@ -21,7 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Provides a thread-safe set collection that mimics the behavior of <see cref="HashSet{T}"/>
     /// 	 and will be keep insertion order

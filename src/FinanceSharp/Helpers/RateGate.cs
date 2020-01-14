@@ -20,7 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Used to control the rate of some occurrence per unit of time.
     /// </summary>

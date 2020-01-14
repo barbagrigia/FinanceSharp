@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Type of tradable security / underlying asset
     /// </summary>

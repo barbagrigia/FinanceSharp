@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Defines the different channel status values
     /// </summary>

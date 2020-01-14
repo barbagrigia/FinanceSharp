@@ -17,9 +17,8 @@
 */
 
 using System;
-using QuantConnect.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 KEEPING THIS INTERFACE FOR BACKWARDS COMPATIBILITY.
     /// 	 Represents an indicator that can receive data updates and emit events when the value of

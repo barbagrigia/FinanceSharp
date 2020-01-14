@@ -19,7 +19,7 @@
 
 using System;
 
-namespace QuantConnect {
+namespace FinanceSharp.Data {
     /// <summary>
     /// Provides an implementation of <see cref="ITimeProvider"/> that
     /// uses <see cref="DateTime.UtcNow"/> to provide the current time

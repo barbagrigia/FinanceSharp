@@ -1,8 +1,9 @@
 ﻿using System;
-using QuantConnect.Data;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Defines the canonical intraday VWAP indicator
     /// </summary>

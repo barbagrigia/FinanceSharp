@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the traditional exponential moving average indicator (EMA)
     /// </summary>

@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Ichimoku Kinko Hyo indicator. It consists of the following main indicators:
     /// 	 Tenkan-sen: (Highest High + Lowest Low) / 2 for the specific period (normally 9)

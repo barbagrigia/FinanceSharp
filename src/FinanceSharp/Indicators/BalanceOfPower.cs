@@ -16,9 +16,9 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Balance Of Power (BOP).
     /// 	 The Balance Of Power is calculated with the following formula:

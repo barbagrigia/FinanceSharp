@@ -17,9 +17,10 @@
 */
 
 using System;
-using static QuantConnect.StringExtensions;
+using FinanceSharp.Helpers;
+using static FinanceSharp.Helpers.StringExtensions;
 
-namespace QuantConnect {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Time helper class collection for working with trading dates
     /// </summary>
@@ -90,7 +91,7 @@ namespace QuantConnect {
             private readonly TimeZoneInfo timeZone;
 
             /// <summary>
-            /// 	 Initializes a new instance of the <see cref="QuantConnect.Time.DateTimeWithZone"/> struct.
+            /// 	 Initializes a new instance of the <see cref="DateTimeWithZone"/> struct.
             /// </summary>
             /// <param name="dateTime">Date time.</param>
             /// <param name="timeZone">Time zone.</param>

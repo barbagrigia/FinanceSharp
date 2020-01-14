@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Absolute Price Oscillator (APO)
     /// 	 The Absolute Price Oscillator is calculated using the following formula:

@@ -18,8 +18,9 @@
 
 using System;
 using System.Threading;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Util.RateLimit {
+namespace FinanceSharp.Helpers.RateLimit {
     /// <summary>
     /// 	 Provides an implementation of <see cref="ITokenBucket"/> that implements the leaky bucket algorithm
     /// 	 See: https://en.wikipedia.org/wiki/Leaky_bucket

@@ -18,7 +18,7 @@
 
 using System;
 
-namespace QuantConnect.Data {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Base Data Class: Type, Timestamp, Key -- Base Features.
     /// </summary>

@@ -19,7 +19,7 @@
 
 using System;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Represents a read-only reference to any value, T
     /// </summary>

@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace QuantConnect.Indicators.CandlestickPatterns {
+namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Candle settings for all candlestick patterns
     /// </summary>

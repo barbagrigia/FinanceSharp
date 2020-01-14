@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 Generic bar interface with Open, High, Low and Close.
     /// </summary>

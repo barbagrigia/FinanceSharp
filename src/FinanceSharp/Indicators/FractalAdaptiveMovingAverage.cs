@@ -18,9 +18,10 @@
 
 using System;
 using System.Linq;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Fractal Adaptive Moving Average (FRAMA) by John Ehlers
     /// </summary>

@@ -18,7 +18,7 @@
 
 using System;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     public struct CalendarInfo {
         public readonly DateTime Start;
         public readonly TimeSpan Period;

@@ -19,7 +19,7 @@
 
 using System;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Provides extensions methods for <see cref="IDisposable"/>
     /// </summary>

@@ -16,7 +16,10 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents an indicator capable of tracking the sum for the given period
     /// </summary>

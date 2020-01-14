@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     public abstract partial class IndicatorBase<T> {
         /// <summary>
         /// 	 Returns the current value of this instance

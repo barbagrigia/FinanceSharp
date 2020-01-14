@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Specifies the type of settlement in derivative deals
     /// </summary>

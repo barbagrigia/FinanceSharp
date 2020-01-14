@@ -18,9 +18,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Provides a base class for consolidators that emit data based on the passing of a period of time
     /// 	 or after seeing a max count of data points.

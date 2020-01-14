@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Triangular Moving Average (TRIMA). 
     /// 	 The Triangular Moving Average is calculated with the following formula:

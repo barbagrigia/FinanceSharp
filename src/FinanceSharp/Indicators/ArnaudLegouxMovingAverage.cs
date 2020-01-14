@@ -18,8 +18,10 @@
 
 using System;
 using System.Linq;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Smooth and high sensitive moving Average. This moving average reduce lag of the information
     /// 	 but still being smooth to reduce noises.

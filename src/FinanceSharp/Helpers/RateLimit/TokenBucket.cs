@@ -19,7 +19,7 @@
 using System;
 using System.Threading;
 
-namespace QuantConnect.Util.RateLimit {
+namespace FinanceSharp.Helpers.RateLimit {
     /// <summary>
     /// 	 Provides extension methods for interacting with <see cref="ITokenBucket"/> instances as well
     /// 	 as access to the <see cref="NullTokenBucket"/> via <see cref="TokenBucket.Null"/>

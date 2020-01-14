@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Types of tick data
     /// </summary>

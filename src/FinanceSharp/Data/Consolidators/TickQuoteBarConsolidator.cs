@@ -18,9 +18,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Consolidates ticks into quote bars. This consolidator ignores trade ticks
     /// </summary>

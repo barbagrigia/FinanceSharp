@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Account type: margin or cash
     /// </summary>

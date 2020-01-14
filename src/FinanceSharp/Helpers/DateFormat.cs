@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Shortcut date format strings
     /// </summary>

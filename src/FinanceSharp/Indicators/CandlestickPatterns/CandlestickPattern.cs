@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators.CandlestickPatterns {
+namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Abstract base class for a candlestick pattern indicator
     /// </summary>

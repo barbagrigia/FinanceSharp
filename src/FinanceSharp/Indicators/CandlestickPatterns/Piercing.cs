@@ -16,9 +16,10 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators.CandlestickPatterns {
+namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Piercing candlestick pattern
     /// </summary>

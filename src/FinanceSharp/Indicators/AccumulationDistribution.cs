@@ -16,9 +16,9 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Accumulation/Distribution (AD)
     /// 	 The Accumulation/Distribution is calculated using the following formula:

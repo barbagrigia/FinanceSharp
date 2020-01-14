@@ -16,7 +16,10 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the n-period rate of change in a value using the following:
     /// (value_0 - value_n) / value_n

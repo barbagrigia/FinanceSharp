@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Double Exponential Moving Average (DEMA).
     /// 	 The Double Exponential Moving Average is calculated with the following formula:

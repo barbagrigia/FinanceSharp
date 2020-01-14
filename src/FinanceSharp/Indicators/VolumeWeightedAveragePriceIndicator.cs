@@ -17,9 +17,10 @@
  *
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Volume Weighted Average Price (VWAP) Indicator:
     /// 	 It is calculated by adding up the dollars traded for every transaction (price multiplied

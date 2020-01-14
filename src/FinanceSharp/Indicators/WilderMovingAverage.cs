@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the moving average indicator defined by Welles Wilder in his book:
     /// 	 New Concepts in Technical Trading Systems.

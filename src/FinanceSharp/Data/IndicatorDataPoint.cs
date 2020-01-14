@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Represents a piece of data at a specific time
     /// </summary>

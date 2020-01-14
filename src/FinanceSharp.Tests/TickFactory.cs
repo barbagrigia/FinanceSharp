@@ -1,5 +1,5 @@
 ﻿using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
 namespace FinanceSharp.Tests {
     public class TickFactory {

@@ -16,9 +16,10 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Average Directional Movement Index Rating (ADXR). 
     /// 	 The Average Directional Movement Index Rating is calculated with the following formula:

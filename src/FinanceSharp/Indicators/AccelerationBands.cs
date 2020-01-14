@@ -16,9 +16,10 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Acceleration Bands created by Price Headley plots upper and lower envelope bands around a moving average.
     /// </summary>

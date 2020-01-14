@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Detrended Price Oscillator is an indicator designed to remove trend from price
     /// 	 and make it easier to identify cycles.

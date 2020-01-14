@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents a type capable of ingesting a piece of data and producing a new piece of data.
     /// 	 Indicators can be used to filter and transform data into a new, more informative form.

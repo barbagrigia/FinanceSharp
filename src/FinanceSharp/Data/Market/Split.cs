@@ -18,10 +18,11 @@
 */
 
 using System;
+using FinanceSharp.Helpers;
 using Newtonsoft.Json;
-using static QuantConnect.StringExtensions;
+using static FinanceSharp.Helpers.StringExtensions;
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 Split event from a security
     /// </summary>

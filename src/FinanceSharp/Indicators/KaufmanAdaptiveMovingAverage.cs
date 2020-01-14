@@ -17,8 +17,10 @@
 */
 
 using System;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Kaufman Adaptive Moving Average (KAMA).
     /// 	 The Kaufman Adaptive Moving Average is calculated as explained here:

@@ -18,7 +18,7 @@
 
 using System.Collections.Generic;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Data.Rolling {
     /// <summary>
     ///     Interface type used to pass windows around without worry of external modification
     /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Represents the types of environments supported by brokerages for trading
     /// </summary>

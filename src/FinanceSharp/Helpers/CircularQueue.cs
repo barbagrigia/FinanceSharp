@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 A never ending queue that will dequeue and reenqueue the same item
     /// </summary>

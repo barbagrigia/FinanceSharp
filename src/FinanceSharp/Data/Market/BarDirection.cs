@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     public enum BarDirection {
         Rising,
         NoDelta,

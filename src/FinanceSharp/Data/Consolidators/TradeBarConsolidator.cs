@@ -18,9 +18,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 A data consolidator that can make bigger bars from smaller ones over a given
     /// 	 time span or a count of pieces of data.

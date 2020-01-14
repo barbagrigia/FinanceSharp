@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 Tick class is the base representation for tick data. It is grouped into a Ticks object
     /// 	 which implements IDictionary and passed into an OnData event handler.

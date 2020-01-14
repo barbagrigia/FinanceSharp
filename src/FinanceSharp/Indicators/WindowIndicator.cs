@@ -16,9 +16,10 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents an indicator that acts on a rolling window of data
     /// </summary>

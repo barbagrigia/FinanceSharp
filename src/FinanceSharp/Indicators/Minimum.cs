@@ -17,8 +17,10 @@
 */
 
 using System.Linq;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents an indicator capable of tracking the minimum value and how many periods ago it occurred
     /// </summary>

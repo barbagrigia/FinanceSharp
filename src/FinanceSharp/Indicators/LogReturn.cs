@@ -17,8 +17,10 @@
 */
 
 using System;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the LogReturn indicator (LOGR)
     /// - log returns are useful for identifying price convergence/divergence in a given period

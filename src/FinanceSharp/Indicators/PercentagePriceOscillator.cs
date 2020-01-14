@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Percentage Price Oscillator (PPO)
     /// 	 The Percentage Price Oscillator is calculated using the following formula:

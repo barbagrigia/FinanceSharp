@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 US Public Holidays - Not Tradeable:
     /// </summary>

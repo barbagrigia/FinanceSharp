@@ -18,7 +18,7 @@
 
 using System.Threading;
 
-namespace QuantConnect.Util.RateLimit {
+namespace FinanceSharp.Helpers.RateLimit {
     /// <summary>
     /// 	 Provides a CPU non-intensive means of waiting for more tokens to be available in <see cref="ITokenBucket"/>.
     /// 	 This strategy should be the most commonly used as it either sleeps or yields the currently executing thread,

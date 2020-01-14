@@ -17,10 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Provides static properties to be used as selectors with the indicator system
     /// </summary>

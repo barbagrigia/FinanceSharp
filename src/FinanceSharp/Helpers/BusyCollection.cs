@@ -21,9 +21,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using QuantConnect.Interfaces;
+using FinanceSharp.Data.Interfaces;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 A non blocking <see cref="IBusyCollection{T}"/> implementation
     /// </summary>

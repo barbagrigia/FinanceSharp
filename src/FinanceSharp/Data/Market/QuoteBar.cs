@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 QuoteBar class for second and minute resolution data:
     /// 	 An OHLC implementation of the QuantConnect BaseData class with parameters for candles.

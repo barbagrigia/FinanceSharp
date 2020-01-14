@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 
-namespace QuantConnect.Interfaces {
+namespace FinanceSharp.Data.Interfaces {
     /// <summary>
     /// Interface used to handle items being processed and communicate busy state
     /// </summary>

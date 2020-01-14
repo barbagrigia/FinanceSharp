@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Produces a Hull Moving Average as explained at http://www.alanhull.com/hull-moving-average/
     /// 	 and derived from the instructions for the Excel VBA code at http://finance4traders.blogspot.com/2009/06/how-to-calculate-hull-moving-average.html

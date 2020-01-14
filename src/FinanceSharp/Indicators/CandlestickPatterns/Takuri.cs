@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators.CandlestickPatterns {
+namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Takuri (Dragonfly Doji with very long lower shadow) candlestick pattern indicator
     /// </summary>

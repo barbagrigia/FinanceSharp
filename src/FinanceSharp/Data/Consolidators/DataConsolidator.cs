@@ -19,7 +19,7 @@
 
 using System;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Represents a type that consumes BaseData instances and fires an event with consolidated
     /// 	 and/or aggregated data.

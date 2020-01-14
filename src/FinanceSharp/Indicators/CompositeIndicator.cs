@@ -17,9 +17,10 @@
 */
 
 using System;
-using QuantConnect.Data;
+using FinanceSharp.Data;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator is capable of wiring up two separate indicators into a single indicator
     /// 	 such that the output of each will be sent to a user specified function.

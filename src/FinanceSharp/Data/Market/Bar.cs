@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Data.Market {
+using FinanceSharp.Helpers;
+
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 Base Bar Class: Open, High, Low, Close and Period.
     /// </summary>

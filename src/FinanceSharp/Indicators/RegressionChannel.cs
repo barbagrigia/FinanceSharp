@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Regression Channel indicator extends the <see cref="LeastSquaresMovingAverage"/>
     /// 	 with the inclusion of two (upper and lower) channel lines that are distanced from

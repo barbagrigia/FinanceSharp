@@ -19,8 +19,10 @@
 
 using System;
 using System.Linq;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary> 
     /// 	 Oscillator indicator that measures momentum and mean-reversion over a specified
     /// 	 period n.

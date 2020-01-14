@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Provides convenience of linq extension methods for <see cref="IEnumerator{T}"/> types
     /// </summary>

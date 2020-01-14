@@ -19,9 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using QuantConnect.Data;
 
-namespace QuantConnect.Interfaces {
+namespace FinanceSharp.Data.Interfaces {
     /// <summary>
     /// Reduced interface which allows setting and accessing
     /// price properties for a <see cref="Security"/>

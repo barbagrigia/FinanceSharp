@@ -1,4 +1,4 @@
-﻿namespace QuantConnect {
+﻿namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Wrapper for algorithm status enum to include the charting subscription.
     /// </summary>

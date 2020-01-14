@@ -18,8 +18,9 @@
 
 using System;
 using System.Threading;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data.Market {
+namespace FinanceSharp.Data.Market {
     /// <summary>
     /// 	 TradeBar class for second and minute resolution data:
     /// 	 An OHLC implementation of the QuantConnect BaseData class with parameters for candles.

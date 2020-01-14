@@ -18,8 +18,10 @@
 
 using System;
 using System.Linq;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the n-period mean absolute deviation.
     /// </summary>

@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The functional indicator is used to lift any function into an indicator. This can be very useful
     /// 	 when trying to combine output of several indicators, or for expression a mathematical equation

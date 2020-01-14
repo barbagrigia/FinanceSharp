@@ -16,9 +16,9 @@
  * limitations under the License.
 */
 
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Williams %R, or just %R, is the current closing price in relation to the high and low of
     /// 	 the past N days (for a given N). The value of this indicator fluctuates between -100 and 0.

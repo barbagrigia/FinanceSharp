@@ -1,6 +1,6 @@
 ﻿using System;
+using FinanceSharp.Data.Consolidators;
 using NUnit.Framework;
-using QuantConnect.Data.Consolidators;
 
 namespace FinanceSharp.Tests {
     public class IndicatorTests {

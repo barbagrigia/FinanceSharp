@@ -20,9 +20,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using static QuantConnect.StringExtensions;
+using static FinanceSharp.Helpers.StringExtensions;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Data.Rolling {
     /// <summary>
     ///     This is a window that allows for list access semantics,
     ///     where this[0] refers to the most recent item in the

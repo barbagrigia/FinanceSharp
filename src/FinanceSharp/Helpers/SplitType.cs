@@ -1,6 +1,8 @@
-﻿namespace QuantConnect {
+﻿using FinanceSharp.Data.Market;
+
+namespace FinanceSharp.Helpers {
     /// <summary>
-    /// 	 Specifies the type of <see cref="QuantConnect.Data.Market.Split"/> data
+    /// 	 Specifies the type of <see cref="Split"/> data
     /// </summary>
     public enum SplitType {
         /// <summary>

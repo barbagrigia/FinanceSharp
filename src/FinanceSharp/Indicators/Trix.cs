@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the TRIX (1-period ROC of a Triple EMA)
     /// 	 The TRIX is calculated as explained here:

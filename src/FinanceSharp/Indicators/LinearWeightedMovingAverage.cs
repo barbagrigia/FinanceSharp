@@ -17,8 +17,10 @@
 */
 
 using System;
+using FinanceSharp.Data;
+using FinanceSharp.Data.Rolling;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the traditional Weighted Moving Average indicator. The weight are linearly
     /// 	 distributed according to the number of periods in the indicator.

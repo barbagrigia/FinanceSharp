@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Represents the simplest DataConsolidator implementation, one that is defined
     /// 	 by a straight pass through of the data. No projection or aggregation is performed.

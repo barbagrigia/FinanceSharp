@@ -18,7 +18,7 @@
 
 using System;
 
-namespace QuantConnect.Data.Consolidators {
+namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Event handler type for the IDataConsolidator.DataConsolidated event
     /// </summary>

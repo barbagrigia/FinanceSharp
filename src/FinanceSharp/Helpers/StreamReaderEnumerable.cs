@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Converts a <see cref="StreamReader"/> into an enumerable of string
     /// </summary>

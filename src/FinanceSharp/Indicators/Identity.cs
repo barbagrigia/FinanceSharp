@@ -16,7 +16,9 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Indicators {
+using FinanceSharp.Data;
+
+namespace FinanceSharp.Indicators {
     /// <summary>
     ///     Represents an indicator that is a ready after ingesting a single sample and
     ///     always returns the same value as it is given.

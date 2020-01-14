@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Provides extension methods for the MovingAverageType enumeration
     /// </summary>

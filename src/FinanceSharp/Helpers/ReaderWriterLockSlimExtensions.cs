@@ -20,7 +20,7 @@
 using System;
 using System.Threading;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Provides extension methods to make working with the <see cref="ReaderWriterLockSlim"/> class easier
     /// </summary>

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace QuantConnect {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 Global Market Short Codes and their full versions: (used in tick objects)
     /// </summary>

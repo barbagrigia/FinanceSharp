@@ -17,9 +17,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the Accumulation/Distribution Oscillator (ADOSC)
     /// 	 The Accumulation/Distribution Oscillator is calculated using the following formula:

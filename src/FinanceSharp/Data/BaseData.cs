@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Helpers;
 
-namespace QuantConnect.Data {
+namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Abstract base data class of QuantConnect. It is intended to be extended to define
     /// 	 generic user customizable data types while at the same time implementing the basics of data where possible

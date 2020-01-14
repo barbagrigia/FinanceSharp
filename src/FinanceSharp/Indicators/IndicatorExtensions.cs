@@ -18,9 +18,9 @@
 
 using System;
 using System.Globalization;
-using QuantConnect.Data;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Provides extension methods for Indicator
     /// </summary>

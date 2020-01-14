@@ -21,9 +21,9 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using QuantConnect.Interfaces;
+using FinanceSharp.Data.Interfaces;
 
-namespace QuantConnect.Util {
+namespace FinanceSharp.Helpers {
     /// <summary>
     /// 	 A small wrapper around <see cref="BlockingCollection{T}"/> used to communicate busy state of the items
     /// 	 being processed

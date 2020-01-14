@@ -17,8 +17,9 @@
 */
 
 using System;
+using FinanceSharp.Data;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 A momentum indicator developed by Edwin “Sedge” Coppock in October 1965.
     /// 	 The goal of this indicator is to identify long-term buying opportunities in the S&amp;P500 and Dow Industrials.

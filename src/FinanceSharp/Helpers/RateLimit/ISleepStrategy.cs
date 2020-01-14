@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace QuantConnect.Util.RateLimit {
+namespace FinanceSharp.Helpers.RateLimit {
     /// <summary>
     /// 	 Defines a strategy for sleeping the current thread of execution. This is currently used via the
     /// <see cref="ITokenBucket.Consume"/> in order to wait for new tokens to become available for consumption.

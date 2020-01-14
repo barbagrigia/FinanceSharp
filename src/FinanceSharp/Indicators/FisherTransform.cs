@@ -18,9 +18,9 @@
 */
 
 using System;
-using QuantConnect.Data.Market;
+using FinanceSharp.Data.Market;
 
-namespace QuantConnect.Indicators {
+namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The Fisher transform is a mathematical process which is used to convert any data set to a modified
     /// 	 data set whose Probability Distribution Function is approximately Gaussian. Once the Fisher transform

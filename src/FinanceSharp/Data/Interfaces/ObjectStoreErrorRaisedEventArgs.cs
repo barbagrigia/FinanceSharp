@@ -18,7 +18,7 @@
 
 using System;
 
-namespace QuantConnect.Interfaces {
+namespace FinanceSharp.Data.Interfaces {
     /// <summary>
     /// Event arguments for the <see cref="IObjectStore.ErrorRaised"/> event
     /// </summary>
