@@ -91,8 +91,8 @@ namespace FinanceSharp.Indicators {
                 .ToArray();
             // Fit OLS
             var ols = Fit.Line(x: _t, y: series);
-            Intercept.Update(input.Time, ols.Item1);
-            Slope.Update(input.Time, ols.Item2);
+            Intercept.Update(time, ols.Item1);
+            Slope.Update(time, ols.Item2);
 
             // Calculate the fitted value corresponding to the input
             return Intercept + Slope * Period;

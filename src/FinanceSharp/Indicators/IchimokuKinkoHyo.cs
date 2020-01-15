@@ -206,25 +206,25 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         protected override Tensor Forward(long time, Tensor<double> input) {
-            TenkanMaximum.Update(input.Time, input.High);
-            TenkanMinimum.Update(input.Time, input.Low);
-            Tenkan.Update(input.Time, input.Close);
-            if (Tenkan.IsReady) DelayedTenkanSenkouA.Update(input.Time, Tenkan.Current.Value);
+            TenkanMaximum.Update(time, input.High);
+            TenkanMinimum.Update(time, input.Low);
+            Tenkan.Update(time, input.Close);
+            if (Tenkan.IsReady) DelayedTenkanSenkouA.Update(time, Tenkan.Current.Value);
 
-            KijunMaximum.Update(input.Time, input.High);
-            KijunMinimum.Update(input.Time, input.Low);
-            Kijun.Update(input.Time, input.Close);
-            if (Kijun.IsReady) DelayedKijunSenkouA.Update(input.Time, Kijun.Current.Value);
+            KijunMaximum.Update(time, input.High);
+            KijunMinimum.Update(time, input.Low);
+            Kijun.Update(time, input.Close);
+            if (Kijun.IsReady) DelayedKijunSenkouA.Update(time, Kijun.Current.Value);
 
-            SenkouA.Update(input.Time, input.Close);
+            SenkouA.Update(time, input.Close);
 
-            SenkouB.Update(input.Time, input.Close);
-            SenkouBMaximum.Update(input.Time, input.High);
-            if (SenkouBMaximum.IsReady) DelayedMaximumSenkouB.Update(input.Time, SenkouBMaximum.Current.Value);
-            SenkouBMinimum.Update(input.Time, input.Low);
-            if (SenkouBMinimum.IsReady) DelayedMinimumSenkouB.Update(input.Time, SenkouBMinimum.Current.Value);
+            SenkouB.Update(time, input.Close);
+            SenkouBMaximum.Update(time, input.High);
+            if (SenkouBMaximum.IsReady) DelayedMaximumSenkouB.Update(time, SenkouBMaximum.Current.Value);
+            SenkouBMinimum.Update(time, input.Low);
+            if (SenkouBMinimum.IsReady) DelayedMinimumSenkouB.Update(time, SenkouBMinimum.Current.Value);
 
-            Chikou.Update(input.Time, input.Close);
+            Chikou.Update(time, input.Close);
 
             return input.Close;
         }

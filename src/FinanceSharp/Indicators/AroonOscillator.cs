@@ -89,8 +89,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override Tensor Forward(long time, Tensor<double> input) {
-            AroonUp.Update(input.Time, input.High);
-            AroonDown.Update(input.Time, input.Low);
+            AroonUp.Update(time, input.High);
+            AroonDown.Update(time, input.Low);
 
             return AroonUp - AroonDown;
         }

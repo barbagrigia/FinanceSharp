@@ -96,8 +96,8 @@ namespace FinanceSharp.Indicators {
 
             var macd = Fast - Slow;
 
-            Signal.Update(input.Time, macd);
-            Histogram.Update(input.Time, macd - Signal);
+            Signal.Update(time, macd);
+            Histogram.Update(time, macd - Signal);
             return macd;
         }
 

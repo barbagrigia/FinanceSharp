@@ -94,7 +94,7 @@ namespace FinanceSharp.Indicators {
                 return Constants.Zero;
             }
 
-            _lwma.Update(input.Time, _shortRoc + _longRoc);
+            _lwma.Update(time, _shortRoc + _longRoc);
             return _lwma;
         }
     }

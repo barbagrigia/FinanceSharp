@@ -117,7 +117,7 @@ namespace FinanceSharp.Indicators {
         protected override Tensor Forward(long time, Tensor<double> input) {
             // compute the true range and then send it to our smoother
             TrueRange.Update(TODO, input);
-            _smoother.Update(input.Time, TrueRange);
+            _smoother.Update(time, TrueRange);
 
             return _smoother.Current.Value;
         }

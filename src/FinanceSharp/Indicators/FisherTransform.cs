@@ -88,8 +88,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">Tensor<double> - the time and value of the next price</param>
         protected override Tensor Forward(long time, Tensor<double> input) {
             var price = (input.Low + input.High) / 2d;
-            _medianMin.Update(input.Time, price);
-            _medianMax.Update(input.Time, price);
+            _medianMin.Update(time, price);
+            _medianMax.Update(time, price);
 
             if (!IsReady) return 0;
 

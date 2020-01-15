@@ -82,11 +82,11 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator</returns>
         protected override Tensor Forward(long time, Tensor<double> input) {
             if (_previousInput != null && input.Value >= _previousInput.Value) {
-                AverageGain.Update(input.Time, input.Value - _previousInput.Value);
-                AverageLoss.Update(input.Time, Constants.Zero);
+                AverageGain.Update(time, input.Value - _previousInput.Value);
+                AverageLoss.Update(time, Constants.Zero);
             } else if (_previousInput != null && input.Value < _previousInput.Value) {
-                AverageGain.Update(input.Time, Constants.Zero);
-                AverageLoss.Update(input.Time, _previousInput.Value - input.Value);
+                AverageGain.Update(time, Constants.Zero);
+                AverageLoss.Update(time, _previousInput.Value - input.Value);
             }
 
             _previousInput = input;

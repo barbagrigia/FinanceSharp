@@ -98,15 +98,15 @@ namespace FinanceSharp.Indicators {
         /// <returns> A new value for this indicator </returns>
         protected override Tensor Forward(long time, Tensor<double> input) {
             if (!IsReady) {
-                Open.Update(input.Time, (input.Open + input.Close) / 2);
-                Close.Update(input.Time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(input.Time, input.High);
-                Low.Update(input.Time, input.Low);
+                Open.Update(time, (input.Open + input.Close) / 2);
+                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
+                High.Update(time, input.High);
+                Low.Update(time, input.Low);
             } else {
-                Open.Update(input.Time, (Open + Close) / 2);
-                Close.Update(input.Time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(input.Time, Math.Max(input.High, Math.Max(Open, Close)));
-                Low.Update(input.Time, Math.Min(input.Low, Math.Min(Open, Close)));
+                Open.Update(time, (Open + Close) / 2);
+                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
+                High.Update(time, Math.Max(input.High, Math.Max(Open, Close)));
+                Low.Update(time, Math.Min(input.Low, Math.Min(Open, Close)));
             }
 
             return Close;

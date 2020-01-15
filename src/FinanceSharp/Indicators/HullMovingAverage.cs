@@ -84,7 +84,7 @@ namespace FinanceSharp.Indicators {
             _fastWma.Update(TODO, input);
             _slowWma.Update(TODO, input);
             if (_fastWma.IsReady && _slowWma.IsReady) {
-                _hullMa.Update((long) TODO, (Tensor<double>) new Tensor<double>(input.Time, 2 * _fastWma - _slowWma));
+                _hullMa.Update((long) TODO, (Tensor<double>) new Tensor<double>(time, 2 * _fastWma - _slowWma));
             }
 
             return _hullMa;

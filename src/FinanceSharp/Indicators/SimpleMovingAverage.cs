@@ -68,7 +68,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input value to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
         protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
-            RollingSum.Update(input.Time, input.Value);
+            RollingSum.Update(time, input.Value);
             return RollingSum.Current.Value / window.Count;
         }
 

@@ -109,8 +109,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         protected override Tensor Forward(long time, Tensor<double> input) {
-            _maximum.Update(input.Time, input.High);
-            _minimum.Update(input.Time, input.Low);
+            _maximum.Update(time, input.High);
+            _minimum.Update(time, input.Low);
             FastStoch.Update(TODO, input);
             StochK.Update(TODO, input);
             StochD.Update(TODO, input);
@@ -135,7 +135,7 @@ namespace FinanceSharp.Indicators {
             var numerator = input.Close - _minimum;
             var fastStoch = _maximum.Samples >= period ? numerator / denominator : Constants.Zero;
 
-            _sumFastK.Update(input.Time, fastStoch);
+            _sumFastK.Update(time, fastStoch);
             return fastStoch * 100;
         }
 
@@ -148,7 +148,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>The Slow Stochastics %K value.</returns>
         private double ComputeStochK(int period, int constantK, IBaseData input) {
             var stochK = _maximum.Samples >= (period + constantK - 1) ? _sumFastK / constantK : Constants.Zero;
-            _sumSlowK.Update(input.Time, stochK);
+            _sumSlowK.Update(time, stochK);
             return stochK * 100;
         }
 

@@ -95,8 +95,8 @@ namespace FinanceSharp.Indicators {
         protected override Tensor Forward(long time, Tensor<double> input) {
             var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
 
-            TypicalPriceAverage.Update(input.Time, typicalPrice);
-            TypicalPriceMeanDeviation.Update(input.Time, typicalPrice);
+            TypicalPriceAverage.Update(time, typicalPrice);
+            TypicalPriceMeanDeviation.Update(time, typicalPrice);
 
             // compare this to zero, since if the mean deviation is very small we can get
             // precision errors due to non-floating point math

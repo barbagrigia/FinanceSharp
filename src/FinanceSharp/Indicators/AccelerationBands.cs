@@ -18,6 +18,8 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using FinanceSharp.Helpers;
+using Python.Runtime;
 using Torch;
 
 namespace FinanceSharp.Indicators {
@@ -110,11 +112,11 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         protected override Tensor Forward(long time, Tensor<double> input) {
-            var coeff = _width * (input.High - input.Low) / (input.High + input.Low);
-
-            LowerBand.Update(input.Time, input.Low * (1 - coeff));
-            UpperBand.Update(input.Time, input.High * (1 + coeff));
-            MiddleBand.Update(input.Time, input.Close);
+            var coeff = _width * (input.High - input.Low) / (input[Constants.High] + input.Low);
+            Runtime.e
+            LowerBand.Update(time, input.Low * (1 - coeff));
+            UpperBand.Update(time, input.High * (1 + coeff));
+            MiddleBand.Update(time, input.Close);
 
             return MiddleBand;
         }

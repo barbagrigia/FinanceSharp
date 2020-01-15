@@ -82,8 +82,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override Tensor Forward(long time, Tensor<double> input) {
-            Minimum.Update(input.Time, input.Low);
-            Maximum.Update(input.Time, input.High);
+            Minimum.Update(time, input.Low);
+            Maximum.Update(time, input.High);
 
             if (!IsReady) return 0;
 

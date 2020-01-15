@@ -100,8 +100,8 @@ namespace FinanceSharp.Indicators {
             var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
             var moneyFlow = typicalPrice * input.Volume;
 
-            PositiveMoneyFlow.Update(input.Time, typicalPrice > PreviousTypicalPrice ? moneyFlow : 0.0d);
-            NegativeMoneyFlow.Update(input.Time, typicalPrice < PreviousTypicalPrice ? moneyFlow : 0.0d);
+            PositiveMoneyFlow.Update(time, typicalPrice > PreviousTypicalPrice ? moneyFlow : 0.0d);
+            NegativeMoneyFlow.Update(time, typicalPrice < PreviousTypicalPrice ? moneyFlow : 0.0d);
             PreviousTypicalPrice = typicalPrice;
 
             var totalMoneyFlow = PositiveMoneyFlow + NegativeMoneyFlow;

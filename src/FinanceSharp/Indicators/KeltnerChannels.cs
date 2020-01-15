@@ -120,7 +120,7 @@ namespace FinanceSharp.Indicators {
             AverageTrueRange.Update(TODO, input);
 
             var typicalPrice = (input.High + input.Low + input.Close) / 3d;
-            MiddleBand.Update(input.Time, typicalPrice);
+            MiddleBand.Update(time, typicalPrice);
 
             // poke the upper/lower bands, they actually don't use the input, they compute
             // based on the ATR and the middle band
