@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -31,8 +32,7 @@ namespace FinanceSharp.Indicators {
     /// 	 the left and right indicators.
     /// </remarks>
     /// <typeparam name="T">The type of data input into this indicator</typeparam>
-    public class CompositeIndicator<T> : IndicatorBase<IndicatorDataPoint>
-        where T : IBaseData {
+    public class CompositeIndicator : IndicatorBase {
         /// <summary>
         /// 	 Delegate type used to compose the output of two indicators into a new value.
         /// </summary>
@@ -43,7 +43,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>And indicator result representing the composition of the two indicators</returns>
-        public delegate IndicatorResult IndicatorComposer(IndicatorBase<T> left, IndicatorBase<T> right);
+        public delegate IndicatorResult IndicatorComposer(IndicatorBase left, IndicatorBase right);
 
         /// <summary>function used to compose the individual indicators</summary>
         private readonly IndicatorComposer _composer;
@@ -51,12 +51,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the 'left' indicator for the delegate
         /// </summary>
-        public IndicatorBase<T> Left { get; private set; }
+        public IndicatorBase Left { get; private set; }
 
         /// <summary>
         /// 	 Gets the 'right' indicator for the delegate
         /// </summary>
-        public IndicatorBase<T> Right { get; private set; }
+        public IndicatorBase Right { get; private set; }
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -82,7 +82,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(string name, IndicatorBase<T> left, IndicatorBase<T> right, IndicatorComposer composer)
+        public CompositeIndicator(string name, IndicatorBase left, IndicatorBase right, IndicatorComposer composer)
             : base(name) {
             _composer = composer;
             Left = left;
@@ -97,7 +97,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(IndicatorBase<T> left, IndicatorBase<T> right, IndicatorComposer composer)
+        public CompositeIndicator(IndicatorBase left, IndicatorBase right, IndicatorComposer composer)
             : this($"COMPOSE({left.Name},{right.Name})", left, right, composer) { }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected override IndicatorResult ValidateAndForward(IndicatorDataPoint input) {
+        protected override IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
             return _composer.Invoke(Left, Right);
         }
 
@@ -116,9 +116,10 @@ namespace FinanceSharp.Indicators {
         /// <remarks>
         /// 	 Since this class overrides <see cref="ValidateAndForward"/>, this method is a no-op
         /// </remarks>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             // this should never actually be invoked
             return _composer.Invoke(Left, Right).Value;
         }
@@ -129,36 +130,35 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         private void ConfigureEventHandlers() {
             // if either of these are constants then there's no reason
-            bool leftIsConstant = Left.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator<>));
-            bool rightIsConstant = Right.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator<>));
+            bool leftIsConstant = Left.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator));
+            bool rightIsConstant = Right.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator));
 
             // wire up the Updated events such that when we get a new piece of data from both left and right
             // we'll call update on this indicator. It's important to note that the CompositeIndicator only uses
             // the timestamp that gets passed into the Update function, his compuation is soley a function
             // of the left and right indicator via '_composer'
 
-            IndicatorDataPoint newLeftData = null;
-            IndicatorDataPoint newRightData = null;
-            Left.Updated += (sender, updated) => {
+            Tensor<double> newLeftData = null;
+            Tensor<double> newRightData = null;
+            Left.Updated += (sender, time, updated) => {
                 newLeftData = updated;
 
                 // if we have left and right data (or if right is a constant) then we need to update
                 if (newRightData != null || rightIsConstant) {
-                    var dataPoint = new IndicatorDataPoint {Time = MaxTime(updated)};
-                    Update(dataPoint);
+                    
+                    Update(MaxTime(time, updated), updated);
                     // reset these to null after each update
                     newLeftData = null;
                     newRightData = null;
                 }
             };
 
-            Right.Updated += (sender, updated) => {
+            Right.Updated += (sender, time,  updated) => {
                 newRightData = updated;
 
                 // if we have left and right data (or if left is a constant) then we need to update
                 if (newLeftData != null || leftIsConstant) {
-                    var dataPoint = new IndicatorDataPoint {Time = MaxTime(updated)};
-                    Update(dataPoint);
+                    Update(time, updated);
                     // reset these to null after each update
                     newLeftData = null;
                     newRightData = null;
@@ -166,8 +166,8 @@ namespace FinanceSharp.Indicators {
             };
         }
 
-        private DateTime MaxTime(IndicatorDataPoint updated) {
-            return new DateTime(Math.Max(updated.Time.Ticks, Math.Max(Right.Current.Time.Ticks, Left.Current.Time.Ticks)));
+        private long MaxTime(long time, Tensor<double> updated) {
+            return Math.Max(time, Math.Max(Right.CurrentTime, Left.CurrentTime));
         }
     }
 }

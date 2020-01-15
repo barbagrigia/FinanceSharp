@@ -91,7 +91,7 @@ namespace FinanceSharp.Data {
         /// 	 Gets a selector that selectors the Volume value
         /// </summary>
         public static Func<IBaseData, double> Volume {
-            get { return BaseDataBarPropertyOrValue(x => x is TradeBar ? ((TradeBar) x).Volume : 0d, x => 0d); }
+            get { return BaseDataBarPropertyOrValue(x => x is TradeBar ? ((TradeBar) x).Volume : Constants.Zero, x => Constants.Zero); }
         }
 
         private static Func<IBaseData, double> BaseDataBarPropertyOrValue(Func<IBaseDataBar, double> selector, Func<IBaseData, double> defaultSelector = null) {

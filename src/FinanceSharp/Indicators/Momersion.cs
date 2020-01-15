@@ -21,6 +21,7 @@ using System;
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary> 
@@ -29,7 +30,7 @@ namespace FinanceSharp.Indicators {
     /// 	 Source: Harris, Michael. "Momersion Indicator." Price Action Lab.,
     ///             13 Aug. 2015. Web. http://www.priceactionlab.com/Blog/2015/08/momersion-indicator/.
     /// </summary>
-    public class MomersionIndicator : WindowIndicator<IndicatorDataPoint> {
+    public class MomersionIndicator : WindowIndicator {
         /// <summary>
         /// 	 The minimum observations needed to consider the indicator ready. After that observation
         /// 	 number is reached, the indicator will continue gathering data until the full period.
@@ -104,11 +105,12 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="window"></param>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             if (window.Count >= 3) {
                 _multipliedDiffWindow.Add((window[0] - window[1]) * (window[1] - window[2]));
             }
@@ -118,10 +120,10 @@ namespace FinanceSharp.Indicators {
             if (IsReady && _multipliedDiffWindow.Count(obs => obs == 0) < 0.5 * _multipliedDiffWindow.Count) {
                 var mc = _multipliedDiffWindow.Count(obs => obs > 0);
                 var mRc = _multipliedDiffWindow.Count(obs => obs < 0);
-                return 100d * mc / (mc + mRc);
+                return 10.0d * mc / (mc + mRc);
             }
 
-            return 50d;
+            return 5.0d;
         }
     }
 }

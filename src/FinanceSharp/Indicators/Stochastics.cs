@@ -18,6 +18,7 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,25 +28,25 @@ namespace FinanceSharp.Indicators {
     /// 	 of the Fast %K with the given period. The Slow Stochastics %D is then derived from the Slow Stochastics %K with the given period.
     /// </summary>
     public class Stochastic : BarIndicator {
-        private readonly IndicatorBase<IndicatorDataPoint> _maximum;
-        private readonly IndicatorBase<IndicatorDataPoint> _minimum;
-        private readonly IndicatorBase<IndicatorDataPoint> _sumFastK;
-        private readonly IndicatorBase<IndicatorDataPoint> _sumSlowK;
+        private readonly IndicatorBase _maximum;
+        private readonly IndicatorBase _minimum;
+        private readonly IndicatorBase _sumFastK;
+        private readonly IndicatorBase _sumSlowK;
 
         /// <summary>
         /// 	 Gets the value of the Fast Stochastics %K given Period.
         /// </summary>
-        public IndicatorBase<IBaseDataBar> FastStoch { get; }
+        public IndicatorBase FastStoch { get; }
 
         /// <summary>
         /// 	 Gets the value of the Slow Stochastics given Period K.
         /// </summary>
-        public IndicatorBase<IBaseDataBar> StochK { get; }
+        public IndicatorBase StochK { get; }
 
         /// <summary>
         /// 	 Gets the value of the Slow Stochastics given Period D.
         /// </summary>
-        public IndicatorBase<IBaseDataBar> StochD { get; }
+        public IndicatorBase StochD { get; }
 
         /// <summary>
         /// 	 Creates a new Stochastics Indicator from the specified periods.
@@ -61,21 +62,21 @@ namespace FinanceSharp.Indicators {
             _sumFastK = new Sum(name + "_SumFastK", kPeriod);
             _sumSlowK = new Sum(name + "_SumD", dPeriod);
 
-            FastStoch = new FunctionalIndicator<IBaseDataBar>(name + "_FastStoch",
-                input => ComputeFastStoch(period, input),
+            FastStoch = new FunctionalIndicator(name + "_FastStoch",
+                (time, input) => ComputeFastStoch(period, input),
                 fastStoch => _maximum.IsReady,
                 () => { }
             );
 
-            StochK = new FunctionalIndicator<IBaseDataBar>(name + "_StochK",
-                input => ComputeStochK(period, kPeriod, input),
+            StochK = new FunctionalIndicator(name + "_StochK",
+                (time, input) => ComputeStochK(period, kPeriod, input),
                 stochK => _maximum.IsReady,
                 () => { }
             );
 
-            StochD = new FunctionalIndicator<IBaseDataBar>(
+            StochD = new FunctionalIndicator(
                 name + "_StochD",
-                input => ComputeStochD(period, kPeriod, dPeriod),
+                (time, input) => ComputeStochD(period, kPeriod, dPeriod),
                 stochD => _maximum.IsReady,
                 () => { }
             );
@@ -105,13 +106,14 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             _maximum.Update(input.Time, input.High);
             _minimum.Update(input.Time, input.Low);
-            FastStoch.Update(input);
-            StochK.Update(input);
-            StochD.Update(input);
+            FastStoch.Update(TODO, input);
+            StochK.Update(TODO, input);
+            StochD.Update(TODO, input);
 
             return FastStoch;
         }
@@ -126,12 +128,12 @@ namespace FinanceSharp.Indicators {
             var denominator = _maximum - _minimum;
 
             // if there's no range, just return constant zero
-            if (denominator == 0d) {
-                return 0d;
+            if (denominator == Constants.Zero) {
+                return Constants.Zero;
             }
 
             var numerator = input.Close - _minimum;
-            var fastStoch = _maximum.Samples >= period ? numerator / denominator : 0d;
+            var fastStoch = _maximum.Samples >= period ? numerator / denominator : Constants.Zero;
 
             _sumFastK.Update(input.Time, fastStoch);
             return fastStoch * 100;
@@ -145,7 +147,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input.</param>
         /// <returns>The Slow Stochastics %K value.</returns>
         private double ComputeStochK(int period, int constantK, IBaseData input) {
-            var stochK = _maximum.Samples >= (period + constantK - 1) ? _sumFastK / constantK : 0d;
+            var stochK = _maximum.Samples >= (period + constantK - 1) ? _sumFastK / constantK : Constants.Zero;
             _sumSlowK.Update(input.Time, stochK);
             return stochK * 100;
         }
@@ -158,7 +160,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="constantD">The constant d.</param>
         /// <returns>The Slow Stochastics %D value.</returns>
         private double ComputeStochD(int period, int constantK, int constantD) {
-            var stochD = _maximum.Samples >= (period + constantK + constantD - 2) ? _sumSlowK / constantD : 0d;
+            var stochD = _maximum.Samples >= (period + constantK + constantD - 2) ? _sumSlowK / constantD : Constants.Zero;
             return stochD * 100;
         }
 

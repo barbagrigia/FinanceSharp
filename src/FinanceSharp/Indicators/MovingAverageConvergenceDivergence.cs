@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,24 +28,24 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the fast average indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Fast { get; }
+        public IndicatorBase Fast { get; }
 
         /// <summary>
         /// 	 Gets the slow average indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Slow { get; }
+        public IndicatorBase Slow { get; }
 
         /// <summary>
         /// 	 Gets the signal of the MACD
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Signal { get; }
+        public IndicatorBase Signal { get; }
 
         /// <summary>
         /// 	 Developed by Thomas Aspray in 1986, the MACD-Histogram measures the distance between MACD and its signal line, 
         /// 	 is an oscillator that fluctuates above and below the zero line.
         /// 	 Bullish or bearish divergences in the MACD-Histogram can alert chartists to an imminent signal line crossover in MACD.
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Histogram { get; }
+        public IndicatorBase Histogram { get; }
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -86,11 +87,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            Fast.Update(input);
-            Slow.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            Fast.Update(TODO, input);
+            Slow.Update(TODO, input);
 
             var macd = Fast - Slow;
 

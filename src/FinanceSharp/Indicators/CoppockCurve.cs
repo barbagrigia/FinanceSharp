@@ -18,6 +18,7 @@
 
 using System;
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -25,7 +26,7 @@ namespace FinanceSharp.Indicators {
     /// 	 The goal of this indicator is to identify long-term buying opportunities in the S&amp;P500 and Dow Industrials.
     /// 	 Source: http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:coppock_curve
     /// </summary>
-    public class CoppockCurve : IndicatorBase<IndicatorDataPoint> {
+    public class CoppockCurve : IndicatorBase {
         private readonly RateOfChangePercent _longRoc;
         private readonly LinearWeightedMovingAverage _lwma;
         private readonly RateOfChangePercent _shortRoc;
@@ -83,13 +84,14 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _shortRoc.Update(input);
-            _longRoc.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _shortRoc.Update(TODO, input);
+            _longRoc.Update(TODO, input);
             if (!_longRoc.IsReady || !_shortRoc.IsReady) {
-                return 0d;
+                return Constants.Zero;
             }
 
             _lwma.Update(input.Time, _shortRoc + _longRoc);

@@ -31,7 +31,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="movingAverageType">The type of averaging indicator to create</param>
         /// <param name="period">The smoothing period</param>
         /// <returns>A new indicator that matches the MovingAverageType</returns>
-        public static IndicatorBase<IndicatorDataPoint> AsIndicator(this MovingAverageType movingAverageType, int period) {
+        public static IndicatorBase AsIndicator(this MovingAverageType movingAverageType, int period) {
             switch (movingAverageType) {
                 case MovingAverageType.Simple:
                     return new SimpleMovingAverage(period);
@@ -79,7 +79,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of the new indicator</param>
         /// <param name="period">The smoothing period</param>
         /// <returns>A new indicator that matches the MovingAverageType</returns>
-        public static IndicatorBase<IndicatorDataPoint> AsIndicator(this MovingAverageType movingAverageType, string name, int period) {
+        public static IndicatorBase AsIndicator(this MovingAverageType movingAverageType, string name, int period) {
             switch (movingAverageType) {
                 case MovingAverageType.Simple:
                     return new SimpleMovingAverage(name, period);

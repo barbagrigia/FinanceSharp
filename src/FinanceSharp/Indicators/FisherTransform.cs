@@ -19,6 +19,7 @@
 
 using System;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -79,12 +80,13 @@ namespace FinanceSharp.Indicators {
         /// 	 value1 is a function used to normalize price withing the last _period day range.
         /// 	 value1 is centered on its midpoint and then doubled so that value1 wil swing between -1 and +1.
         /// 	 value1 is also smoothed with an exponential moving average whose alpha is 0.33.
-        ///
+        /// 
         /// 	 Since the smoothing may allow value1 to exceed the _period day price range, limits are introduced to
         /// 	 preclude the transform from blowing up by having an input larger than unity.
         /// </summary>
-        /// <param name="input">IndicatorDataPoint - the time and value of the next price</param>
-        protected override double Forward(IBaseDataBar input) {
+        /// <param name="time"></param>
+        /// <param name="input">Tensor<double> - the time and value of the next price</param>
+        protected override Tensor Forward(long time, Tensor<double> input) {
             var price = (input.Low + input.High) / 2d;
             _medianMin.Update(input.Time, price);
             _medianMax.Update(input.Time, price);

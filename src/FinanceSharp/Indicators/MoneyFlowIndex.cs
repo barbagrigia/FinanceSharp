@@ -18,6 +18,7 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -38,12 +39,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 The sum of positive money flow to compute money flow ratio
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> PositiveMoneyFlow { get; }
+        public IndicatorBase PositiveMoneyFlow { get; }
 
         /// <summary>
         /// 	 The sum of negative money flow to compute money flow ratio
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> NegativeMoneyFlow { get; }
+        public IndicatorBase NegativeMoneyFlow { get; }
 
         /// <summary>
         /// 	 The current and previous typical price is used to determine positive or negative money flow
@@ -92,9 +93,10 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(TradeBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
             var moneyFlow = typicalPrice * input.Volume;
 
@@ -107,7 +109,7 @@ namespace FinanceSharp.Indicators {
                 return 100.0d;
             }
 
-            return 100d * PositiveMoneyFlow / totalMoneyFlow;
+            return 10.0d * PositiveMoneyFlow / totalMoneyFlow;
         }
     }
 }

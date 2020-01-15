@@ -19,6 +19,7 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -34,7 +35,7 @@ namespace FinanceSharp.Indicators {
 
         private readonly Identity _price;
         private readonly Identity _volume;
-        private CompositeIndicator<IndicatorDataPoint> _vwap;
+        private CompositeIndicator _vwap;
 
         /// <summary>
         /// 	 Initializes a new instance of the VWAP class with the default name and period
@@ -82,9 +83,10 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(TradeBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             _price.Update(input.EndTime, GetTimeWeightedAveragePrice(input));
             _volume.Update(input.EndTime, input.Volume);
             return _vwap.Current.Value;

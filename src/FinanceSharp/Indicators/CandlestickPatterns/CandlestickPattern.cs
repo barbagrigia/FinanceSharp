@@ -18,12 +18,15 @@
 
 using System;
 using FinanceSharp.Data.Market;
+using FinanceSharp.Data.Rolling;
+using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
     /// 	 Abstract base class for a candlestick pattern indicator
     /// </summary>
-    public abstract class CandlestickPattern : WindowIndicator<IBaseDataBar> {
+    public abstract class CandlestickPattern : WindowIndicator {
         /// <summary>
         /// 	 Creates a new <see cref="CandlestickPattern"/> with the specified name
         /// </summary>
@@ -57,6 +60,30 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         }
 
         /// <summary>
+        /// 	 Returns the candle color of a candle
+        /// </summary>
+        /// <param name="tradeBar">The input candle</param>
+        protected static CandleColor GetCandleColor(Tensor<double> tradeBar) {
+            return (tradeBar.Close >= tradeBar.Open).all() ? CandleColor.White : CandleColor.Black;
+        }
+
+        /// <summary>
+        /// 	 Returns the distance between the close and the open of a candle
+        /// </summary>
+        /// <param name="tradeBar">The input candle</param>
+        protected static Tensor<double> GetRealBody(Tensor<double> tradeBar) {
+            return (tradeBar.Close - tradeBar.Open).abs();
+        }
+
+        /// <summary>
+        /// 	 Returns the full range of the candle
+        /// </summary>
+        /// <param name="tradeBar">The input candle</param>
+        protected static Tensor<double> GetHighLowRange(Tensor<double> tradeBar) {
+            return tradeBar.High - tradeBar.Low;
+        }
+
+        /// <summary>
         /// 	 Returns the range of a candle
         /// </summary>
         /// <param name="type">The type of setting to use</param>
@@ -74,6 +101,27 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
 
                 default:
                     return 0d;
+            }
+        }
+
+        /// <summary>
+        /// 	 Returns the range of a candle
+        /// </summary>
+        /// <param name="type">The type of setting to use</param>
+        /// <param name="tradeBar">The input candle</param>
+        protected static Tensor<double> GetCandleRange(CandleSettingType type, Tensor<double> tradeBar) {
+            switch (CandleSettings.Get(type).RangeType) {
+                case CandleRangeType.RealBody:
+                    return GetRealBody(tradeBar);
+
+                case CandleRangeType.HighLow:
+                    return GetHighLowRange(tradeBar);
+
+                case CandleRangeType.Shadows:
+                    return new Tensor<double>(GetUpperShadow(tradeBar) + GetLowerShadow(tradeBar));
+
+                default:
+                    return Constants.Zero;
             }
         }
 
@@ -122,6 +170,22 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         }
 
         /// <summary>
+        /// 	 Returns the range of the candle's lower shadow
+        /// </summary>
+        /// <param name="tradeBar">The input candle</param>
+        protected static Tensor<double> GetLowerShadow(Tensor<double> tradeBar) {
+            return (tradeBar.Close >= tradeBar.Open ? tradeBar.Open : tradeBar.Close) - tradeBar.Low;
+        }
+
+        /// <summary>
+        /// 	 Returns the range of the candle's upper shadow
+        /// </summary>
+        /// <param name="tradeBar">The input candle</param>
+        protected static Tensor<double> GetUpperShadow(Tensor<double> tradeBar) {
+            return tradeBar.High - (tradeBar.Close >= tradeBar.Open ? tradeBar.Close : tradeBar.Open);
+        }
+
+        /// <summary>
         /// 	 Returns the average range of the previous candles
         /// </summary>
         /// <param name="type">The type of setting to use</param>
@@ -134,5 +198,6 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                    (defaultSetting.AveragePeriod != 0 ? sum / defaultSetting.AveragePeriod : GetCandleRange(type, tradeBar)) /
                    (defaultSetting.RangeType == CandleRangeType.Shadows ? 2.0d : 1.0d);
         }
+
     }
 }

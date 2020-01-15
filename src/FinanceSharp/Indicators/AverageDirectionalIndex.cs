@@ -19,6 +19,8 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -32,14 +34,14 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     public class AverageDirectionalIndex : BarIndicator {
         private readonly int _period;
-        private readonly IndicatorBase<IBaseDataBar> _trueRange;
-        private readonly IndicatorBase<IBaseDataBar> _directionalMovementPlus;
-        private readonly IndicatorBase<IBaseDataBar> _directionalMovementMinus;
-        private readonly IndicatorBase<IndicatorDataPoint> _smoothedTrueRange;
-        private readonly IndicatorBase<IndicatorDataPoint> _smoothedDirectionalMovementPlus;
-        private readonly IndicatorBase<IndicatorDataPoint> _smoothedDirectionalMovementMinus;
-        private readonly IndicatorBase<IndicatorDataPoint> _averageDirectionalIndex;
-        private IBaseDataBar _previousInput;
+        private readonly IndicatorBase _trueRange;
+        private readonly IndicatorBase _directionalMovementPlus;
+        private readonly IndicatorBase _directionalMovementMinus;
+        private readonly IndicatorBase _smoothedTrueRange;
+        private readonly IndicatorBase _smoothedDirectionalMovementPlus;
+        private readonly IndicatorBase _smoothedDirectionalMovementMinus;
+        private readonly IndicatorBase _averageDirectionalIndex;
+        private Tensor<double> _previousInput;
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -52,7 +54,7 @@ namespace FinanceSharp.Indicators {
         /// <value>
         /// 	 The index of the Plus Directional Indicator.
         /// </value>
-        public IndicatorBase<IndicatorDataPoint> PositiveDirectionalIndex { get; }
+        public IndicatorBase PositiveDirectionalIndex { get; }
 
         /// <summary>
         /// 	 Gets the index of the Minus Directional Indicator
@@ -60,7 +62,7 @@ namespace FinanceSharp.Indicators {
         /// <value>
         /// 	 The index of the Minus Directional Indicator.
         /// </value>
-        public IndicatorBase<IndicatorDataPoint> NegativeDirectionalIndex { get; }
+        public IndicatorBase NegativeDirectionalIndex { get; }
 
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
@@ -83,29 +85,29 @@ namespace FinanceSharp.Indicators {
             : base(name) {
             _period = period;
 
-            _trueRange = new FunctionalIndicator<IBaseDataBar>(name + "_TrueRange",
+            _trueRange = new FunctionalIndicator(name + "_TrueRange",
                 ComputeTrueRange,
                 isReady => _previousInput != null
             );
 
-            _directionalMovementPlus = new FunctionalIndicator<IBaseDataBar>(name + "_PositiveDirectionalMovement",
+            _directionalMovementPlus = new FunctionalIndicator(name + "_PositiveDirectionalMovement",
                 ComputePositiveDirectionalMovement,
                 isReady => _previousInput != null
             );
 
-            _directionalMovementMinus = new FunctionalIndicator<IBaseDataBar>(name + "_NegativeDirectionalMovement",
+            _directionalMovementMinus = new FunctionalIndicator(name + "_NegativeDirectionalMovement",
                 ComputeNegativeDirectionalMovement,
                 isReady => _previousInput != null
             );
 
-            PositiveDirectionalIndex = new FunctionalIndicator<IndicatorDataPoint>(name + "_PositiveDirectionalIndex",
-                input => {
+            PositiveDirectionalIndex = new FunctionalIndicator(name + "_PositiveDirectionalIndex",
+                (time, input) => {
                     // Computes the Plus Directional Indicator(+DI period).
                     if (_smoothedTrueRange != 0 && _smoothedDirectionalMovementPlus.IsReady) {
-                        return 100d * _smoothedDirectionalMovementPlus / _smoothedTrueRange;
+                        return (Tensor<double>) 100d * _smoothedDirectionalMovementPlus / _smoothedTrueRange;
                     }
 
-                    return 0d;
+                    return Constants.Zero;
                 },
                 positiveDirectionalIndex => _smoothedDirectionalMovementPlus.IsReady,
                 () => {
@@ -114,14 +116,14 @@ namespace FinanceSharp.Indicators {
                 }
             );
 
-            NegativeDirectionalIndex = new FunctionalIndicator<IndicatorDataPoint>(name + "_NegativeDirectionalIndex",
-                input => {
+            NegativeDirectionalIndex = new FunctionalIndicator(name + "_NegativeDirectionalIndex",
+                (time, input) => {
                     // Computes the Minus Directional Indicator(-DI period).
                     if (_smoothedTrueRange != 0 && _smoothedDirectionalMovementMinus.IsReady) {
                         return 100d * _smoothedDirectionalMovementMinus / _smoothedTrueRange;
                     }
 
-                    return 0d;
+                    return Constants.Zero;
                 },
                 negativeDirectionalIndex => _smoothedDirectionalMovementMinus.IsReady,
                 () => {
@@ -130,28 +132,28 @@ namespace FinanceSharp.Indicators {
                 }
             );
 
-            _smoothedTrueRange = new FunctionalIndicator<IndicatorDataPoint>(name + "_SmoothedTrueRange",
-                input => {
+            _smoothedTrueRange = new FunctionalIndicator(name + "_SmoothedTrueRange",
+                (time, input) => {
                     // Computes the Smoothed True Range value.
-                    var value = Samples > _period + 1 ? _smoothedTrueRange / _period : 0d;
+                    var value = Samples > _period + 1 ? _smoothedTrueRange / _period : Constants.Zero;
                     return _smoothedTrueRange + _trueRange - value;
                 },
                 isReady => Samples > period
             );
 
-            _smoothedDirectionalMovementPlus = new FunctionalIndicator<IndicatorDataPoint>(name + "_SmoothedDirectionalMovementPlus",
-                input => {
+            _smoothedDirectionalMovementPlus = new FunctionalIndicator(name + "_SmoothedDirectionalMovementPlus",
+                (time, input) => {
                     // Computes the Smoothed Directional Movement Plus value.
-                    var value = Samples > _period + 1 ? _smoothedDirectionalMovementPlus / _period : 0d;
+                    var value = Samples > _period + 1 ? _smoothedDirectionalMovementPlus / _period : Constants.Zero;
                     return _smoothedDirectionalMovementPlus + _directionalMovementPlus - value;
                 },
                 isReady => Samples > period
             );
 
-            _smoothedDirectionalMovementMinus = new FunctionalIndicator<IndicatorDataPoint>(name + "_SmoothedDirectionalMovementMinus",
-                input => {
+            _smoothedDirectionalMovementMinus = new FunctionalIndicator(name + "_SmoothedDirectionalMovementMinus",
+                (time, input) => {
                     // Computes the Smoothed Directional Movement Minus value.
-                    var value = Samples > _period + 1 ? _smoothedDirectionalMovementMinus / _period : 0d;
+                    var value = Samples > _period + 1 ? _smoothedDirectionalMovementMinus / _period : Constants.Zero;
                     return _smoothedDirectionalMovementMinus + _directionalMovementMinus - value;
                 },
                 isReady => Samples > period
@@ -165,14 +167,14 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private double ComputeTrueRange(IBaseDataBar input) {
-            if (_previousInput == null) return 0d;
+        private Tensor<double> ComputeTrueRange(IBaseDataBar input) {
+            if (_previousInput == null) return Constants.Zero;
 
             var range1 = input.High - input.Low;
-            var range2 = Math.Abs(input.High - _previousInput.Close);
-            var range3 = Math.Abs(input.Low - _previousInput.Close);
+            var range2 = torch.abs(input.High - _previousInput.Close);
+            var range3 = torch.abs(input.Low - _previousInput.Close);
 
-            return Math.Max(range1, Math.Max(range2, range3));
+            return (Tensor<double>) torch.max((Tensor<double>) range1, torch.max(range2, range3));
         }
 
         /// <summary>
@@ -208,25 +210,26 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
-            _trueRange.Update(input);
-            _directionalMovementPlus.Update(input);
-            _directionalMovementMinus.Update(input);
-            _smoothedTrueRange.Update(Current);
-            _smoothedDirectionalMovementPlus.Update(Current);
-            _smoothedDirectionalMovementMinus.Update(Current);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _trueRange.Update(time, input);
+            _directionalMovementPlus.Update(time, input);
+            _directionalMovementMinus.Update(time, input);
+            _smoothedTrueRange.Update(time, Current);
+            _smoothedDirectionalMovementPlus.Update(time, Current);
+            _smoothedDirectionalMovementMinus.Update(time, Current);
             _previousInput = input;
 
-            PositiveDirectionalIndex.Update(Current);
-            NegativeDirectionalIndex.Update(Current);
+            PositiveDirectionalIndex.Update(time, Current);
+            NegativeDirectionalIndex.Update(time, Current);
 
             var diff = Math.Abs(PositiveDirectionalIndex - NegativeDirectionalIndex);
             var sum = PositiveDirectionalIndex + NegativeDirectionalIndex;
-            if (sum == 0) return 50d;
+            if (sum == 0) return (Tensor) 50d;
 
-            _averageDirectionalIndex.Update(input.EndTime, 100d * diff / sum);
+            _averageDirectionalIndex.Update(time, 100d * diff / sum);
 
             return _averageDirectionalIndex;
         }

@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -29,7 +30,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the standard deviation
         /// </summary>
-        private readonly IndicatorBase<IndicatorDataPoint> _standardDeviation;
+        private readonly IndicatorBase _standardDeviation;
 
         /// <summary>
         /// 	 Gets the linear regression
@@ -39,22 +40,22 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the upper channel (linear regression + k * stdDev)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> UpperChannel { get; }
+        public IndicatorBase UpperChannel { get; }
 
         /// <summary>
         /// 	 Gets the lower channel (linear regression - k * stdDev)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> LowerChannel { get; }
+        public IndicatorBase LowerChannel { get; }
 
         /// <summary>
         /// 	 The point where the regression line crosses the y-axis (price-axis)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Intercept => LinearRegression.Intercept;
+        public IndicatorBase Intercept => LinearRegression.Intercept;
 
         /// <summary>
         /// 	 The regression line slope
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Slope => LinearRegression.Slope;
+        public IndicatorBase Slope => LinearRegression.Slope;
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -92,13 +93,14 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _standardDeviation.Update(input);
-            LinearRegression.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _standardDeviation.Update(TODO, input);
+            LinearRegression.Update(TODO, input);
 
             return LinearRegression.Current;
         }

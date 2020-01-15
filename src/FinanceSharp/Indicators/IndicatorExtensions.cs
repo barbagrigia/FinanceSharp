@@ -19,24 +19,14 @@
 using System;
 using System.Globalization;
 using FinanceSharp.Data;
+using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Provides extension methods for Indicator
     /// </summary>
     public static class IndicatorExtensions {
-        /// <summary>
-        /// 	 Updates the state of this indicator with the given value and returns true
-        /// 	 if this indicator is ready, false otherwise
-        /// </summary>
-        /// <param name="indicator">The indicator to be updated</param>
-        /// <param name="time">The time associated with the value</param>
-        /// <param name="value">The value to use to update this indicator</param>
-        /// <returns>True if this indicator is ready, false otherwise</returns>
-        public static bool Update(this IndicatorBase<IndicatorDataPoint> indicator, DateTime time, double value) {
-            return indicator.Update(new IndicatorDataPoint(time, value));
-        }
-
         /// <summary>
         /// 	 Configures the second indicator to receive automatic updates from the first by attaching an event handler
         /// 	 to first.DataConsolidated
@@ -47,10 +37,10 @@ namespace FinanceSharp.Indicators {
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
         public static T Of<T>(this T second, IIndicator first, bool waitForFirstToReady = true)
             where T : IIndicator {
-            first.Updated += (sender, consolidated) => {
+            first.Updated += (sender, time, consolidated) => {
                 // only send the data along if we're ready
                 if (!waitForFirstToReady || first.IsReady) {
-                    second.Update(consolidated);
+                    second.Update(time, consolidated);
                 }
             };
 
@@ -64,28 +54,28 @@ namespace FinanceSharp.Indicators {
         /// <param name="weight">Indicator that provides the average weights</param>
         /// <param name="period">Average period</param>
         /// <returns>Indicator that results of the average of first by weights given by second</returns>
-        public static CompositeIndicator<IndicatorDataPoint> WeightedBy<T, TWeight>(this IndicatorBase<T> value, TWeight weight, int period)
+        public static CompositeIndicator WeightedBy<T, TWeight>(this IndicatorBase value, TWeight weight, int period)
             where T : IBaseData
-            where TWeight : IndicatorBase<IndicatorDataPoint> {
+            where TWeight : IndicatorBase {
             var x = new WindowIdentity(period);
             var y = new WindowIdentity(period);
             var numerator = new Sum("Sum_xy", period);
             var denominator = new Sum("Sum_y", period);
 
-            value.Updated += (sender, consolidated) => {
-                x.Update(consolidated);
+            value.Updated += (sender, time, consolidated) => {
+                x.Update((long) time, (Tensor<double>) consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(consolidated.Time, consolidated.Value * y.Current.Value);
+                    numerator.Update(time, new Tensor<double>(consolidated * y.Current));
                 }
             };
 
-            weight.Updated += (sender, consolidated) => {
-                y.Update(consolidated);
+            weight.Updated += (sender, time, consolidated) => {
+                y.Update((long) time, (Tensor<double>) consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(consolidated.Time, consolidated.Value * x.Current.Value);
+                    numerator.Update(time, new Tensor<double>(consolidated * x.Current));
                 }
 
-                denominator.Update(consolidated);
+                denominator.Update((long) time, (Tensor<double>) consolidated);
             };
 
             return numerator.Over(denominator);
@@ -100,9 +90,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The addend</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator<T> Plus<T>(this IndicatorBase<T> left, double constant)
-            where T : IBaseData {
-            var constantIndicator = new ConstantIndicator<T>(constant.ToString(CultureInfo.InvariantCulture), constant);
+        public static CompositeIndicator Plus(this IndicatorBase left, double constant) {
+            var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
             return left.Plus(constantIndicator);
         }
 
@@ -115,9 +104,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator<T> Plus<T>(this IndicatorBase<T> left, IndicatorBase<T> right)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(left, right, (l, r) => l + r);
+        public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right) {
+            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l + r);
         }
 
         /// <summary>
@@ -130,9 +118,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator<T> Plus<T>(this IndicatorBase<T> left, IndicatorBase<T> right, string name)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(name, left, right, (l, r) => l + r);
+        public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right, string name) {
+            return new CompositeIndicator(name, left, right, (l, r) => (Tensor<double>) l + r);
         }
 
         /// <summary>
@@ -144,9 +131,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The subtrahend</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator<T> Minus<T>(this IndicatorBase<T> left, double constant)
-            where T : IBaseData {
-            var constantIndicator = new ConstantIndicator<T>(constant.ToString(CultureInfo.InvariantCulture), constant);
+        public static CompositeIndicator Minus(this IndicatorBase left, double constant) {
+            var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
             return left.Minus(constantIndicator);
         }
 
@@ -159,9 +145,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator<T> Minus<T>(this IndicatorBase<T> left, IndicatorBase<T> right)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(left, right, (l, r) => l - r);
+        public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right) {
+            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l - r);
         }
 
         /// <summary>
@@ -174,9 +159,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator<T> Minus<T>(this IndicatorBase<T> left, IndicatorBase<T> right, string name)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(name, left, right, (l, r) => l - r);
+        public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right, string name) {
+            return new CompositeIndicator(name, left, right, (l, r) => (Tensor<double>) l - r);
         }
 
         /// <summary>
@@ -188,9 +172,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The constant value denominator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator<T> Over<T>(this IndicatorBase<T> left, double constant)
-            where T : IBaseData {
-            var constantIndicator = new ConstantIndicator<T>(constant.ToString(CultureInfo.InvariantCulture), constant);
+        public static CompositeIndicator Over(this IndicatorBase left, double constant) {
+            var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
             return left.Over(constantIndicator);
         }
 
@@ -203,9 +186,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator<T> Over<T>(this IndicatorBase<T> left, IndicatorBase<T> right)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(left, right, (l, r) => r == 0d ? new IndicatorResult(0d, IndicatorStatus.MathError) : new IndicatorResult(l / r));
+        public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right) {
+            return new CompositeIndicator(left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((Tensor<double>) ((Tensor<double>) l / r)));
         }
 
         /// <summary>
@@ -218,9 +200,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator<T> Over<T>(this IndicatorBase<T> left, IndicatorBase<T> right, string name)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(name, left, right, (l, r) => r == 0d ? new IndicatorResult(0d, IndicatorStatus.MathError) : new IndicatorResult(l / r));
+        public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right, string name) {
+            return new CompositeIndicator(name, left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((Tensor<double>) ((Tensor<double>) l / r)));
         }
 
         /// <summary>
@@ -232,9 +213,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The constant value to multiple by</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator<T> Times<T>(this IndicatorBase<T> left, double constant)
-            where T : IBaseData {
-            var constantIndicator = new ConstantIndicator<T>(constant.ToString(CultureInfo.InvariantCulture), constant);
+        public static CompositeIndicator Times(this IndicatorBase left, double constant) {
+            var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
             return left.Times(constantIndicator);
         }
 
@@ -247,9 +227,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator<T> Times<T>(this IndicatorBase<T> left, IndicatorBase<T> right)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(left, right, (l, r) => l * r);
+        public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right) {
+            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l * r);
         }
 
         /// <summary>
@@ -262,9 +241,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator<T> Times<T>(this IndicatorBase<T> left, IndicatorBase<T> right, string name)
-            where T : IBaseData {
-            return new CompositeIndicator<T>(name, left, right, (l, r) => l * r);
+        public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right, string name) {
+            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) ((Tensor<double>) l * r));
         }
 
         /// <summary>Creates a new ExponentialMovingAverage indicator with the specified period and smoothingFactor from the left indicator
@@ -274,8 +252,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="smoothingFactor">The percentage of data from the previous value to be carried into the next value</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if left.IsReady returns true, false to alway send updates</param>
         /// <returns>A reference to the ExponentialMovingAverage indicator to allow for method chaining</returns>
-        public static ExponentialMovingAverage EMA<T>(this IndicatorBase<T> left, int period, double? smoothingFactor = null, bool waitForFirstToReady = true)
-            where T : IBaseData {
+        public static ExponentialMovingAverage EMA(this IndicatorBase left, int period, double? smoothingFactor = null, bool waitForFirstToReady = true) {
             double k = smoothingFactor.HasValue ? k = smoothingFactor.Value : ExponentialMovingAverage.SmoothingFactorDefault(period);
             return new ExponentialMovingAverage($"EMA{period}_Of_{left.Name}", period, k).Of(left, waitForFirstToReady);
         }
@@ -296,8 +273,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period of the Minimum indicator</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if left.IsReady returns true, false to alway send updates</param>
         /// <returns>A reference to the Minimum indicator to allow for method chaining</returns>
-        public static Minimum MIN<T>(this IndicatorBase<T> left, int period, bool waitForFirstToReady = true)
-            where T : IBaseData {
+        public static Minimum MIN(this IndicatorBase left, int period, bool waitForFirstToReady = true) {
             return new Minimum($"MIN{period}_Of_{left.Name}", period).Of(left, waitForFirstToReady);
         }
 
@@ -307,8 +283,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period of the SMA</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <returns>The reference to the SimpleMovingAverage indicator to allow for method chaining</returns>
-        public static SimpleMovingAverage SMA<T>(this IndicatorBase<T> left, int period, bool waitForFirstToReady = true)
-            where T : IBaseData {
+        public static SimpleMovingAverage SMA(this IndicatorBase left, int period, bool waitForFirstToReady = true) {
             return new SimpleMovingAverage($"SMA{period}_Of_{left.Name}", period).Of(left, waitForFirstToReady);
         }
     }

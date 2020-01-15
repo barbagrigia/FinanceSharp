@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -26,7 +27,7 @@ namespace FinanceSharp.Indicators {
     /// - log returns are useful for identifying price convergence/divergence in a given period
     /// - logr = log (current price / last price in period)
     /// </summary>
-    public class LogReturn : WindowIndicator<IndicatorDataPoint> {
+    public class LogReturn : WindowIndicator {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
@@ -52,9 +53,10 @@ namespace FinanceSharp.Indicators {
         /// - logr = log (current price / last price in period)
         /// </summary>
         /// <param name="window">The window of data held in this indicator</param>
+        /// <param name="time"></param>
         /// <param name="input">The input value to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             var valuef = input;
 
             var value0 = window.Samples <= window.Size

@@ -26,7 +26,7 @@ namespace FinanceSharp.Data.Market {
     /// </summary>
     public class QuoteBar : BaseData, IBaseDataBar {
         // scale factor used in QC equity/forex data files
-        private const double _scaleFactor = 1 / 10000d;
+        private const double _scaleFactor = 1 / 1000.0d;
 
         /// <summary>
         /// 	 Average bid size
@@ -54,7 +54,7 @@ namespace FinanceSharp.Data.Market {
         public double Open {
             get {
                 if (Bid != null && Ask != null) {
-                    if (Bid.Open != 0d && Ask.Open != 0d)
+                    if (Bid.Open != Constants.Zero && Ask.Open != Constants.Zero)
                         return (Bid.Open + Ask.Open) / 2d;
 
                     if (Bid.Open != 0)
@@ -63,7 +63,7 @@ namespace FinanceSharp.Data.Market {
                     if (Ask.Open != 0)
                         return Ask.Open;
 
-                    return 0d;
+                    return Constants.Zero;
                 }
 
                 if (Bid != null) {
@@ -74,7 +74,7 @@ namespace FinanceSharp.Data.Market {
                     return Ask.Open;
                 }
 
-                return 0d;
+                return Constants.Zero;
             }
         }
 
@@ -84,7 +84,7 @@ namespace FinanceSharp.Data.Market {
         public double High {
             get {
                 if (Bid != null && Ask != null) {
-                    if (Bid.High != 0d && Ask.High != 0d)
+                    if (Bid.High != Constants.Zero && Ask.High != Constants.Zero)
                         return (Bid.High + Ask.High) / 2d;
 
                     if (Bid.High != 0)
@@ -93,7 +93,7 @@ namespace FinanceSharp.Data.Market {
                     if (Ask.High != 0)
                         return Ask.High;
 
-                    return 0d;
+                    return Constants.Zero;
                 }
 
                 if (Bid != null) {
@@ -104,7 +104,7 @@ namespace FinanceSharp.Data.Market {
                     return Ask.High;
                 }
 
-                return 0d;
+                return Constants.Zero;
             }
         }
 
@@ -114,7 +114,7 @@ namespace FinanceSharp.Data.Market {
         public double Low {
             get {
                 if (Bid != null && Ask != null) {
-                    if (Bid.Low != 0d && Ask.Low != 0d)
+                    if (Bid.Low != Constants.Zero && Ask.Low != Constants.Zero)
                         return (Bid.Low + Ask.Low) / 2d;
 
                     if (Bid.Low != 0)
@@ -123,7 +123,7 @@ namespace FinanceSharp.Data.Market {
                     if (Ask.Low != 0)
                         return Ask.Low;
 
-                    return 0d;
+                    return Constants.Zero;
                 }
 
                 if (Bid != null) {
@@ -134,7 +134,7 @@ namespace FinanceSharp.Data.Market {
                     return Ask.Low;
                 }
 
-                return 0d;
+                return Constants.Zero;
             }
         }
 
@@ -144,7 +144,7 @@ namespace FinanceSharp.Data.Market {
         public double Close {
             get {
                 if (Bid != null && Ask != null) {
-                    if (Bid.Close != 0d && Ask.Close != 0d)
+                    if (Bid.Close != Constants.Zero && Ask.Close != Constants.Zero)
                         return (Bid.Close + Ask.Close) / 2d;
 
                     if (Bid.Close != 0)
@@ -153,7 +153,7 @@ namespace FinanceSharp.Data.Market {
                     if (Ask.Close != 0)
                         return Ask.Close;
 
-                    return 0d;
+                    return Constants.Zero;
                 }
 
                 if (Bid != null) {
@@ -268,7 +268,7 @@ namespace FinanceSharp.Data.Market {
         /// </summary>
         /// <returns><see cref="TradeBars"/></returns>
         public TradeBar Collapse() {
-            return new TradeBar(Time, Open, High, Low, Close, 0d) {
+            return new TradeBar(Time, Open, High, Low, Close, Constants.Zero) {
                 Period = Period
             };
         }

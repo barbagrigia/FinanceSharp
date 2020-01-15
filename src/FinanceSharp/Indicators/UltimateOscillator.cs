@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -78,36 +79,37 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
-            _trueRange.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _trueRange.Update(TODO, input);
 
             if (Samples == 1) {
                 _previousInput = input;
-                return 50d;
+                return 5.0d;
             }
 
-            var buyingPressure = new IndicatorDataPoint {Value = input.Close - Math.Min(input.Low, _previousInput.Close)};
+            var buyingPressure = new Tensor<double> {Value = input.Close - Math.Min(input.Low, _previousInput.Close)};
 
-            _sumBuyingPressure1.Update(buyingPressure);
-            _sumBuyingPressure2.Update(buyingPressure);
-            _sumBuyingPressure3.Update(buyingPressure);
+            _sumBuyingPressure1.Update((long) TODO, (Tensor<double>) buyingPressure);
+            _sumBuyingPressure2.Update((long) TODO, (Tensor<double>) buyingPressure);
+            _sumBuyingPressure3.Update((long) TODO, (Tensor<double>) buyingPressure);
 
-            _sumTrueRange1.Update(_trueRange.Current);
-            _sumTrueRange2.Update(_trueRange.Current);
-            _sumTrueRange3.Update(_trueRange.Current);
+            _sumTrueRange1.Update(TODO, _trueRange.Current);
+            _sumTrueRange2.Update(TODO, _trueRange.Current);
+            _sumTrueRange3.Update(TODO, _trueRange.Current);
 
             _previousInput = input;
 
             if (!IsReady)
-                return 50d;
+                return 5.0d;
 
             var average1 = _sumBuyingPressure1 / _sumTrueRange1;
             var average2 = _sumBuyingPressure2 / _sumTrueRange2;
             var average3 = _sumBuyingPressure3 / _sumTrueRange3;
 
-            return 100d * (4 * average1 + 2 * average2 + average3) / 7;
+            return 10.0d * (4 * average1 + 2 * average2 + average3) / 7;
         }
 
         /// <summary>

@@ -16,6 +16,8 @@
  * limitations under the License.
 */
 
+using Torch;
+
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the result of an indicator's calculations
@@ -24,7 +26,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 The indicator output value
         /// </summary>
-        public double Value { get; private set; }
+        public Tensor<double> Value { get; private set; }
 
         /// <summary>
         /// 	 The indicator status
@@ -36,7 +38,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="value">The value output by the indicator</param>
         /// <param name="status">The status returned by the indicator</param>
-        public IndicatorResult(double value, IndicatorStatus status = IndicatorStatus.Success) {
+        public IndicatorResult(Tensor<double> value, IndicatorStatus status = IndicatorStatus.Success) {
             Value = value;
             Status = status;
         }
@@ -48,8 +50,30 @@ namespace FinanceSharp.Indicators {
         /// 	 This method is provided for backwards compatibility
         /// </remarks>
         /// <param name="value">The double value to be converted into an <see cref="IndicatorResult"/></param>
-        public static implicit operator IndicatorResult(double value) {
+        public static implicit operator IndicatorResult(Tensor value) {
+            return new IndicatorResult(new Tensor<double>(value));
+        }
+
+        /// <summary>
+        /// 	 Converts the specified double value into a successful indicator result
+        /// </summary>
+        /// <remarks>
+        /// 	 This method is provided for backwards compatibility
+        /// </remarks>
+        /// <param name="value">The double value to be converted into an <see cref="IndicatorResult"/></param>
+        public static implicit operator IndicatorResult(Tensor<double> value) {
             return new IndicatorResult(value);
+        }
+
+        /// <summary>
+        /// 	 Converts the specified double value into a successful indicator result
+        /// </summary>
+        /// <remarks>
+        /// 	 This method is provided for backwards compatibility
+        /// </remarks>
+        /// <param name="value">The double value to be converted into an <see cref="IndicatorResult"/></param>
+        public static implicit operator IndicatorResult(double value) {
+            return new IndicatorResult((Tensor<double>) value);
         }
     }
 }

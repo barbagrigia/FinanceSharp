@@ -212,7 +212,7 @@ namespace FinanceSharp.Data.Market {
         }
 
         private static double GetScaleFactor(SecurityType securityType) {
-            return securityType == SecurityType.Equity || securityType == SecurityType.Option ? 10000d : 1;
+            return securityType == SecurityType.Equity || securityType == SecurityType.Option ? 1000.0d : 1;
         }
     }
 }

@@ -18,16 +18,17 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents the traditional simple moving average indicator (SMA)
     /// </summary>
-    public class SimpleMovingAverage : WindowIndicator<IndicatorDataPoint> {
+    public class SimpleMovingAverage : WindowIndicator {
         /// <summary>
         /// 	 A rolling sum for computing the average for the given period
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> RollingSum { get; }
+        public IndicatorBase RollingSum { get; }
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -63,9 +64,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value for this indicator from the given state.
         /// </summary>
         /// <param name="window">The window of data held in this indicator</param>
+        /// <param name="time"></param>
         /// <param name="input">The input value to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             RollingSum.Update(input.Time, input.Value);
             return RollingSum.Current.Value / window.Count;
         }

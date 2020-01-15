@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -62,19 +63,20 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
-            _tr.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _tr.Update(time, input);
 
             if (!IsReady) {
-                _atr.Update(input);
+                _atr.Update(time, input);
                 return input.Close != 0 ? _atr / input.Close * 100 : 0d;
             }
 
             if (Samples == _period + 1) {
                 // first output value is SMA of TrueRange
-                _atr.Update(input);
+                _atr.Update(TODO, input);
                 _lastAtrValue = _atr;
             } else {
                 // next TrueRange values are smoothed using Wilder's approach

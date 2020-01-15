@@ -20,16 +20,17 @@ using System;
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the n-period mean absolute deviation.
     /// </summary>
-    public class MeanAbsoluteDeviation : WindowIndicator<IndicatorDataPoint> {
+    public class MeanAbsoluteDeviation : WindowIndicator {
         /// <summary>
         /// 	 Gets the mean used to compute the deviation
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Mean { get; }
+        public IndicatorBase Mean { get; }
 
         /// <summary>
         /// 	 Initializes a new instance of the MeanAbsoluteDeviation class with the specified period.
@@ -65,12 +66,13 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
-        /// <param name="input">The input given to the indicator</param>
         /// <param name="window">The window for the input history</param>
+        /// <param name="time"></param>
+        /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
-            Mean.Update(input);
-            return Samples < 2 ? 0d : window.Average(v => Math.Abs(v - Mean.Current.Value));
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+            Mean.Update((long) TODO, (Tensor<double>) input);
+            return Samples < 2 ? Constants.Zero : window.Average(v => Math.Abs(v - Mean.Current.Value));
         }
 
         /// <summary>

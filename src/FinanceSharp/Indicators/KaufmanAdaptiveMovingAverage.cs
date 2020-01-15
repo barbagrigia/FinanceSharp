@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -26,8 +27,8 @@ namespace FinanceSharp.Indicators {
     /// 	 The Kaufman Adaptive Moving Average is calculated as explained here:
     /// 	 http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:kaufman_s_adaptive_moving_average
     /// </summary>
-    public class KaufmanAdaptiveMovingAverage : WindowIndicator<IndicatorDataPoint> {
-        private const double _constMax = 2d / (30d + 1d);
+    public class KaufmanAdaptiveMovingAverage : WindowIndicator {
+        private const double _constMax = 2d / (3.0d + 1d);
         private const double _constDiff = 2d / (2d + 1d) - _constMax;
 
         private double _sumRoc1;
@@ -63,10 +64,11 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
-        /// <param name="input">The input given to the indicator</param>
         /// <param name="window">The window for the input history</param>
+        /// <param name="time"></param>
+        /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             if (Samples < Period) {
                 if (Samples > 1) {
                     _sumRoc1 += Math.Abs(input.Value - window[1].Value);

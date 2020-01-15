@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -35,7 +36,7 @@ namespace FinanceSharp.Indicators {
     /// 	 The RollingWindow of inputs is created when the indicator is created.
     /// 	 A RollingWindow of LWMAs is not saved.  That is up to the caller.
     /// </summary>
-    public class LinearWeightedMovingAverage : WindowIndicator<IndicatorDataPoint> {
+    public class LinearWeightedMovingAverage : WindowIndicator {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
@@ -60,15 +61,16 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value for this indicator from the given state.
         /// </summary>
         /// <param name="window">The window of data held in this indicator</param>
+        /// <param name="time"></param>
         /// <param name="input">The input value to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             // our first data point just return identity
             if (window.Size == 1) {
                 return input.Value;
             }
 
-            var numerator = 0d;
+            var numerator = Constants.Zero;
             var denominator = 0;
             var index = window.Size;
 

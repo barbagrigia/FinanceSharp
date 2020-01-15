@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -24,7 +25,7 @@ namespace FinanceSharp.Indicators {
     /// 	 You can optionally specified a different moving average type to be used in the computation
     /// </summary>
     public class RelativeStrengthIndex : Indicator {
-        private IndicatorDataPoint _previousInput;
+        private Tensor<double> _previousInput;
 
         /// <summary>
         /// 	 Gets the type of indicator used to compute AverageGain and AverageLoss
@@ -34,12 +35,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the EMA for the down days
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> AverageLoss { get; }
+        public IndicatorBase AverageLoss { get; }
 
         /// <summary>
         /// 	 Gets the indicator for average gain
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> AverageGain { get; }
+        public IndicatorBase AverageGain { get; }
 
         /// <summary>
         /// 	 Initializes a new instance of the RelativeStrengthIndex class with the specified name and period
@@ -76,25 +77,26 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             if (_previousInput != null && input.Value >= _previousInput.Value) {
                 AverageGain.Update(input.Time, input.Value - _previousInput.Value);
-                AverageLoss.Update(input.Time, 0d);
+                AverageLoss.Update(input.Time, Constants.Zero);
             } else if (_previousInput != null && input.Value < _previousInput.Value) {
-                AverageGain.Update(input.Time, 0d);
+                AverageGain.Update(input.Time, Constants.Zero);
                 AverageLoss.Update(input.Time, _previousInput.Value - input.Value);
             }
 
             _previousInput = input;
-            if (AverageLoss == 0d) {
+            if (AverageLoss == Constants.Zero) {
                 // all up days is 100
-                return 100d;
+                return 10.0d;
             }
 
             var rs = AverageGain / AverageLoss;
-            return 100d - (100d / (1 + rs));
+            return 10.0d - (10.0d / (1 + rs));
         }
 
         /// <summary>

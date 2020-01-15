@@ -24,7 +24,7 @@ namespace FinanceSharp.Indicators {
     /// 
     /// 	 This type is more of a shim/typedef to reduce the need to refer to things as IndicatorBase&lt;IBaseDataBar&gt;
     /// </summary>
-    public abstract class BarIndicator : IndicatorBase<IBaseDataBar> {
+    public abstract class BarIndicator : IndicatorBase {
         /// <summary>
         /// 	 Creates a new TradeBarIndicator with the specified name
         /// </summary>

@@ -18,6 +18,7 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary> 
@@ -30,22 +31,22 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the middle band of the channel
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> MiddleBand { get; }
+        public IndicatorBase MiddleBand { get; }
 
         /// <summary>
         /// 	 Gets the upper band of the channel
         /// </summary>
-        public IndicatorBase<IBaseDataBar> UpperBand { get; }
+        public IndicatorBase UpperBand { get; }
 
         /// <summary>
         /// 	 Gets the lower band of the channel
         /// </summary>
-        public IndicatorBase<IBaseDataBar> LowerBand { get; }
+        public IndicatorBase LowerBand { get; }
 
         /// <summary>
         /// 	 Gets the average true range
         /// </summary>
-        public IndicatorBase<IBaseDataBar> AverageTrueRange { get; }
+        public IndicatorBase AverageTrueRange { get; }
 
 
         /// <summary>
@@ -74,15 +75,15 @@ namespace FinanceSharp.Indicators {
             MiddleBand = movingAverageType.AsIndicator(name + "_MiddleBand", period);
 
             //Compute Lower Band
-            LowerBand = new FunctionalIndicator<IBaseDataBar>(name + "_LowerBand",
-                input => MiddleBand.IsReady ? MiddleBand - AverageTrueRange * _k : 0d,
+            LowerBand = new FunctionalIndicator(name + "_LowerBand",
+                (time, input) => MiddleBand.IsReady ? MiddleBand - AverageTrueRange * _k : Constants.Zero,
                 lowerBand => MiddleBand.IsReady,
                 () => MiddleBand.Reset()
             );
 
             //Compute Upper Band
-            UpperBand = new FunctionalIndicator<IBaseDataBar>(name + "_UpperBand",
-                input => MiddleBand.IsReady ? MiddleBand + AverageTrueRange * _k : 0d,
+            UpperBand = new FunctionalIndicator(name + "_UpperBand",
+                (time, input) => MiddleBand.IsReady ? MiddleBand + AverageTrueRange * _k : Constants.Zero,
                 upperBand => MiddleBand.IsReady,
                 () => MiddleBand.Reset()
             );
@@ -112,18 +113,19 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value for this indicator from the given state.
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The TradeBar to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
-            AverageTrueRange.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            AverageTrueRange.Update(TODO, input);
 
             var typicalPrice = (input.High + input.Low + input.Close) / 3d;
             MiddleBand.Update(input.Time, typicalPrice);
 
             // poke the upper/lower bands, they actually don't use the input, they compute
             // based on the ATR and the middle band
-            LowerBand.Update(input);
-            UpperBand.Update(input);
+            LowerBand.Update(TODO, input);
+            UpperBand.Update(TODO, input);
             return MiddleBand;
         }
     }

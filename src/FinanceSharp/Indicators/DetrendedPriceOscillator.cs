@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -26,8 +27,8 @@ namespace FinanceSharp.Indicators {
     /// 	 Is estimated as Price {X/2 + 1} periods ago less the X-period simple moving average.
     /// 	 E.g.DPO(20) equals price 11 days ago less the 20-day SMA.
     /// </summary>
-    /// <seealso cref="IndicatorBase{IndicatorDataPoint}" />
-    public class DetrendedPriceOscillator : IndicatorBase<IndicatorDataPoint> {
+    /// <seealso cref="IndicatorBase{Tensor<double>}" />
+    public class DetrendedPriceOscillator : IndicatorBase {
         private readonly Delay _priceLag;
         private readonly SimpleMovingAverage _sma;
 
@@ -73,13 +74,14 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _priceLag.Update(input);
-            _sma.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _priceLag.Update(TODO, input);
+            _sma.Update(TODO, input);
             return _priceLag - _sma;
         }
     }

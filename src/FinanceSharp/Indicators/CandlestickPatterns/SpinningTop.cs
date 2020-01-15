@@ -18,6 +18,7 @@
 
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -62,15 +63,16 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="window">The window of data held in this indicator</param>
-        /// <param name="input">The input given to the indicator</param>
+        /// <param name="time"></param>
+        /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IBaseDataBar> window, IBaseDataBar input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyShortAveragePeriod) {
                     _bodyShortPeriodTotal += GetCandleRange(CandleSettingType.BodyShort, input);
                 }
 
-                return 0d;
+                return Constants.Zero;
             }
 
             double value;
@@ -80,7 +82,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
             )
                 value = (int) GetCandleColor(input);
             else
-                value = 0d;
+                value = Constants.Zero;
 
             // add the current range and subtract the first range: this is done after the pattern recognition 
             // when avgPeriod is not 0, that means "compare with the previous candles" (it excludes the current candle)
@@ -95,7 +97,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _bodyShortPeriodTotal = 0d;
+            _bodyShortPeriodTotal = Constants.Zero;
             base.Reset();
         }
     }

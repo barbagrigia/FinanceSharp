@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -26,7 +27,7 @@ namespace FinanceSharp.Indicators {
     /// 	 current trend. Developed by Donald Dorsey.
     /// </summary>
     /// <seealso cref="IndicatorBase{TradeBar}"/>
-    public class MassIndex : IndicatorBase<TradeBar> {
+    public class MassIndex : IndicatorBase {
         private readonly ExponentialMovingAverage _ema1;
         private readonly ExponentialMovingAverage _ema2;
         private readonly Sum _sum;
@@ -76,18 +77,19 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double Forward(TradeBar input) {
-            _ema1.Update(input.Time, input.High - input.Low);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _ema1.Update(time, input.High - input.Low);
             if (_ema2.IsReady) {
-                _sum.Update(input.Time, _ema1.Current / _ema2.Current);
+                _sum.Update(time, _ema1.Current / _ema2.Current);
             }
 
             if (!_sum.IsReady) {
-                return _sum.Period;
+                return (Tensor<double>) _sum.Period;
             }
 
             return _sum;

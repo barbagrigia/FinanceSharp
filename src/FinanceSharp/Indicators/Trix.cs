@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -65,19 +66,20 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _ema1.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _ema1.Update(TODO, input);
 
             if (_ema1.IsReady)
-                _ema2.Update(_ema1.Current);
+                _ema2.Update(TODO, _ema1.Current);
 
             if (_ema2.IsReady)
-                _ema3.Update(_ema2.Current);
+                _ema3.Update(TODO, _ema2.Current);
 
             if (_ema3.IsReady)
-                _roc.Update(_ema3.Current);
+                _roc.Update(TODO, _ema3.Current);
 
             return _roc;
         }

@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -24,7 +25,7 @@ namespace FinanceSharp.Indicators {
     /// 	 The MidPoint is calculated using the following formula:
     /// 	 MIDPOINT = (Highest Value + Lowest Value) / 2
     /// </summary>
-    public class MidPoint : IndicatorBase<IndicatorDataPoint> {
+    public class MidPoint : IndicatorBase {
         private readonly int _period;
         private readonly Maximum _maximum;
         private readonly Minimum _minimum;
@@ -61,11 +62,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _maximum.Update(input);
-            _minimum.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _maximum.Update(TODO, input);
+            _minimum.Update(TODO, input);
 
             return (_maximum + _minimum) / 2;
         }

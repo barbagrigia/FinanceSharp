@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -37,12 +38,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>This indicator is used to smooth the TrueRange computation</summary>
         /// <remarks>This is not exposed publicly since it is the same value as this indicator, meaning
         /// 	 that this '_smoother' computers the ATR directly, so exposing it publicly would be duplication</remarks>
-        private readonly IndicatorBase<IndicatorDataPoint> _smoother;
+        private readonly IndicatorBase _smoother;
 
         /// <summary>
         /// 	 Gets the true range which is the more volatile calculation to be smoothed by this indicator
         /// </summary>
-        public IndicatorBase<IBaseDataBar> TrueRange { get; }
+        public IndicatorBase TrueRange { get; }
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -66,7 +67,7 @@ namespace FinanceSharp.Indicators {
 
             _smoother = movingAverageType.AsIndicator($"{name}_{movingAverageType}", period);
 
-            TrueRange = new FunctionalIndicator<IBaseDataBar>(name + "_TrueRange", currentBar => {
+            TrueRange = new FunctionalIndicator(name + "_TrueRange", currentBar => {
                     // in our Forward function we'll just call the ComputeTrueRange
                     var nextValue = ComputeTrueRange(_previous, currentBar);
                     _previous = currentBar;
@@ -110,11 +111,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             // compute the true range and then send it to our smoother
-            TrueRange.Update(input);
+            TrueRange.Update(TODO, input);
             _smoother.Update(input.Time, TrueRange);
 
             return _smoother.Current.Value;

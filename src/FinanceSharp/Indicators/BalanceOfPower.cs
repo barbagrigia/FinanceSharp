@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -51,11 +52,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             var range = input.High - input.Low;
-            return range > 0 ? (input.Close - input.Open) / range : 0d;
+            return range > 0 ? (input.Close - input.Open) / range : Constants.Zero;
         }
     }
 }

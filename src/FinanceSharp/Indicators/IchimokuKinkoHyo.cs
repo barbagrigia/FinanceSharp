@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -32,77 +33,77 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 The Tenkan-sen component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Tenkan { get; }
+        public IndicatorBase Tenkan { get; }
 
         /// <summary>
         /// 	 The Kijun-sen component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Kijun { get; }
+        public IndicatorBase Kijun { get; }
 
         /// <summary>
         /// 	 The Senkou A Span component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> SenkouA { get; }
+        public IndicatorBase SenkouA { get; }
 
         /// <summary>
         /// 	 The Senkou B Span component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> SenkouB { get; }
+        public IndicatorBase SenkouB { get; }
 
         /// <summary>
         /// 	 The Chikou Span component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Chikou { get; }
+        public IndicatorBase Chikou { get; }
 
         /// <summary>
         /// 	 The Tenkan-sen Maximum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> TenkanMaximum { get; }
+        public IndicatorBase TenkanMaximum { get; }
 
         /// <summary>
         /// 	 The Tenkan-sen Minimum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> TenkanMinimum { get; }
+        public IndicatorBase TenkanMinimum { get; }
 
         /// <summary>
         /// 	 The Kijun-sen Maximum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> KijunMaximum { get; }
+        public IndicatorBase KijunMaximum { get; }
 
         /// <summary>
         /// 	 The Kijun-sen Minimum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> KijunMinimum { get; }
+        public IndicatorBase KijunMinimum { get; }
 
         /// <summary>
         /// 	 The Senkou B Maximum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> SenkouBMaximum { get; }
+        public IndicatorBase SenkouBMaximum { get; }
 
         /// <summary>
         /// 	 The Senkou B Minimum component of the Ichimoku indicator
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> SenkouBMinimum { get; }
+        public IndicatorBase SenkouBMinimum { get; }
 
         /// <summary>
         /// 	 The Delayed Tenkan Senkou A component of the Ichimoku indicator
         /// </summary>
-        public WindowIndicator<IndicatorDataPoint> DelayedTenkanSenkouA { get; }
+        public WindowIndicator DelayedTenkanSenkouA { get; }
 
         /// <summary>
         /// 	 The Delayed Kijun Senkou A component of the Ichimoku indicator
         /// </summary>
-        public WindowIndicator<IndicatorDataPoint> DelayedKijunSenkouA { get; }
+        public WindowIndicator DelayedKijunSenkouA { get; }
 
         /// <summary>
         /// 	 The Delayed Maximum Senkou B component of the Ichimoku indicator
         /// </summary>
-        public WindowIndicator<IndicatorDataPoint> DelayedMaximumSenkouB { get; }
+        public WindowIndicator DelayedMaximumSenkouB { get; }
 
         /// <summary>
         /// 	 The Delayed Minimum Senkou B component of the Ichimoku indicator
         /// </summary>
-        public WindowIndicator<IndicatorDataPoint> DelayedMinimumSenkouB { get; }
+        public WindowIndicator DelayedMinimumSenkouB { get; }
 
         /// <summary>
         /// 	 Creates a new IchimokuKinkoHyo indicator from the specific periods
@@ -152,36 +153,36 @@ namespace FinanceSharp.Indicators {
             DelayedMinimumSenkouB = new Delay(name + "DelayedMin", senkouBDelayPeriod);
             Chikou = new Delay(name + "_Chikou", senkouADelayPeriod);
 
-            SenkouA = new FunctionalIndicator<IndicatorDataPoint>(
+            SenkouA = new FunctionalIndicator(
                 name + "_SenkouA",
-                input => SenkouA.IsReady ? (DelayedTenkanSenkouA + DelayedKijunSenkouA) / 2 : 0d,
+                (time, input) => SenkouA.IsReady ? (DelayedTenkanSenkouA + DelayedKijunSenkouA) / 2 : Constants.Zero,
                 senkouA => DelayedTenkanSenkouA.IsReady && DelayedKijunSenkouA.IsReady,
                 () => {
                     Tenkan.Reset();
                     Kijun.Reset();
                 });
 
-            SenkouB = new FunctionalIndicator<IndicatorDataPoint>(
+            SenkouB = new FunctionalIndicator(
                 name + "_SenkouB",
-                input => SenkouB.IsReady ? (DelayedMaximumSenkouB + DelayedMinimumSenkouB) / 2 : 0d,
+                (time, input) => SenkouB.IsReady ? (DelayedMaximumSenkouB + DelayedMinimumSenkouB) / 2 : Constants.Zero,
                 senkouA => DelayedMaximumSenkouB.IsReady && DelayedMinimumSenkouB.IsReady,
                 () => {
                     Tenkan.Reset();
                     Kijun.Reset();
                 });
 
-            Tenkan = new FunctionalIndicator<IndicatorDataPoint>(
+            Tenkan = new FunctionalIndicator(
                 name + "_Tenkan",
-                input => Tenkan.IsReady ? (TenkanMaximum + TenkanMinimum) / 2 : 0d,
+                (time, input) => Tenkan.IsReady ? (TenkanMaximum + TenkanMinimum) / 2 : Constants.Zero,
                 tenkan => TenkanMaximum.IsReady && TenkanMinimum.IsReady,
                 () => {
                     TenkanMaximum.Reset();
                     TenkanMinimum.Reset();
                 });
 
-            Kijun = new FunctionalIndicator<IndicatorDataPoint>(
+            Kijun = new FunctionalIndicator(
                 name + "_Kijun",
-                input => Kijun.IsReady ? (KijunMaximum + KijunMinimum) / 2 : 0d,
+                (time, input) => Kijun.IsReady ? (KijunMaximum + KijunMinimum) / 2 : Constants.Zero,
                 kijun => KijunMaximum.IsReady && KijunMinimum.IsReady,
                 () => {
                     KijunMaximum.Reset();
@@ -202,8 +203,9 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             TenkanMaximum.Update(input.Time, input.High);
             TenkanMinimum.Update(input.Time, input.Low);
             Tenkan.Update(input.Time, input.Close);

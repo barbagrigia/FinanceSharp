@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,7 +28,7 @@ namespace FinanceSharp.Indicators {
     /// 	 The Generalized DEMA (GD) is calculated with the following formula:
     /// 	 GD = (volumeFactor+1) * EMA(t,period) - volumeFactor * EMA2
     /// </summary>
-    public class DoubleExponentialMovingAverage : IndicatorBase<IndicatorDataPoint> {
+    public class DoubleExponentialMovingAverage : IndicatorBase {
         private readonly int _period;
         private readonly double _volumeFactor;
         private readonly ExponentialMovingAverage _ema1;
@@ -68,15 +69,16 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _ema1.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _ema1.Update(TODO, input);
 
             if (!_ema1.IsReady)
                 return _ema1;
 
-            _ema2.Update(_ema1.Current);
+            _ema2.Update(TODO, _ema1.Current);
 
             return (_volumeFactor + 1) * _ema1 - _volumeFactor * _ema2;
         }

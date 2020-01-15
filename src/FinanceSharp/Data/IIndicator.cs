@@ -17,21 +17,15 @@
 */
 
 using System;
+using Torch;
 
 namespace FinanceSharp.Data {
-    /// <summary>
-    /// 	 KEEPING THIS INTERFACE FOR BACKWARDS COMPATIBILITY.
-    /// 	 Represents an indicator that can receive data updates and emit events when the value of
-    /// 	 the indicator has changed.
-    /// </summary>
-    public interface IIndicator<T> : IComparable<IIndicator<T>>, IComparable, IIndicator
-        where T : IBaseData { }
 
     /// <summary>
     /// 	 Represents an indicator that can receive data updates and emit events when the value of
     /// 	 the indicator has changed.
     /// </summary>
-    public interface IIndicator {
+    public interface IIndicator : IComparable<IIndicator>, IComparable {
         /// <summary>
         /// 	 Event handler that fires after this indicator is updated
         /// </summary>
@@ -51,7 +45,7 @@ namespace FinanceSharp.Data {
         /// 	 Gets the current state of this indicator. If the state has not been updated
         /// 	 then the time on the value will equal DateTime.MinValue.
         /// </summary>
-        IndicatorDataPoint Current { get; }
+        Tensor<double> Current { get; }
 
         /// <summary>
         /// 	 Gets the number of samples processed by this indicator
@@ -62,9 +56,10 @@ namespace FinanceSharp.Data {
         /// 	 Updates the state of this indicator with the given value and returns true
         /// 	 if this indicator is ready, false otherwise
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        bool Update(IBaseData input);
+        bool Update(long time, Tensor<double> input);
 
         /// <summary>
         /// 	 Resets this indicator to its initial state

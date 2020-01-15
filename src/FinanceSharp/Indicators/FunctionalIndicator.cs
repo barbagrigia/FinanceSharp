@@ -18,23 +18,23 @@
 
 using System;
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The functional indicator is used to lift any function into an indicator. This can be very useful
     /// 	 when trying to combine output of several indicators, or for expression a mathematical equation
     /// </summary>
-    /// <typeparam name="T">The input type for this indicator</typeparam>
-    public class FunctionalIndicator<T> : IndicatorBase<T>
-        where T : IBaseData {
+    /// <typeparam name="Tensor<double>">The input type for this indicator</typeparam>
+    public class FunctionalIndicator : IndicatorBase {
         /// <summary>function implementation of the IndicatorBase.IsReady property</summary>
-        private readonly Func<IndicatorBase<T>, bool> _isReady;
+        private readonly Func<IndicatorBase, bool> _isReady;
 
         /// <summary>Action used to reset this indicator completely along with any indicators this one is dependent on</summary>
         private readonly Action _reset;
 
         /// <summary>function implementation of the IndicatorBase.Forward method</summary>
-        private readonly Func<T, double> _computeNextValue;
+        private readonly Func<long, Tensor<double>, Tensor<double>> _computeNextValue;
 
         /// <summary>
         /// 	 Creates a new FunctionalIndicator using the specified functions as its implementation.
@@ -42,7 +42,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <param name="computeNextValue">A function accepting the input value and returning this indicator's output value</param>
         /// <param name="isReady">A function accepting this indicator and returning true if the indicator is ready, false otherwise</param>
-        public FunctionalIndicator(string name, Func<T, double> computeNextValue, Func<IndicatorBase<T>, bool> isReady)
+        public FunctionalIndicator(string name, Func<long, Tensor<double>, Tensor<double>> computeNextValue, Func<IndicatorBase, bool> isReady)
             : base(name) {
             _computeNextValue = computeNextValue;
             _isReady = isReady;
@@ -55,7 +55,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="computeNextValue">A function accepting the input value and returning this indicator's output value</param>
         /// <param name="isReady">A function accepting this indicator and returning true if the indicator is ready, false otherwise</param>
         /// <param name="reset">Function called to reset this indicator and any indicators this is dependent on</param>
-        public FunctionalIndicator(string name, Func<T, double> computeNextValue, Func<IndicatorBase<T>, bool> isReady, Action reset)
+        public FunctionalIndicator(string name, Func<long, Tensor<double>, Tensor<double>> computeNextValue, Func<IndicatorBase, bool> isReady, Action reset)
             : base(name) {
             _computeNextValue = computeNextValue;
             _isReady = isReady;
@@ -72,10 +72,11 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(T input) {
-            return _computeNextValue(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            return _computeNextValue(time, input);
         }
 
         /// <summary>

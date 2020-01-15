@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -33,27 +34,27 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the Heikin-Ashi Open
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Open { get; }
+        public IndicatorBase Open { get; }
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi High
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> High { get; }
+        public IndicatorBase High { get; }
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Low
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Low { get; }
+        public IndicatorBase Low { get; }
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Close
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Close { get; }
+        public IndicatorBase Close { get; }
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Volume
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Volume { get; }
+        public IndicatorBase Volume { get; }
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi current TradeBar
@@ -92,9 +93,10 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns> A new value for this indicator </returns>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             if (!IsReady) {
                 Open.Update(input.Time, (input.Open + input.Close) / 2);
                 Close.Update(input.Time, (input.Open + input.High + input.Low + input.Close) / 4);

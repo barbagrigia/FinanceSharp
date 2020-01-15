@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,7 +28,7 @@ namespace FinanceSharp.Indicators {
     /// 	 EMA3 = EMA(EMA(EMA(t,period),period),period)
     /// 	 TEMA = 3 * EMA1 - 3 * EMA2 + EMA3
     /// </summary>
-    public class TripleExponentialMovingAverage : IndicatorBase<IndicatorDataPoint> {
+    public class TripleExponentialMovingAverage : IndicatorBase {
         private readonly int _period;
         private readonly ExponentialMovingAverage _ema1;
         private readonly ExponentialMovingAverage _ema2;
@@ -66,18 +67,19 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _ema1.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _ema1.Update(TODO, input);
 
             if (_ema1.IsReady)
-                _ema2.Update(_ema1.Current);
+                _ema2.Update(TODO, _ema1.Current);
 
             if (_ema2.IsReady)
-                _ema3.Update(_ema2.Current);
+                _ema3.Update(TODO, _ema2.Current);
 
-            return IsReady ? 3d * _ema1 - 3d * _ema2 + _ema3 : 0d;
+            return IsReady ? 3d * _ema1 - 3d * _ema2 + _ema3 : Constants.Zero;
         }
 
         /// <summary>

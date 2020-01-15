@@ -19,12 +19,13 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 This indicator computes the n-period population variance.
     /// </summary>
-    public class Variance : WindowIndicator<IndicatorDataPoint> {
+    public class Variance : WindowIndicator {
         private double _rollingSum;
         private double _rollingSumOfSquares;
 
@@ -51,15 +52,16 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
-        /// <param name="input">The input given to the indicator</param>
         /// <param name="window">The window for the input history</param>
+        /// <param name="time"></param>
+        /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             _rollingSum += input.Value;
             _rollingSumOfSquares += input.Value * input.Value;
 
             if (Samples < 2)
-                return 0d;
+                return Constants.Zero;
 
             var n = Math.Min(Period, Samples);
             var meanValue1 = _rollingSum / n;
@@ -72,7 +74,7 @@ namespace FinanceSharp.Indicators {
             }
 
             // Ensure non-negative variance
-            return Math.Max(0d, meanValue2 - meanValue1 * meanValue1);
+            return Math.Max(Constants.Zero, meanValue2 - meanValue1 * meanValue1);
         }
 
         /// <summary>

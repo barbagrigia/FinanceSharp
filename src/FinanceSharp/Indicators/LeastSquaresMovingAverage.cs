@@ -22,6 +22,7 @@ using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -30,7 +31,7 @@ namespace FinanceSharp.Indicators {
     /// 	 essence, it calculates what the value would be if the regression line continued.
     /// 	 Source: https://rtmath.net/helpFinAnalysis/html/b3fab79c-f4b2-40fb-8709-fdba43cdb363.htm
     /// </summary>
-    public class LeastSquaresMovingAverage : WindowIndicator<IndicatorDataPoint> {
+    public class LeastSquaresMovingAverage : WindowIndicator {
         /// <summary>
         /// 	 Array representing the time.
         /// </summary>
@@ -39,12 +40,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 The point where the regression line crosses the y-axis (price-axis)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Intercept { get; }
+        public IndicatorBase Intercept { get; }
 
         /// <summary>
         /// 	 The regression line slope
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> Slope { get; }
+        public IndicatorBase Slope { get; }
 
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
@@ -74,11 +75,12 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="window"></param>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             // Until the window is ready, the indicator returns the input value.
             if (window.Samples <= window.Size) return input;
 

@@ -18,13 +18,14 @@
 
 using System;
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Produces a Hull Moving Average as explained at http://www.alanhull.com/hull-moving-average/
     /// 	 and derived from the instructions for the Excel VBA code at http://finance4traders.blogspot.com/2009/06/how-to-calculate-hull-moving-average.html
     /// </summary>
-    public class HullMovingAverage : IndicatorBase<IndicatorDataPoint> {
+    public class HullMovingAverage : IndicatorBase {
         private readonly LinearWeightedMovingAverage _fastWma;
         private readonly LinearWeightedMovingAverage _slowWma;
         private readonly LinearWeightedMovingAverage _hullMa;
@@ -74,15 +75,16 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            _fastWma.Update(input);
-            _slowWma.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _fastWma.Update(TODO, input);
+            _slowWma.Update(TODO, input);
             if (_fastWma.IsReady && _slowWma.IsReady) {
-                _hullMa.Update(new IndicatorDataPoint(input.Time, 2 * _fastWma - _slowWma));
+                _hullMa.Update((long) TODO, (Tensor<double>) new Tensor<double>(input.Time, 2 * _fastWma - _slowWma));
             }
 
             return _hullMa;

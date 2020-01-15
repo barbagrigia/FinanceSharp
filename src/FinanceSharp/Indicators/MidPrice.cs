@@ -18,6 +18,7 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -62,11 +63,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(IBaseDataBar input) {
-            _maximum.Update(new IndicatorDataPoint {Value = input.High});
-            _minimum.Update(new IndicatorDataPoint {Value = input.Low});
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            _maximum.Update((long) TODO, (Tensor<double>) new Tensor<double> {Value = input.High});
+            _minimum.Update((long) TODO, (Tensor<double>) new Tensor<double> {Value = input.Low});
 
             return (_maximum + _minimum) / 2;
         }

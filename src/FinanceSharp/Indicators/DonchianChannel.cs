@@ -19,6 +19,7 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -34,12 +35,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the upper band of the Donchian Channel.
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> UpperBand { get; }
+        public IndicatorBase UpperBand { get; }
 
         /// <summary>
         /// 	 Gets the lower band of the Donchian Channel.
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> LowerBand { get; }
+        public IndicatorBase LowerBand { get; }
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="DonchianChannel"/> class.
@@ -90,9 +91,10 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator, which by convention is the mean value of the upper band and lower band.</returns>
-        protected override double Forward(IBaseDataBar input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             if (_previousInput != null) {
                 UpperBand.Update(_previousInput.Time, _previousInput.High);
                 LowerBand.Update(_previousInput.Time, _previousInput.Low);

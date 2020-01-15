@@ -27,7 +27,7 @@ namespace FinanceSharp.Data.Market {
     /// </summary>
     public class TradeBar : BaseData, IBaseDataBar {
         // scale factor used in QC equity/forex data files
-        private const double _scaleFactor = 1 / 10000d;
+        private const double _scaleFactor = 1 / 1000.0d;
 
         private int _initialized;
         private double _open;

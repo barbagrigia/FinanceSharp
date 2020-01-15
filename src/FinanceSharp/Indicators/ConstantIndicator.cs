@@ -18,15 +18,15 @@
 
 using System;
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 An indicator that will always return the same value.
     /// </summary>
     /// <typeparam name="T">The type of input this indicator takes</typeparam>
-    public sealed class ConstantIndicator<T> : IndicatorBase<T>
-        where T : IBaseData {
-        private readonly double _value;
+    public sealed class ConstantIndicator : IndicatorBase {
+        private readonly Tensor<double> _value;
 
         /// <summary>
         /// 	 Gets true since the ConstantIndicator is always ready to return the same value
@@ -40,19 +40,20 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The constant value to be returned</param>
         public ConstantIndicator(string name, double value)
             : base(name) {
-            _value = value;
+            _value = (Tensor<double>) value;
 
             // set this immediately so it always has the .Value property correctly set,
             // the time will be updated anytime this indicators Update method gets called.
-            Current = new IndicatorDataPoint(DateTime.MinValue, value);
+            Current = _value;
         }
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(T input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             return _value;
         }
 
@@ -63,7 +64,8 @@ namespace FinanceSharp.Indicators {
             base.Reset();
 
             // re-initialize the current value, constant should ALWAYS return this value
-            Current = new IndicatorDataPoint(DateTime.MinValue, _value);
+            Current = new Tensor<double>(_value);
+            CurrentTime = 0;
         }
     }
 }

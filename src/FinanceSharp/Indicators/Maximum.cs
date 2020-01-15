@@ -19,12 +19,13 @@
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Represents an indicator capable of tracking the maximum value and how many periods ago it occurred
     /// </summary>
-    public class Maximum : WindowIndicator<IndicatorDataPoint> {
+    public class Maximum : WindowIndicator {
         /// <summary>
         /// 	 The number of periods since the maximum value was encountered
         /// </summary>
@@ -56,7 +57,7 @@ namespace FinanceSharp.Indicators {
             : base(name, period) { }
 
         /// <inheritdoc />
-        protected override double ComputeNextValue(IReadOnlyWindow<IndicatorDataPoint> window, IndicatorDataPoint input) {
+        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
             if (Samples == 1 || input.Value >= Current.Value) {
                 // our first sample or if we're bigger than our previous indicator value
                 // reset the periods since maximum (it's this period) and return the value

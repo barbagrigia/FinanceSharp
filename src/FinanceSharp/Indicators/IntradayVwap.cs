@@ -2,12 +2,13 @@
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Defines the canonical intraday VWAP indicator
     /// </summary>
-    public class IntradayVwap : IndicatorBase<BaseData> {
+    public class IntradayVwap : IndicatorBase {
         private DateTime _lastDate;
         private double _sumOfVolume;
         private double _sumOfPriceTimesVolume;
@@ -27,7 +28,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the new VWAP
         /// </summary>
-        protected override IndicatorResult ValidateAndForward(BaseData input) {
+        protected override IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
                 return new IndicatorResult(0, IndicatorStatus.InvalidInput);
@@ -35,8 +36,8 @@ namespace FinanceSharp.Indicators {
 
             // reset vwap on daily boundaries
             if (_lastDate != input.EndTime.Date) {
-                _sumOfVolume = 0d;
-                _sumOfPriceTimesVolume = 0d;
+                _sumOfVolume = Constants.Zero;
+                _sumOfPriceTimesVolume = Constants.Zero;
                 _lastDate = input.EndTime.Date;
             }
 
@@ -44,7 +45,7 @@ namespace FinanceSharp.Indicators {
             _sumOfVolume += volume;
             _sumOfPriceTimesVolume += averagePrice * volume;
 
-            if (_sumOfVolume == 0d) {
+            if (_sumOfVolume == Constants.Zero) {
                 // if we have no trade volume then use the current price as VWAP
                 return input.Value;
             }
@@ -57,9 +58,10 @@ namespace FinanceSharp.Indicators {
         /// 	 NOTE: This must be overriden since it's abstract in the base, but
         /// 	 will never be invoked since we've override the validate method above.
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override double Forward(BaseData input) {
+        protected override Tensor Forward(long time, Tensor<double> input) {
             throw new NotImplementedException($"{nameof(IntradayVwap)}.{nameof(Forward)} should never be invoked.");
         }
 
@@ -76,6 +78,30 @@ namespace FinanceSharp.Indicators {
             }
 
             var tradeBar = input as TradeBar;
+            if (tradeBar?.IsFillForward == false) {
+                volume = tradeBar.Volume;
+                averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;
+                return true;
+            }
+
+            volume = 0;
+            averagePrice = 0;
+            return false;
+        }
+
+        /// <summary>
+        /// 	 Determines the volume and price to be used for the current input in the VWAP computation
+        /// </summary>
+        protected bool TryGetVolumeAndAveragePrice(long time, Tensor<double> input, out double volume, out double averagePrice) {
+            var tick = input;
+
+            if (tick?.TickType == TickType.Trade) {
+                volume = tick.Quantity;
+                averagePrice = tick.LastPrice;
+                return true;
+            }
+
+            var tradeBar = input;
             if (tradeBar?.IsFillForward == false) {
                 volume = tradeBar.Volume;
                 averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;

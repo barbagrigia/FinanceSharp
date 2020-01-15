@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using FinanceSharp.Data;
 using FinanceSharp.Helpers;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,10 +28,9 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     /// <typeparam name="T">The type of data input into this indicator</typeparam>
     [DebuggerDisplay("{ToDetailedString()}")]
-    public abstract partial class IndicatorBase<T> : IIndicator<T>
-        where T : IBaseData {
+    public abstract partial class IndicatorBase : IIndicator {
         /// <summary>the most recent input that was given to this indicator</summary>
-        private T _previousInput;
+        private Tensor<double> _previousInput;
 
         /// <summary>
         /// 	 Event handler that fires after this indicator is updated
@@ -43,7 +43,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         protected IndicatorBase(string name) {
             Name = name;
-            Current = new IndicatorDataPoint(DateTime.MinValue, 0d);
+            Current = Constants.Zero;
         }
 
         /// <summary>
@@ -60,7 +60,12 @@ namespace FinanceSharp.Indicators {
         /// 	 Gets the current state of this indicator. If the state has not been updated
         /// 	 then the time on the value will equal DateTime.MinValue.
         /// </summary>
-        public IndicatorDataPoint Current { get; protected set; }
+        public Tensor<double> Current { get; protected set; }
+
+        /// <summary>
+        ///     The time of the currently stored data in milliseconds-epoch.
+        /// </summary>
+        public long CurrentTime { get; protected set; }
 
         /// <summary>
         /// 	 Gets the number of samples processed by this indicator
@@ -71,32 +76,21 @@ namespace FinanceSharp.Indicators {
         /// 	 Updates the state of this indicator with the given value and returns true
         /// 	 if this indicator is ready, false otherwise
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public bool Update(IBaseData input) {
-            if (_previousInput != null && input.Time < _previousInput.Time) {
-                // if we receive a time in the past, log and return
-                Log.Error($"This is a forward only indicator: {Name} Input: {input.Time:u} Previous: {_previousInput.Time:u}. It will not be updated with this input.");
-                return IsReady;
-            }
+        public bool Update(long time, Tensor<double> input) {
+            // compute a new value and update our previous time
+            Samples++;
 
-            if (!ReferenceEquals(input, _previousInput)) {
-                // compute a new value and update our previous time
-                Samples++;
+            _previousInput = input;
 
-                if (!(input is T)) {
-                    throw new ArgumentException($"IndicatorBase.Update() 'input' expected to be of type {typeof(T)} but is of type {input.GetType()}");
-                }
-
-                _previousInput = (T) input;
-
-                var nextResult = ValidateAndForward((T) input);
-                if (nextResult.Status == IndicatorStatus.Success) {
-                    Current = new IndicatorDataPoint(input.Time, nextResult.Value);
-
-                    // let others know we've produced a new data point
-                    OnUpdated(Current);
-                }
+            var nextResult = ValidateAndForward(time, input);
+            if (nextResult.Status == IndicatorStatus.Success) {
+                Current = new Tensor<double>(nextResult.Value);
+                //TODO!: we need to set time here too!
+                // let others know we've produced a new data point
+                OnUpdated(time, Current);
             }
 
             return IsReady;
@@ -109,12 +103,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="time">The time associated with the value</param>
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public bool Update(DateTime time, double value) {
-            if (typeof(T) == typeof(IndicatorDataPoint)) {
-                return Update((T) (object) new IndicatorDataPoint(time, value));
-            }
-
-            throw new NotSupportedException($"{GetType().Name} does not support Update(DateTime, double) method overload. Use Update({typeof(T).Name}) instead.");
+        public bool Update(long time, double value) {
+            return Update((long) time, (Tensor<double>) value);
         }
 
         /// <summary>
@@ -123,7 +113,8 @@ namespace FinanceSharp.Indicators {
         public virtual void Reset() {
             Samples = 0;
             _previousInput = default;
-            Current = new IndicatorDataPoint(DateTime.MinValue, default);
+            Current = Constants.Zero;
+            CurrentTime = 0;
         }
 
         /// <summary>
@@ -133,13 +124,14 @@ namespace FinanceSharp.Indicators {
         /// 	 A value that indicates the relative order of the objects being compared. The return value has the following meanings: Value Meaning Less than zero This object is less than the <paramref name="other"/> parameter.Zero This object is equal to <paramref name="other"/>. Greater than zero This object is greater than <paramref name="other"/>.
         /// </returns>
         /// <param name="other">An object to compare with this object.</param>
-        public int CompareTo(IIndicator<T> other) {
+        public int CompareTo(IIndicator other) {
             if (ReferenceEquals(other, null)) {
                 // everything is greater than null via MSDN
                 return 1;
             }
-
-            return Current.CompareTo(other.Current);
+            //TODO!: this:
+            //return (Current > other.Current).nonzero().any();
+            return (Current.Handle != other.Current.Handle) ? 0 : 1;
         }
 
         /// <summary>
@@ -150,7 +142,7 @@ namespace FinanceSharp.Indicators {
         /// </returns>
         /// <param name="obj">An object to compare with this instance. </param><exception cref="T:System.ArgumentException"><paramref name="obj"/> is not the same type as this instance. </exception><filterpriority>2</filterpriority>
         public int CompareTo(object obj) {
-            var other = obj as IndicatorBase<T>;
+            var other = obj as IndicatorBase;
             if (other == null) {
                 throw new ArgumentException("Object must be of type " + GetType().GetBetterTypeName());
             }
@@ -172,15 +164,13 @@ namespace FinanceSharp.Indicators {
             // we'll use value type semantics on Current.Value
             // because of this, we shouldn't need to override GetHashCode as well since we're still
             // solely relying on reference semantics (think hashset/dictionary impls)
-
+            //TODO!: wtf is going on here
             if (ReferenceEquals(obj, null)) return false;
             var type = obj.GetType();
 
             while (type != null && type != typeof(object)) {
-                var cur = type.IsGenericType ? type.GetGenericTypeDefinition() : type;
-                if (typeof(IndicatorBase<>) == cur) {
-                    return ReferenceEquals(this, obj);
-                }
+                if (ReferenceEquals(this, obj))
+                    return true;
 
                 type = type.BaseType;
             }
@@ -188,7 +178,7 @@ namespace FinanceSharp.Indicators {
             try {
                 // the obj is not an indicator, so let's check for value types, try converting to double
                 var converted = obj.ConvertInvariant<double>();
-                return Current.Value == converted;
+                return Current == converted;
             } catch (InvalidCastException) {
                 // conversion failed, return false
                 return false;
@@ -200,7 +190,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <returns>String representation of the indicator</returns>
         public override string ToString() {
-            return Current.Value.ToStringInvariant("#######0.0####");
+            return Current.ToString();
         }
 
         /// <summary>
@@ -214,9 +204,10 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected abstract double Forward(T input);
+        protected abstract Tensor Forward(long time, Tensor<double> input);
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
@@ -224,18 +215,18 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected virtual IndicatorResult ValidateAndForward(T input) {
+        protected virtual IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
             // default implementation always returns IndicatorStatus.Success
-            return new IndicatorResult(Forward(input));
+            return new IndicatorResult(new Tensor<double>(Forward(time, input))); //TODO:! this is not good! we'll do that every computation.
         }
 
         /// <summary>
         /// 	 Event invocator for the Updated event
         /// </summary>
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
-        protected virtual void OnUpdated(IndicatorDataPoint consolidated) {
+        protected virtual void OnUpdated(long time, Tensor<double> consolidated) {
             var handler = Updated;
-            if (handler != null) handler(this, consolidated);
+            if (handler != null) handler(this, time, consolidated);
         }
     }
 }

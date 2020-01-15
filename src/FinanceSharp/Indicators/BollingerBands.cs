@@ -17,6 +17,7 @@
 */
 
 using FinanceSharp.Data;
+using Torch;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -32,22 +33,22 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the standard deviation
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> StandardDeviation { get; }
+        public IndicatorBase StandardDeviation { get; }
 
         /// <summary>
         /// 	 Gets the middle Bollinger band (moving average)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> MiddleBand { get; }
+        public IndicatorBase MiddleBand { get; }
 
         /// <summary>
         /// 	 Gets the upper Bollinger band (middleBand + k * stdDev)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> UpperBand { get; }
+        public IndicatorBase UpperBand { get; }
 
         /// <summary>
         /// 	 Gets the lower Bollinger band (middleBand - k * stdDev)
         /// </summary>
-        public IndicatorBase<IndicatorDataPoint> LowerBand { get; }
+        public IndicatorBase LowerBand { get; }
 
         /// <summary>
         /// 	 Initializes a new instance of the BollingerBands class
@@ -89,11 +90,12 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the next value of the following sub-indicators from the given state:
         /// 	 StandardDeviation, MiddleBand, UpperBand, LowerBand
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>The input is returned unmodified.</returns>
-        protected override double Forward(IndicatorDataPoint input) {
-            StandardDeviation.Update(input);
-            MiddleBand.Update(input);
+        protected override Tensor Forward(long time, Tensor<double> input) {
+            StandardDeviation.Update(TODO, input);
+            MiddleBand.Update(TODO, input);
             return input;
         }
 
