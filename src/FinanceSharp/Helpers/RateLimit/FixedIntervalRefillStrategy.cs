@@ -19,7 +19,7 @@
 using System;
 using FinanceSharp.Data;
 
-namespace FinanceSharp.Helpers.RateLimit {
+namespace FinanceSharp.RateLimit {
     /// <summary>
     /// 	 Provides a refill strategy that has a constant, quantized refill rate.
     /// 	 For example, after 1 minute passes add 5 units. If 59 seconds has passed, it will add zero unit,

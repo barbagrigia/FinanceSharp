@@ -20,7 +20,7 @@ using System;
 using System.Threading;
 using FinanceSharp.Data;
 
-namespace FinanceSharp.Helpers.RateLimit {
+namespace FinanceSharp.RateLimit {
     /// <summary>
     /// 	 Provides an implementation of <see cref="ITokenBucket"/> that implements the leaky bucket algorithm
     /// 	 See: https://en.wikipedia.org/wiki/Leaky_bucket

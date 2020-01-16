@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -81,15 +83,15 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            Minimum.Update(time, input.Low);
-            Maximum.Update(time, input.High);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            Minimum.Update(time, input[LowIdx]);
+            Maximum.Update(time, input[HighIdx]);
 
             if (!IsReady) return 0;
 
             var range = Maximum.Current.Value - Minimum.Current.Value;
 
-            return range == 0 ? 0 : -10.0d * (Maximum.Current.Value - input.Close) / range;
+            return range == 0 ? 0 : -10.0d * (Maximum.Current.Value - input[CloseIdx]) / range;
         }
     }
 }

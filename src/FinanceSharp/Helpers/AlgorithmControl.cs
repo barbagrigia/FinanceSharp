@@ -1,4 +1,4 @@
-﻿namespace FinanceSharp.Helpers {
+﻿namespace FinanceSharp {
     /// <summary>
     /// 	 Wrapper for algorithm status enum to include the charting subscription.
     /// </summary>

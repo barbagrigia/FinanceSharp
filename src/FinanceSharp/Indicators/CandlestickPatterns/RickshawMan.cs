@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -75,7 +77,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyDojiAveragePeriod) {
                     _bodyDojiPeriodTotal += GetCandleRange(CandleSettingType.BodyDoji, input);
@@ -102,11 +104,11 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 GetUpperShadow(input) > GetCandleAverage(CandleSettingType.ShadowLong, _shadowLongPeriodTotal, input) &&
                 // body near midpoint
                 (
-                    Math.Min(input.Open, input.Close)
-                    <= input.Low + GetHighLowRange(input) / 2 + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, input)
+                    Math.Min(input.Open, input[CloseIdx])
+                    <= input[LowIdx] + GetHighLowRange(input) / 2 + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, input)
                     &&
-                    Math.Max(input.Open, input.Close)
-                    >= input.Low + GetHighLowRange(input) / 2 - GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, input)
+                    Math.Max(input.Open, input[CloseIdx])
+                    >= input[LowIdx] + GetHighLowRange(input) / 2 - GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, input)
                 )
             )
                 value = 1d;

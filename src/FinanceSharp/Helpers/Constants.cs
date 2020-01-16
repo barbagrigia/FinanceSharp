@@ -1,71 +1,51 @@
-﻿using Numpy;
+﻿using System;
+using FinanceSharp.Data;
+using Numpy;
 using Python.Runtime;
-using Torch;
 
-namespace FinanceSharp.Helpers {
+// ReSharper disable once CheckNamespace
+namespace FinanceSharp {
     public static class Constants {
-        public static readonly Tensor<double> Empty;
-        public static readonly Tensor<double> Zero;
-        public static readonly Tensor<double> One;
-        public static readonly Tensor<bool> True;
-        public static readonly Tensor<bool> False;
+        public static readonly DoubleArray Empty = new DoubleArray(0);
+        public const double Zero = 0;
 
-        /// Open
-        public static readonly PyObject O;
+        public const double One = 1;
+        public const bool True = true;
+        public const bool False = false;
 
-        /// High
-        public static readonly PyObject H;
-
-        /// Low
-        public static readonly PyObject L;
 
         /// Close 
-        public static readonly PyObject C;
-
-        /// Volume
-        public static readonly PyObject V;
-
-        /// Open
-        public static readonly PyObject Open;
+        public const int C = 0;
 
         /// High
-        public static readonly PyObject High;
+        public const int H = 1;
 
         /// Low
-        public static readonly PyObject Low;
+        public const int L = 2;
 
-        /// Close 
-        public static readonly PyObject Close;
+        /// Open
+        public const int O = 3;
 
         /// Volume
-        public static readonly PyObject Volume;
+        public const int V = 4;
 
-        public static readonly PyObject Elipsis;
-        public static readonly PyObject All;
+        /// Open
+        public const int OpenIdx = O;
+
+        /// High
+        public const int HighIdx = H;
+
+        /// Low
+        public const int LowIdx = L;
+
+        /// Close 
+        public const int CloseIdx = C;
+
+        /// Volume
+        public const int VolumeIdx = V;
+
 
         static Constants() {
-            using var _ = Py.GIL();
-
-            Zero = (Tensor<double>) 0d;
-            Zero.requires_grad_();
-            One = (Tensor<double>) 1d;
-            One.requires_grad_(); //TODO!: does this work
-
-            False = (Tensor<bool>) false;
-            False.requires_grad_(); //TODO!: does this work
-            True = (Tensor<bool>) true;
-            True.requires_grad_(); //TODO!: does this work
-
-            Empty = (Tensor<double>) torch.tensor(np.arange(0), torch.@double, requires_grad: true);
-
-            Open = O = new PyLong(0);
-            High = H = new PyLong(1);
-            Low = L = new PyLong(2);
-            Close = C = new PyLong(3);
-            Volume = V = new PyLong(4);
-
-            Elipsis = PythonEngine.Eval("Ellipsis");
-            All = PythonEngine.Eval("slice(None, None, 1)");
         }
     }
 }

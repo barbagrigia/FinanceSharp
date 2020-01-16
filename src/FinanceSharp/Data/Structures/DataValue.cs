@@ -46,16 +46,6 @@ namespace FinanceSharp.Data {
         }
     }
 
-    public static class UnmanagedEnsurer {
-#pragma warning disable 169
-        private static MustBeUnmanaged<DataValue> _a;
-        private static MustBeUnmanaged<DataPoint> _b;
-#pragma warning restore 169
-
-        // ReSharper disable once ClassNeverInstantiated.Local
-        private class MustBeUnmanaged<T> where T : unmanaged { }
-    }
-
     public static partial class Time {
         public static readonly DateTime EpochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 

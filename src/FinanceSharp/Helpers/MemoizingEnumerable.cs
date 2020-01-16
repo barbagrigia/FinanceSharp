@@ -20,7 +20,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Defines an enumerable that can be enumerated many times while
     /// 	 only performing a single enumeration of the root enumerable

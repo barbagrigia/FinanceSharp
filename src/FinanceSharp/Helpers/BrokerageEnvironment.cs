@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Represents the types of environments supported by brokerages for trading
     /// </summary>

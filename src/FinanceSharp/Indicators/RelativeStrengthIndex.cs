@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -25,7 +27,7 @@ namespace FinanceSharp.Indicators {
     /// 	 You can optionally specified a different moving average type to be used in the computation
     /// </summary>
     public class RelativeStrengthIndex : Indicator {
-        private Tensor<double> _previousInput;
+        private DoubleArray _previousInput;
 
         /// <summary>
         /// 	 Gets the type of indicator used to compute AverageGain and AverageLoss
@@ -80,7 +82,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             if (_previousInput != null && input.Value >= _previousInput.Value) {
                 AverageGain.Update(time, input.Value - _previousInput.Value);
                 AverageLoss.Update(time, Constants.Zero);

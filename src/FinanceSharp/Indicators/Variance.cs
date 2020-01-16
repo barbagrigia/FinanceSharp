@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -56,7 +58,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             _rollingSum += input.Value;
             _rollingSumOfSquares += input.Value * input.Value;
 

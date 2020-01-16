@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Global Market Short Codes and their full versions: (used in tick objects)
     /// </summary>

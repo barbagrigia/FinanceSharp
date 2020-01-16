@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 US Public Holidays - Not Tradeable:
     /// </summary>

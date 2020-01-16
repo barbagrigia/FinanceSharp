@@ -20,8 +20,10 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -95,7 +97,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples > Period - _bodyLongAveragePeriod) {
                     _bodyLongPeriodTotal += GetCandleRange(CandleSettingType.BodyLong, window[2]);
@@ -126,7 +128,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                      // 3rd black
                      GetCandleColor(input) == CandleColor.Black &&
                      // 3rd closes well within 1st rb
-                     input.Close < window[2].Close - GetRealBody(window[2]) * _penetration &&
+                     input[CloseIdx] < window[2].Close - GetRealBody(window[2]) * _penetration &&
                      // upside gap between 1st and 2nd
                      GetCandleGapUp(window[1], window[2]) &&
                      // downside gap between 2nd and 3rd
@@ -139,7 +141,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                      // 3rd white
                      GetCandleColor(input) == CandleColor.White &&
                      // 3rd closes well within 1st rb
-                     input.Close > window[2].Close + GetRealBody(window[2]) * _penetration &&
+                     input[CloseIdx] > window[2].Close + GetRealBody(window[2]) * _penetration &&
                      // downside gap between 1st and 2nd
                      GetCandleGapDown(window[1], window[2]) &&
                      // upside gap between 2nd and 3rd

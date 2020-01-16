@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -70,7 +72,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _sma1.Update(TODO, input);
             _sma2.Update(TODO, _sma1.Current);
 

@@ -1,4 +1,4 @@
-﻿namespace FinanceSharp.Helpers {
+﻿namespace FinanceSharp {
     /// <summary>
     /// 	 Type of tradable security / underlying asset
     /// </summary>

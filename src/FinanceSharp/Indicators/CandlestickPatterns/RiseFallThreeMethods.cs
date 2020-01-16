@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -41,7 +43,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _bodyShortAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private double[] _bodyPeriodTotal = new double[5];
+        private DoubleArray _bodyPeriodTotal = new double[5];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="RiseFallThreeMethods"/> class using the specified name.
@@ -73,7 +75,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples > Period - _bodyShortAveragePeriod) {
                     _bodyPeriodTotal[3] += GetCandleRange(CandleSettingType.BodyShort, window[3]);
@@ -112,7 +114,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // 5th opens above (below) the prior close
                 input.Open * (int) GetCandleColor(window[4]) > window[1].Close * (int) GetCandleColor(window[4]) &&
                 // 5th closes above (below) the 1st close
-                input.Close * (int) GetCandleColor(window[4]) > window[4].Close * (int) GetCandleColor(window[4])
+                input[CloseIdx] * (int) GetCandleColor(window[4]) > window[4].Close * (int) GetCandleColor(window[4])
             )
                 value = (int) GetCandleColor(window[4]);
             else

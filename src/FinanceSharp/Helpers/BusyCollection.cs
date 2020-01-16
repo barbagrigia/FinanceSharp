@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Threading;
 using FinanceSharp.Data.Interfaces;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 A non blocking <see cref="IBusyCollection{T}"/> implementation
     /// </summary>

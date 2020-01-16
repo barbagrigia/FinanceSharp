@@ -1,6 +1,6 @@
 ﻿using FinanceSharp.Data.Market;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Specifies the type of <see cref="Split"/> data
     /// </summary>

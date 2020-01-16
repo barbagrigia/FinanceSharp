@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -45,10 +47,10 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _shadowVeryShortAveragePeriod;
         private readonly int _nearAveragePeriod;
 
-        private double[] _bodyLongPeriodTotal = new double[3];
+        private DoubleArray _bodyLongPeriodTotal = new double[3];
         private double _bodyShortPeriodTotal;
         private double _shadowVeryShortPeriodTotal;
-        private double[] _nearPeriodTotal = new double[3];
+        private DoubleArray _nearPeriodTotal = new double[3];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="StalledPattern"/> class using the specified name.
@@ -83,7 +85,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyLongAveragePeriod) {
                     _bodyLongPeriodTotal[2] += GetCandleRange(CandleSettingType.BodyLong, window[2]);
@@ -115,7 +117,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // 3rd white
                 GetCandleColor(input) == CandleColor.White &&
                 // consecutive higher closes
-                input.Close > window[1].Close && window[1].Close > window[2].Close &&
+                input[CloseIdx] > window[1].Close && window[1].Close > window[2].Close &&
                 // 1st: long real body
                 GetRealBody(window[2]) > GetCandleAverage(CandleSettingType.BodyLong, _bodyLongPeriodTotal[2], window[2]) &&
                 // 2nd: long real body

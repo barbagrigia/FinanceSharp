@@ -1,4 +1,4 @@
-﻿namespace FinanceSharp.Helpers {
+﻿namespace FinanceSharp {
     /// <summary>
     /// 	 enum Period - Enum of all the analysis periods, AS integers. Reference "Period" Array to access the values
     /// </summary>

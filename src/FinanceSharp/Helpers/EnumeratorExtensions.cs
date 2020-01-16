@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Provides convenience of linq extension methods for <see cref="IEnumerator{T}"/> types
     /// </summary>

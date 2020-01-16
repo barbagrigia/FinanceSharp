@@ -19,7 +19,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 A never ending queue that will dequeue and reenqueue the same item
     /// </summary>

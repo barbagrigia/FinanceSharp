@@ -19,8 +19,10 @@
 using System;
 using System.Globalization;
 using FinanceSharp.Data;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -63,19 +65,19 @@ namespace FinanceSharp.Indicators {
             var denominator = new Sum("Sum_y", period);
 
             value.Updated += (sender, time, consolidated) => {
-                x.Update((long) time, (Tensor<double>) consolidated);
+                x.Update((long) time, (DoubleArray) consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(time, new Tensor<double>(consolidated * y.Current));
+                    numerator.Update(time, new DoubleArray(consolidated * y.Current));
                 }
             };
 
             weight.Updated += (sender, time, consolidated) => {
-                y.Update((long) time, (Tensor<double>) consolidated);
+                y.Update((long) time, (DoubleArray) consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(time, new Tensor<double>(consolidated * x.Current));
+                    numerator.Update(time, new DoubleArray(consolidated * x.Current));
                 }
 
-                denominator.Update((long) time, (Tensor<double>) consolidated);
+                denominator.Update((long) time, (DoubleArray) consolidated);
             };
 
             return numerator.Over(denominator);
@@ -105,7 +107,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
         public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l + r);
+            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l + r);
         }
 
         /// <summary>
@@ -119,7 +121,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
         public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (Tensor<double>) l + r);
+            return new CompositeIndicator(name, left, right, (l, r) => (DoubleArray) l + r);
         }
 
         /// <summary>
@@ -146,7 +148,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
         public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l - r);
+            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l - r);
         }
 
         /// <summary>
@@ -160,7 +162,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
         public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (Tensor<double>) l - r);
+            return new CompositeIndicator(name, left, right, (l, r) => (DoubleArray) l - r);
         }
 
         /// <summary>
@@ -187,7 +189,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
         public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((Tensor<double>) ((Tensor<double>) l / r)));
+            return new CompositeIndicator(left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((DoubleArray) ((DoubleArray) l / r)));
         }
 
         /// <summary>
@@ -201,7 +203,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
         public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((Tensor<double>) ((Tensor<double>) l / r)));
+            return new CompositeIndicator(name, left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((DoubleArray) ((DoubleArray) l / r)));
         }
 
         /// <summary>
@@ -228,7 +230,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
         public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (Tensor<double>) l * r);
+            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l * r);
         }
 
         /// <summary>
@@ -242,7 +244,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
         public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) ((Tensor<double>) l * r));
+            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) ((DoubleArray) l * r));
         }
 
         /// <summary>Creates a new ExponentialMovingAverage indicator with the specified period and smoothingFactor from the left indicator

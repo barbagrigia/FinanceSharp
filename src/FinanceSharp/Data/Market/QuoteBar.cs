@@ -17,7 +17,7 @@
 */
 
 using System;
-using FinanceSharp.Helpers;
+using FinanceSharp;
 
 namespace FinanceSharp.Data.Market {
     /// <summary>

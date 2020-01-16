@@ -1,4 +1,4 @@
-﻿namespace FinanceSharp.Helpers {
+﻿namespace FinanceSharp {
     /// <summary>
     /// 	 Specifies the different types of options
     /// </summary>

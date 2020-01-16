@@ -1,47 +1,47 @@
-﻿/*
- * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
- * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
+﻿///*
+// * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
+// * Original code by: 
+// * 
+// * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+// * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
+// * 
+// * Licensed under the Apache License, Version 2.0 (the "License"); 
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+// * 
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+//*/
 
-using System;
+//using System;
 
-namespace FinanceSharp.Data {
-    /// <summary>
-    /// 	 Base Data Class: Type, Timestamp, Key -- Base Features.
-    /// </summary>
-    public interface IBaseData {
-        /// <summary>
-        /// 	 Time keeper of data -- all data is timeseries based.
-        /// </summary>
-        DateTime Time { get; set; }
+//namespace FinanceSharp.Data {
+//    /// <summary>
+//    /// 	 Base Data Class: Type, Timestamp, Key -- Base Features.
+//    /// </summary>
+//    public interface IBaseData {
+//        /// <summary>
+//        /// 	 Time keeper of data -- all data is timeseries based.
+//        /// </summary>
+//        DateTime Time { get; set; }
 
-        DateTime EndTime { get; set; }
-
-
-        /// <summary>
-        /// 	 All timeseries data is a time-value pair:
-        /// </summary>
-        double Value { get; set; }
+//        DateTime EndTime { get; set; }
 
 
-        /// <summary>
-        /// 	 Alias of Value.
-        /// </summary>
-        double Price { get; }
+//        /// <summary>
+//        /// 	 All timeseries data is a time-value pair:
+//        /// </summary>
+//        double Value { get; set; }
 
-        BaseData Clone();
-    } // End Base Data Class
-} // End QC Namespace
+
+//        /// <summary>
+//        /// 	 Alias of Value.
+//        /// </summary>
+//        double Price { get; }
+
+//        BaseData Clone();
+//    } // End Base Data Class
+//} // End QC Namespace

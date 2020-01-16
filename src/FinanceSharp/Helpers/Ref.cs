@@ -19,7 +19,7 @@
 
 using System;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Represents a read-only reference to any value, T
     /// </summary>

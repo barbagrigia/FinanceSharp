@@ -18,7 +18,9 @@
 
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -37,7 +39,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
     public class Piercing : CandlestickPattern {
         private readonly int _bodyLongAveragePeriod;
 
-        private double[] _bodyLongPeriodTotal = new double[2];
+        private DoubleArray _bodyLongPeriodTotal = new double[2];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="Piercing"/> class using the specified name.
@@ -68,7 +70,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyLongAveragePeriod) {
                     _bodyLongPeriodTotal[1] += GetCandleRange(CandleSettingType.BodyLong, window[1]);
@@ -91,9 +93,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 //      open below prior low
                 input.Open < window[1].Low &&
                 //      close within prior body
-                input.Close < window[1].Open &&
+                input[CloseIdx] < window[1].Open &&
                 //      above midpoint
-                input.Close > window[1].Close + GetRealBody(window[1]) * 0.5d
+                input[CloseIdx] > window[1].Close + GetRealBody(window[1]) * 0.5d
             )
                 value = 1d;
             else

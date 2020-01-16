@@ -1,8 +1,10 @@
 ﻿using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -28,7 +30,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the new VWAP
         /// </summary>
-        protected override IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
+        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
                 return new IndicatorResult(0, IndicatorStatus.InvalidInput);
@@ -61,7 +63,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             throw new NotImplementedException($"{nameof(IntradayVwap)}.{nameof(Forward)} should never be invoked.");
         }
 
@@ -92,7 +94,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Determines the volume and price to be used for the current input in the VWAP computation
         /// </summary>
-        protected bool TryGetVolumeAndAveragePrice(long time, Tensor<double> input, out double volume, out double averagePrice) {
+        protected bool TryGetVolumeAndAveragePrice(long time, DoubleArray input, out double volume, out double averagePrice) {
             var tick = input;
 
             if (tick?.TickType == TickType.Trade) {

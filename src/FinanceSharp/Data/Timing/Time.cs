@@ -17,8 +17,8 @@
 */
 
 using System;
-using FinanceSharp.Helpers;
-using static FinanceSharp.Helpers.StringExtensions;
+using FinanceSharp;
+using static FinanceSharp.StringExtensions;
 
 namespace FinanceSharp.Data {
     /// <summary>

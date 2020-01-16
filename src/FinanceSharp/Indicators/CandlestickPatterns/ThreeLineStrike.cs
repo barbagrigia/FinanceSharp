@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -39,7 +41,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
     public class ThreeLineStrike : CandlestickPattern {
         private readonly int _nearAveragePeriod;
 
-        private double[] _nearPeriodTotal = new double[4];
+        private DoubleArray _nearPeriodTotal = new double[4];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ThreeLineStrike"/> class using the specified name.
@@ -70,7 +72,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _nearAveragePeriod) {
                     _nearPeriodTotal[3] += GetCandleRange(CandleSettingType.Near, window[3]);
@@ -102,7 +104,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                         // 4th opens above prior close
                         input.Open > window[1].Close &&
                         // 4th closes below 1st open
-                        input.Close < window[3].Open
+                        input[CloseIdx] < window[3].Open
                     ) ||
                     (
                         // if three black
@@ -112,7 +114,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                         // 4th opens below prior close
                         input.Open < window[1].Close &&
                         // 4th closes above 1st open
-                        input.Close > window[3].Open
+                        input[CloseIdx] > window[3].Open
                     )
                 )
             )

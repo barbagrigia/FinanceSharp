@@ -18,7 +18,9 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -108,9 +110,9 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            _maximum.Update(time, input.High);
-            _minimum.Update(time, input.Low);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            _maximum.Update(time, input[HighIdx]);
+            _minimum.Update(time, input[LowIdx]);
             FastStoch.Update(TODO, input);
             StochK.Update(TODO, input);
             StochD.Update(TODO, input);
@@ -132,7 +134,7 @@ namespace FinanceSharp.Indicators {
                 return Constants.Zero;
             }
 
-            var numerator = input.Close - _minimum;
+            var numerator = input[CloseIdx] - _minimum;
             var fastStoch = _maximum.Samples >= period ? numerator / denominator : Constants.Zero;
 
             _sumFastK.Update(time, fastStoch);

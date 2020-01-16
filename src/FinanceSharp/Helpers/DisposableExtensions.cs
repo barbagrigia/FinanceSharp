@@ -19,7 +19,7 @@
 
 using System;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Provides extensions methods for <see cref="IDisposable"/>
     /// </summary>

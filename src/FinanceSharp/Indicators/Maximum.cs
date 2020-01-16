@@ -19,7 +19,9 @@
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -57,12 +59,12 @@ namespace FinanceSharp.Indicators {
             : base(name, period) { }
 
         /// <inheritdoc />
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (Samples == 1 || input.Value >= Current.Value) {
                 // our first sample or if we're bigger than our previous indicator value
                 // reset the periods since maximum (it's this period) and return the value
                 PeriodsSinceMaximum = 0;
-                return input.Value;
+                return input;
             }
 
             if (PeriodsSinceMaximum >= Period - 1) {

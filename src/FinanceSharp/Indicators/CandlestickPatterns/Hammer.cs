@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -79,7 +81,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyShortAveragePeriod) {
                     _bodyShortPeriodTotal += GetCandleRange(CandleSettingType.BodyShort, input);
@@ -109,7 +111,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // very short upper shadow
                 GetUpperShadow(input) < GetCandleAverage(CandleSettingType.ShadowVeryShort, _shadowVeryShortPeriodTotal, input) &&
                 // rb near the prior candle's lows
-                Math.Min(input.Close, input.Open) <= window[1].Low + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[1])
+                Math.Min(input[CloseIdx], input.Open) <= window[1].Low + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[1])
             )
                 value = 1d;
             else

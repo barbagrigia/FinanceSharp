@@ -18,7 +18,9 @@
 
 using System;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -84,13 +86,13 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The trade bar input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             // On first iteration we can’t produce an SAR value so we save the current bar and return zero
             if (Samples == 1) {
                 _previousBar = input;
 
                 // return a value that's close to where we will be, returning 0 doesn't make sense
-                return input.Close;
+                return input[CloseIdx];
             }
 
             // On second iteration we initiate the position the extreme point and the SAR

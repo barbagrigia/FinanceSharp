@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -71,7 +73,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _nearAveragePeriod) {
                     _nearPeriodTotal += GetCandleRange(CandleSettingType.Equal, window[1]);
@@ -92,9 +94,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                     //      that opens within the white rb
                     input.Open < window[1].Close && input.Open > window[1].Open &&
                     //      and closes under the white rb
-                    input.Close < window[1].Open &&
+                    input[CloseIdx] < window[1].Open &&
                     //      inside the gap
-                    input.Close > Math.Max(window[2].Close, window[2].Open) &&
+                    input[CloseIdx] > Math.Max(window[2].Close, window[2].Open) &&
                     // size of 2 rb near the same
                     Math.Abs(GetRealBody(window[1]) - GetRealBody(input)) < GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[1])
                 ) ||
@@ -108,9 +110,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                     //      that opens within the black rb
                     input.Open < window[1].Open && input.Open > window[1].Close &&
                     //      and closes above the black rb
-                    input.Close > window[1].Open &&
+                    input[CloseIdx] > window[1].Open &&
                     //      inside the gap
-                    input.Close < Math.Min(window[2].Close, window[2].Open) &&
+                    input[CloseIdx] < Math.Min(window[2].Close, window[2].Open) &&
                     // size of 2 rb near the same
                     Math.Abs(GetRealBody(window[1]) - GetRealBody(input)) < GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[1])
                 )

@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -47,7 +49,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _bodyShortAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private double[] _bodyPeriodTotal = new double[5];
+        private DoubleArray _bodyPeriodTotal = new double[5];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="MatHold"/> class using the specified name.
@@ -89,7 +91,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples > Period - _bodyShortAveragePeriod) {
                     _bodyPeriodTotal[3] += GetCandleRange(CandleSettingType.BodyShort, window[3]);
@@ -129,7 +131,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // 5th opens above the prior close
                 input.Open > window[1].Close &&
                 // 5th closes above the highest high of the reaction days
-                input.Close > Math.Max(Math.Max(window[3].High, window[2].High), window[1].High)
+                input[CloseIdx] > Math.Max(Math.Max(window[3].High, window[2].High), window[1].High)
             )
                 value = 1d;
             else

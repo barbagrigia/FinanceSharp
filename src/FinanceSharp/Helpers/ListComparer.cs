@@ -19,7 +19,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 An implementation of <see cref="IEqualityComparer{T}"/> for <see cref="List{T}"/>.
     /// 	 Useful when using a <see cref="List{T}"/> as the key of a collection.

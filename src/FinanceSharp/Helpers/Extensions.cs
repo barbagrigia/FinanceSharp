@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Timer = System.Timers.Timer;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// Extensions function collections - group all static extensions functions here.
     /// </summary>

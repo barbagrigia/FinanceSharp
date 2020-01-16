@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>

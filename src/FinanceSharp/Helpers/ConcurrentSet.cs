@@ -21,7 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Provides a thread-safe set collection that mimics the behavior of <see cref="HashSet{T}"/>
     /// 	 and will be keep insertion order

@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -94,7 +96,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator, which by convention is the mean value of the upper band and lower band.</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             if (_previousInput != null) {
                 UpperBand.Update(_previousInput.Time, _previousInput.High);
                 LowerBand.Update(_previousInput.Time, _previousInput.Low);

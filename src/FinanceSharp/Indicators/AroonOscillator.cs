@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -67,14 +69,14 @@ namespace FinanceSharp.Indicators {
             : base(name) {
             var max = new Maximum(name + "_Max", upPeriod + 1);
             AroonUp = new FunctionalIndicator(name + "_AroonUp",
-                (time, input) => ComputeAroonUp(upPeriod, max, input),
+                (time, input) => ComputeAroonUp(upPeriod, max, time, input),
                 aroonUp => max.IsReady,
                 () => max.Reset()
             );
 
             var min = new Minimum(name + "_Min", downPeriod + 1);
             AroonDown = new FunctionalIndicator(name + "_AroonDown",
-                (time, input) => ComputeAroonDown(downPeriod, min, input),
+                (time, input) => ComputeAroonDown(downPeriod, min, time, input),
                 aroonDown => min.IsReady,
                 () => min.Reset()
             );
@@ -88,11 +90,11 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            AroonUp.Update(time, input.High);
-            AroonDown.Update(time, input.Low);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            AroonUp.Update(time, input[HighIdx]);
+            AroonDown.Update(time, input[LowIdx]);
 
-            return AroonUp - AroonDown;
+            return AroonUp.Current.Value - AroonDown.Current.Value;
         }
 
         /// <summary>
@@ -102,8 +104,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="max">A Maximum indicator used to compute periods since max</param>
         /// <param name="input">The next input data</param>
         /// <returns>The AroonUp value</returns>
-        private static double ComputeAroonUp(int upPeriod, Maximum max, Tensor<double> input) {
-            max.Update((long) TODO, (Tensor<double>) input);
+        private static double ComputeAroonUp(int upPeriod, Maximum max, long time, DoubleArray input) {
+            max.Update(time, input);
             return 10.0d * (upPeriod - max.PeriodsSinceMaximum) / upPeriod;
         }
 
@@ -114,8 +116,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="min">A Minimum indicator used to compute periods since min</param>
         /// <param name="input">The next input data</param>
         /// <returns>The AroonDown value</returns>
-        private static double ComputeAroonDown(int downPeriod, Minimum min, Tensor<double> input) {
-            min.Update((long) TODO, (Tensor<double>) input);
+        private static double ComputeAroonDown(int downPeriod, Minimum min, long time, DoubleArray input) {
+            min.Update(time, (DoubleArray) input);
             return 10.0d * (downPeriod - min.PeriodsSinceMinimum) / downPeriod;
         }
 

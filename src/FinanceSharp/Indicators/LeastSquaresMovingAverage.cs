@@ -22,7 +22,9 @@ using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -35,7 +37,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Array representing the time.
         /// </summary>
-        private readonly double[] _t;
+        private readonly DoubleArray _t;
 
         /// <summary>
         /// 	 The point where the regression line crosses the y-axis (price-axis)
@@ -80,7 +82,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             // Until the window is ready, the indicator returns the input value.
             if (window.Samples <= window.Size) return input;
 

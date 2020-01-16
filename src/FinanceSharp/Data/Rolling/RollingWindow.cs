@@ -20,7 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using static FinanceSharp.Helpers.StringExtensions;
+using static FinanceSharp.StringExtensions;
 
 namespace FinanceSharp.Data.Rolling {
     /// <summary>

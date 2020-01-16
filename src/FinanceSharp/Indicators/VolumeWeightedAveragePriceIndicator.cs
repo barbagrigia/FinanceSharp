@@ -19,7 +19,9 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -86,9 +88,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _price.Update(input.EndTime, GetTimeWeightedAveragePrice(input));
-            _volume.Update(input.EndTime, input.Volume);
+            _volume.Update(input.EndTime, input[VolumeIdx]);
             return _vwap.Current.Value;
         }
 
@@ -98,7 +100,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The current trade bar input</param>
         /// <returns>An estimated average price over the trade bar's interval</returns>
         protected virtual double GetTimeWeightedAveragePrice(TradeBar input) {
-            return (input.Open + input.High + input.Low + input.Value) / 4;
+            return (input.Open + input[HighIdx] + input[LowIdx] + input.Value) / 4;
         }
     }
 }

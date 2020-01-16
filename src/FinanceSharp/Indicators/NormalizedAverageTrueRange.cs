@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -66,12 +68,12 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _tr.Update(time, input);
 
             if (!IsReady) {
                 _atr.Update(time, input);
-                return input.Close != 0 ? _atr / input.Close * 100 : 0d;
+                return input[CloseIdx] != 0 ? _atr / input[CloseIdx] * 100 : 0d;
             }
 
             if (Samples == _period + 1) {
@@ -83,7 +85,7 @@ namespace FinanceSharp.Indicators {
                 _lastAtrValue = (_lastAtrValue * (_period - 1) + _tr) / _period;
             }
 
-            return input.Close != 0 ? _lastAtrValue / input.Close * 100 : 0d;
+            return input[CloseIdx] != 0 ? _lastAtrValue / input[CloseIdx] * 100 : 0d;
         }
 
         /// <summary>

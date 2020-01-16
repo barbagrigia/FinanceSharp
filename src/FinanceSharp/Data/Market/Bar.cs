@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-using FinanceSharp.Helpers;
+using FinanceSharp;
 
 namespace FinanceSharp.Data.Market {
     /// <summary>

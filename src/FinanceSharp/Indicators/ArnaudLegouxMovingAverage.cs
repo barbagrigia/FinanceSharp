@@ -20,7 +20,9 @@ using System;
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -30,9 +32,9 @@ namespace FinanceSharp.Indicators {
     /// 	 the parameters Sigma and Offset affect the kurtosis and skewness of the weights respectively.
     /// 	 Source: http://www.arnaudlegoux.com/index.html
     /// </summary>
-    /// <seealso cref="Tensor<double>" />
+    /// <seealso cref="DoubleArray" />
     public class ArnaudLegouxMovingAverage : WindowIndicator {
-        private readonly double[] _weightVector;
+        private readonly DoubleArray _weightVector;
 
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
@@ -107,9 +109,9 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window,
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window,
             long time,
-            Tensor<double> input) {
+            DoubleArray input) {
             return IsReady
                 ? window.Select((t, i) => t.Price * _weightVector[i]).Sum()
                 : input;

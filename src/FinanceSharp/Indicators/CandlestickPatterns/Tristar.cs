@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -66,7 +68,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _bodyDojiAveragePeriod - 2 && Samples < Period - 2) {
                     _bodyDojiPeriodTotal += GetCandleRange(CandleSettingType.BodyDoji, input);
@@ -88,14 +90,14 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                     // 2nd gaps up
                     GetRealBodyGapUp(window[1], window[2]) &&
                     // 3rd is not higher than 2nd
-                    Math.Max(input.Open, input.Close) < Math.Max(window[1].Open, window[1].Close)
+                    Math.Max(input.Open, input[CloseIdx]) < Math.Max(window[1].Open, window[1].Close)
                 )
                     value = -1d;
                 if (
                     // 2nd gaps down
                     GetRealBodyGapDown(window[1], window[2]) &&
                     // 3rd is not lower than 2nd 
-                    Math.Min(input.Open, input.Close) > Math.Min(window[1].Open, window[1].Close)
+                    Math.Min(input.Open, input[CloseIdx]) > Math.Min(window[1].Open, window[1].Close)
                 )
                     value = 1d;
             } else

@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -55,9 +57,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            var range = input.High - input.Low;
-            return Current.Value + (range > 0 ? ((input.Close - input.Low) - (input.High - input.Close)) / range * input.Volume : Constants.Zero);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            var range = input[HighIdx] - input[LowIdx];
+            return Current[CloseIdx] + (range > 0 ? ((input[CloseIdx] - input[LowIdx]) - (input[HighIdx] - input[CloseIdx])) / range * input[VolumeIdx] : Constants.Zero);
         }
     }
 }

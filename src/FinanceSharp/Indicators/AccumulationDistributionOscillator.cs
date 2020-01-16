@@ -18,7 +18,9 @@
 
 using System;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -70,10 +72,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            _ad.Update(TODO, input);
-            _emaFast.Update(TODO, _ad.Current);
-            _emaSlow.Update(TODO, _ad.Current);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            _ad.Update(time, input);
+            _emaFast.Update(time, _ad.Current);
+            _emaSlow.Update(time, _ad.Current);
 
             return IsReady ? _emaFast.Current.Value - _emaSlow.Current.Value : Constants.Zero;
         }

@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.Threading;
 using FinanceSharp.Data.Interfaces;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 A small wrapper around <see cref="BlockingCollection{T}"/> used to communicate busy state of the items
     /// 	 being processed

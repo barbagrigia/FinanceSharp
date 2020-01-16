@@ -18,7 +18,7 @@
 
 using System;
 using System.Threading;
-using FinanceSharp.Helpers;
+using FinanceSharp;
 
 namespace FinanceSharp.Data.Market {
     /// <summary>

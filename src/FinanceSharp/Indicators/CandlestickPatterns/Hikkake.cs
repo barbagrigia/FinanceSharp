@@ -19,7 +19,9 @@
 
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -67,29 +69,29 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= 3) {
                     // copy here the pattern recognition code below
                     // 1st + 2nd: lower high and higher low
                     if (window[1].High < window[2].High && window[1].Low > window[2].Low &&
                         // (bull) 3rd: lower high and lower low
-                        ((input.High < window[1].High && input.Low < window[1].Low)
+                        ((input[HighIdx] < window[1].High && input[LowIdx] < window[1].Low)
                          ||
                          // (bear) 3rd: higher high and higher low
-                         (input.High > window[1].High && input.Low > window[1].Low)
+                         (input[HighIdx] > window[1].High && input[LowIdx] > window[1].Low)
                         )
                     ) {
-                        _patternResult = (input.High < window[1].High ? 1 : -1);
+                        _patternResult = (input[HighIdx] < window[1].High ? 1 : -1);
                         _patternIndex = (int) Samples - 1;
                     } else
                         // search for confirmation if hikkake was no more than 3 bars ago
                     if (Samples <= _patternIndex + 4 &&
                         // close higher than the high of 2nd
-                        ((_patternResult > 0 && input.Close > window[(int) Samples - _patternIndex].High)
+                        ((_patternResult > 0 && input[CloseIdx] > window[(int) Samples - _patternIndex].High)
                          ||
                          // close lower than the low of 2nd
-                         (_patternResult < 0 && input.Close < window[(int) Samples - _patternIndex].Low)
+                         (_patternResult < 0 && input[CloseIdx] < window[(int) Samples - _patternIndex].Low)
                         )
                     )
                         _patternIndex = 0;
@@ -102,23 +104,23 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
             // 1st + 2nd: lower high and higher low
             if (window[1].High < window[2].High && window[1].Low > window[2].Low &&
                 // (bull) 3rd: lower high and lower low
-                ((input.High < window[1].High && input.Low < window[1].Low)
+                ((input[HighIdx] < window[1].High && input[LowIdx] < window[1].Low)
                  ||
                  // (bear) 3rd: higher high and higher low
-                 (input.High > window[1].High && input.Low > window[1].Low)
+                 (input[HighIdx] > window[1].High && input[LowIdx] > window[1].Low)
                 )
             ) {
-                _patternResult = (input.High < window[1].High ? 1 : -1);
+                _patternResult = (input[HighIdx] < window[1].High ? 1 : -1);
                 _patternIndex = (int) Samples - 1;
                 value = _patternResult;
             } else {
                 // search for confirmation if hikkake was no more than 3 bars ago
                 if (Samples <= _patternIndex + 4 &&
                     // close higher than the high of 2nd
-                    ((_patternResult > 0 && input.Close > window[(int) Samples - _patternIndex].High)
+                    ((_patternResult > 0 && input[CloseIdx] > window[(int) Samples - _patternIndex].High)
                      ||
                      // close lower than the low of 2nd
-                     (_patternResult < 0 && input.Close < window[(int) Samples - _patternIndex].Low)
+                     (_patternResult < 0 && input[CloseIdx] < window[(int) Samples - _patternIndex].Low)
                     )
                 ) {
                     value = _patternResult + (_patternResult > 0 ? 1 : -1);

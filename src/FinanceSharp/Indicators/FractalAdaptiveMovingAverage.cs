@@ -20,7 +20,9 @@ using System;
 using System.Linq;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -71,10 +73,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The data for the calculation</param>
         /// <returns>The average value</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            var price = (input.High + input.Low) / 2;
-            _high.Add(input.High);
-            _low.Add(input.Low);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            var price = (input[HighIdx] + input[LowIdx]) / 2;
+            _high.Add(input[HighIdx]);
+            _low.Add(input[LowIdx]);
 
             // our first data point just return identity
             if (_high.Samples <= _high.Size) {

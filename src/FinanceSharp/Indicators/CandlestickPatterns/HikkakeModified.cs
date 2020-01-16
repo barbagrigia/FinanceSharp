@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -78,7 +80,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _nearAveragePeriod - 3 && Samples < Period - 3) {
                     _nearPeriodTotal += GetCandleRange(CandleSettingType.Near, window[2]);
@@ -89,28 +91,28 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                         // 3rd: lower high and higher low than 2nd
                         window[1].High < window[2].High && window[1].Low > window[2].Low &&
                         // (bull) 4th: lower high and lower low
-                        ((input.High < window[1].High && input.Low < window[1].Low &&
+                        ((input[HighIdx] < window[1].High && input[LowIdx] < window[1].Low &&
                           // (bull) 2nd: close near the low
                           window[2].Close <= window[2].Low + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[2])
                          )
                          ||
                          // (bear) 4th: higher high and higher low
-                         (input.High > window[1].High && input.Low > window[1].Low &&
+                         (input[HighIdx] > window[1].High && input[LowIdx] > window[1].Low &&
                           // (bull) 2nd: close near the top
                           window[2].Close >= window[2].High - GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[2])
                          )
                         )
                     ) {
-                        _patternResult = (input.High < window[1].High ? 1 : -1);
+                        _patternResult = (input[HighIdx] < window[1].High ? 1 : -1);
                         _patternIndex = (int) Samples - 1;
                     } else {
                         // search for confirmation if modified hikkake was no more than 3 bars ago
                         if (Samples <= _patternIndex + 4 &&
                             // close higher than the high of 3rd
-                            ((_patternResult > 0 && input.Close > window[(int) Samples - _patternIndex].High)
+                            ((_patternResult > 0 && input[CloseIdx] > window[(int) Samples - _patternIndex].High)
                              ||
                              // close lower than the low of 3rd
-                             (_patternResult < 0 && input.Close < window[(int) Samples - _patternIndex].Low))
+                             (_patternResult < 0 && input[CloseIdx] < window[(int) Samples - _patternIndex].Low))
                         )
                             _patternIndex = 0;
                     }
@@ -131,29 +133,29 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // 3rd: lower high and higher low than 2nd
                 window[1].High < window[2].High && window[1].Low > window[2].Low &&
                 // (bull) 4th: lower high and lower low
-                ((input.High < window[1].High && input.Low < window[1].Low &&
+                ((input[HighIdx] < window[1].High && input[LowIdx] < window[1].Low &&
                   // (bull) 2nd: close near the low
                   window[2].Close <= window[2].Low + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[2])
                  )
                  ||
                  // (bear) 4th: higher high and higher low
-                 (input.High > window[1].High && input.Low > window[1].Low &&
+                 (input[HighIdx] > window[1].High && input[LowIdx] > window[1].Low &&
                   // (bull) 2nd: close near the top
                   window[2].Close >= window[2].High - GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal, window[2])
                  )
                 )
             ) {
-                _patternResult = (input.High < window[1].High ? 1 : -1);
+                _patternResult = (input[HighIdx] < window[1].High ? 1 : -1);
                 _patternIndex = (int) Samples - 1;
                 value = _patternResult;
             } else {
                 // search for confirmation if modified hikkake was no more than 3 bars ago
                 if (Samples <= _patternIndex + 4 &&
                     // close higher than the high of 3rd
-                    ((_patternResult > 0 && input.Close > window[(int) Samples - _patternIndex].High)
+                    ((_patternResult > 0 && input[CloseIdx] > window[(int) Samples - _patternIndex].High)
                      ||
                      // close lower than the low of 3rd
-                     (_patternResult < 0 && input.Close < window[(int) Samples - _patternIndex].Low))
+                     (_patternResult < 0 && input[CloseIdx] < window[(int) Samples - _patternIndex].Low))
                 ) {
                     value = _patternResult + (_patternResult > 0 ? 1 : -1);
                     _patternIndex = 0;

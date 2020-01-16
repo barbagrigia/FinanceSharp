@@ -19,7 +19,9 @@
 
 using System;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -85,9 +87,9 @@ namespace FinanceSharp.Indicators {
         /// 	 preclude the transform from blowing up by having an input larger than unity.
         /// </summary>
         /// <param name="time"></param>
-        /// <param name="input">Tensor<double> - the time and value of the next price</param>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            var price = (input.Low + input.High) / 2d;
+        /// <param name="input">DoubleArray - the time and value of the next price</param>
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            var price = (input[LowIdx] + input[HighIdx]) / 2d;
             _medianMin.Update(time, price);
             _medianMax.Update(time, price);
 

@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
-using FinanceSharp.Helpers;
+using FinanceSharp;
 
 namespace FinanceSharp.Data {
     /// <summary>

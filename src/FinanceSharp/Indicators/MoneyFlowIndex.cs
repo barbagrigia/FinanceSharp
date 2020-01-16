@@ -18,7 +18,9 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -96,9 +98,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            var typicalPrice = (input.High + input.Low + input.Close) / 3.0d;
-            var moneyFlow = typicalPrice * input.Volume;
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            var typicalPrice = (input[HighIdx] + input[LowIdx] + input[CloseIdx]) / 3.0d;
+            var moneyFlow = typicalPrice * input[VolumeIdx];
 
             PositiveMoneyFlow.Update(time, typicalPrice > PreviousTypicalPrice ? moneyFlow : 0.0d);
             NegativeMoneyFlow.Update(time, typicalPrice < PreviousTypicalPrice ? moneyFlow : 0.0d);

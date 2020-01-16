@@ -19,7 +19,9 @@
 
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -62,7 +64,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 return Constants.Zero;
             }
@@ -74,7 +76,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                     GetCandleColor(window[1]) == CandleColor.White && GetCandleColor(window[2]) == CandleColor.Black &&
                     window[1].Close > window[2].Open && window[1].Open < window[2].Close &&
                     // third candle higher
-                    input.Close > window[1].Close
+                    input[CloseIdx] > window[1].Close
                 )
                 ||
                 (
@@ -82,7 +84,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                     GetCandleColor(window[1]) == CandleColor.Black && GetCandleColor(window[2]) == CandleColor.White &&
                     window[1].Open > window[2].Close && window[1].Close < window[2].Open &&
                     // third candle lower
-                    input.Close < window[1].Close
+                    input[CloseIdx] < window[1].Close
                 )
             )
                 value = (int) GetCandleColor(window[1]);

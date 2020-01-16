@@ -18,7 +18,9 @@
 
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary> 
@@ -116,10 +118,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The TradeBar to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             AverageTrueRange.Update(TODO, input);
 
-            var typicalPrice = (input.High + input.Low + input.Close) / 3d;
+            var typicalPrice = (input[HighIdx] + input[LowIdx] + input[CloseIdx]) / 3d;
             MiddleBand.Update(time, typicalPrice);
 
             // poke the upper/lower bands, they actually don't use the input, they compute

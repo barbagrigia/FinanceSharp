@@ -19,8 +19,10 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -28,15 +30,15 @@ namespace FinanceSharp.Indicators {
     /// 	 always returns the same value as it is given if it passes a filter condition
     /// </summary>
     public class FilteredIdentity : IndicatorBase {
-        private Tensor<double> _previousInput;
-        private readonly Func<Tensor<double>, bool> _filter;
+        private DoubleArray _previousInput;
+        private readonly Func<DoubleArray, bool> _filter;
 
         /// <summary>
         /// 	 Initializes a new instance of the FilteredIdentity indicator with the specified name
         /// </summary>
         /// <param name="name">The name of the indicator</param>
         /// <param name="filter">Filters the IBaseData send into the indicator, if null defaults to true (x => true) which means no filter</param>
-        public FilteredIdentity(string name, Func<Tensor<double>, bool> filter)
+        public FilteredIdentity(string name, Func<DoubleArray, bool> filter)
             : base(name) {
             // default our filter to true (do not filter)
             _filter = filter ?? (x => true);
@@ -53,7 +55,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             if (_filter(input)) {
                 _previousInput = input;
                 return input;

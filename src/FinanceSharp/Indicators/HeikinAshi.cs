@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -96,17 +98,17 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns> A new value for this indicator </returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             if (!IsReady) {
-                Open.Update(time, (input.Open + input.Close) / 2);
-                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(time, input.High);
-                Low.Update(time, input.Low);
+                Open.Update(time, (input.Open + input[Close]) / 2);
+                Close.Update(time, (input.Open + input[High] + input[Low] + input[Close]) / 4);
+                High.Update(time, input[High]);
+                Low.Update(time, input[Low]);
             } else {
                 Open.Update(time, (Open + Close) / 2);
-                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(time, Math.Max(input.High, Math.Max(Open, Close)));
-                Low.Update(time, Math.Min(input.Low, Math.Min(Open, Close)));
+                Close.Update(time, (input.Open + input[High] + input[Low] + input[Close]) / 4);
+                High.Update(time, Math.Max(input[High], Math.Max(Open, Close)));
+                Low.Update(time, Math.Min(input[Low], Math.Min(Open, Close)));
             }
 
             return Close;

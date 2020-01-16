@@ -20,7 +20,9 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -38,8 +40,8 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _shadowVeryShortAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private double[] _shadowVeryShortPeriodTotal = new double[2];
-        private double[] _bodyLongPeriodTotal = new double[2];
+        private DoubleArray _shadowVeryShortPeriodTotal = new double[2];
+        private DoubleArray _bodyLongPeriodTotal = new double[2];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="Kicking"/> class using the specified name.
@@ -71,7 +73,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _shadowVeryShortAveragePeriod) {
                     _shadowVeryShortPeriodTotal[1] += GetCandleRange(CandleSettingType.ShadowVeryShort, window[1]);

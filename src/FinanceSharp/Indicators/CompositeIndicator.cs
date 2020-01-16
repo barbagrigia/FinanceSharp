@@ -18,8 +18,10 @@
 
 using System;
 using FinanceSharp.Data;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -106,7 +108,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected override IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
+        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
             return _composer.Invoke(Left, Right);
         }
 
@@ -119,7 +121,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             // this should never actually be invoked
             return _composer.Invoke(Left, Right).Value;
         }
@@ -138,8 +140,8 @@ namespace FinanceSharp.Indicators {
             // the timestamp that gets passed into the Update function, his compuation is soley a function
             // of the left and right indicator via '_composer'
 
-            Tensor<double> newLeftData = null;
-            Tensor<double> newRightData = null;
+            DoubleArray newLeftData = null;
+            DoubleArray newRightData = null;
             Left.Updated += (sender, time, updated) => {
                 newLeftData = updated;
 
@@ -166,7 +168,7 @@ namespace FinanceSharp.Indicators {
             };
         }
 
-        private long MaxTime(long time, Tensor<double> updated) {
+        private long MaxTime(long time, DoubleArray updated) {
             return Math.Max(time, Math.Max(Right.CurrentTime, Left.CurrentTime));
         }
     }

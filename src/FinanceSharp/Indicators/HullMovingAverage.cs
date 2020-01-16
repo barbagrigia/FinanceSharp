@@ -18,7 +18,9 @@
 
 using System;
 using FinanceSharp.Data;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -80,11 +82,11 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _fastWma.Update(TODO, input);
             _slowWma.Update(TODO, input);
             if (_fastWma.IsReady && _slowWma.IsReady) {
-                _hullMa.Update((long) TODO, (Tensor<double>) new Tensor<double>(time, 2 * _fastWma - _slowWma));
+                _hullMa.Update((long) TODO, (DoubleArray) new DoubleArray(time, 2 * _fastWma - _slowWma));
             }
 
             return _hullMa;

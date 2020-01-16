@@ -18,9 +18,9 @@
 */
 
 using System;
-using FinanceSharp.Helpers;
+using FinanceSharp;
 using Newtonsoft.Json;
-using static FinanceSharp.Helpers.StringExtensions;
+using static FinanceSharp.StringExtensions;
 
 namespace FinanceSharp.Data.Market {
     /// <summary>

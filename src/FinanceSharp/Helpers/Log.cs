@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     public class Log {
         public static void Error(Exception exception, string workerthreadExceptionThrownWhenRunningTask = null) {
             throw exception; //TODO

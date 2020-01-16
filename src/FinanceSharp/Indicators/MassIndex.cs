@@ -17,7 +17,9 @@
 */
 
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -82,14 +84,14 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            _ema1.Update(time, input.High - input.Low);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            _ema1.Update(time, input[HighIdx] - input[LowIdx]);
             if (_ema2.IsReady) {
                 _sum.Update(time, _ema1.Current / _ema2.Current);
             }
 
             if (!_sum.IsReady) {
-                return (Tensor<double>) _sum.Period;
+                return (DoubleArray) _sum.Period;
             }
 
             return _sum;

@@ -23,12 +23,12 @@
 //    /// <summary>
 //    /// 	 Represents a piece of data at a specific time
 //    /// </summary>
-//    public class Tensor<double> : BaseData, IEquatable<Tensor<double>>, IComparable<Tensor<double>>, IComparable {
+//    public class DoubleArray : BaseData, IEquatable<DoubleArray>, IComparable<DoubleArray>, IComparable {
 //        /// <summary>
-//        /// 	 Initializes a new default instance of Tensor<double> with a time of
+//        /// 	 Initializes a new default instance of DoubleArray with a time of
 //        /// 	 DateTime.MinValue and a Value of Constants.Zero.
 //        /// </summary>
-//        public Tensor<double>() {
+//        public DoubleArray() {
 //            Value = Constants.Zero;
 //            Time = DateTime.MinValue;
 //        }
@@ -38,7 +38,7 @@
 //        /// </summary>
 //        /// <param name="time">The time this data was produced</param>
 //        /// <param name="value">The data</param>
-//        public Tensor<double>(DateTime time, double value) {
+//        public DoubleArray(DateTime time, double value) {
 //            Time = time;
 //            Value = value;
 //        }
@@ -51,7 +51,7 @@
 //        /// 	 true if the current object is equal to the <paramref name="other" /> parameter; otherwise, false.
 //        /// </returns>
 //        /// <param name="other">An object to compare with this object.</param>
-//        public bool Equals(Tensor<double> other) {
+//        public bool Equals(DoubleArray other) {
 //            if (other == null) {
 //                return false;
 //            }
@@ -66,7 +66,7 @@
 //        /// 	 A value that indicates the relative order of the objects being compared. The return value has the following meanings: Value Meaning Less than zero This object is less than the <paramref name="other"/> parameter.Zero This object is equal to <paramref name="other"/>. Greater than zero This object is greater than <paramref name="other"/>.
 //        /// </returns>
 //        /// <param name="other">An object to compare with this object.</param>
-//        public int CompareTo(Tensor<double> other) {
+//        public int CompareTo(DoubleArray other) {
 //            if (ReferenceEquals(other, null)) {
 //                // everything is greater than null via MSDN
 //                return 1;
@@ -83,7 +83,7 @@
 //        /// </returns>
 //        /// <param name="obj">An object to compare with this instance. </param><exception cref="T:System.ArgumentException"><paramref name="obj"/> is not the same type as this instance. </exception><filterpriority>2</filterpriority>
 //        public int CompareTo(object obj) {
-//            var other = obj as Tensor<double>;
+//            var other = obj as DoubleArray;
 //            if (other == null) {
 //                throw new ArgumentException($"Object must be of type {GetType().GetBetterTypeName()}");
 //            }
@@ -112,7 +112,7 @@
 //        /// <filterpriority>2</filterpriority>
 //        public override bool Equals(object obj) {
 //            if (ReferenceEquals(null, obj)) return false;
-//            return obj is Tensor<double> && Equals((Tensor<double>) obj);
+//            return obj is DoubleArray && Equals((DoubleArray) obj);
 //        }
 
 //        /// <summary>
@@ -133,7 +133,7 @@
 //        /// </summary>
 //        /// <param name="instance">The DataPoint instance</param>
 //        /// <returns>The data held within the instance</returns>
-//        public static implicit operator double(Tensor<double> instance) {
+//        public static implicit operator double(DoubleArray instance) {
 //            return instance.Value;
 //        }
 //    }

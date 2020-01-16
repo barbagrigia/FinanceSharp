@@ -19,8 +19,10 @@
 using System;
 using System.Diagnostics;
 using FinanceSharp.Data;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -30,7 +32,7 @@ namespace FinanceSharp.Indicators {
     [DebuggerDisplay("{ToDetailedString()}")]
     public abstract partial class IndicatorBase : IIndicator {
         /// <summary>the most recent input that was given to this indicator</summary>
-        private Tensor<double> _previousInput;
+        private DoubleArray _previousInput;
 
         /// <summary>
         /// 	 Event handler that fires after this indicator is updated
@@ -60,7 +62,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Gets the current state of this indicator. If the state has not been updated
         /// 	 then the time on the value will equal DateTime.MinValue.
         /// </summary>
-        public Tensor<double> Current { get; protected set; }
+        public DoubleArray Current { get; protected set; }
 
         /// <summary>
         ///     The time of the currently stored data in milliseconds-epoch.
@@ -79,7 +81,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public bool Update(long time, Tensor<double> input) {
+        public bool Update(long time, DoubleArray input) {
             // compute a new value and update our previous time
             Samples++;
 
@@ -87,7 +89,7 @@ namespace FinanceSharp.Indicators {
 
             var nextResult = ValidateAndForward(time, input);
             if (nextResult.Status == IndicatorStatus.Success) {
-                Current = new Tensor<double>(nextResult.Value);
+                Current = new DoubleArray(nextResult.Value);
                 //TODO!: we need to set time here too!
                 // let others know we've produced a new data point
                 OnUpdated(time, Current);
@@ -104,7 +106,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
         public bool Update(long time, double value) {
-            return Update((long) time, (Tensor<double>) value);
+            return Update((long) time, (DoubleArray) value);
         }
 
         /// <summary>
@@ -207,7 +209,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected abstract Tensor Forward(long time, Tensor<double> input);
+        protected abstract DoubleArray Forward(long time, DoubleArray input);
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
@@ -215,16 +217,16 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected virtual IndicatorResult ValidateAndForward(long time, Tensor<double> input) {
+        protected virtual IndicatorResult ValidateAndForward(long time, DoubleArray input) {
             // default implementation always returns IndicatorStatus.Success
-            return new IndicatorResult(new Tensor<double>(Forward(time, input))); //TODO:! this is not good! we'll do that every computation.
+            return new IndicatorResult(new DoubleArray(Forward(time, input))); //TODO:! this is not good! we'll do that every computation.
         }
 
         /// <summary>
         /// 	 Event invocator for the Updated event
         /// </summary>
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
-        protected virtual void OnUpdated(long time, Tensor<double> consolidated) {
+        protected virtual void OnUpdated(long time, DoubleArray consolidated) {
             var handler = Updated;
             if (handler != null) handler(this, time, consolidated);
         }

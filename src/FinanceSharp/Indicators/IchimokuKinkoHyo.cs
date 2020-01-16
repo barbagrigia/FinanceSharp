@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -205,28 +207,28 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
-        protected override Tensor Forward(long time, Tensor<double> input) {
-            TenkanMaximum.Update(time, input.High);
-            TenkanMinimum.Update(time, input.Low);
-            Tenkan.Update(time, input.Close);
+        protected override DoubleArray Forward(long time, DoubleArray input) {
+            TenkanMaximum.Update(time, input[HighIdx]);
+            TenkanMinimum.Update(time, input[LowIdx]);
+            Tenkan.Update(time, input[CloseIdx]);
             if (Tenkan.IsReady) DelayedTenkanSenkouA.Update(time, Tenkan.Current.Value);
 
-            KijunMaximum.Update(time, input.High);
-            KijunMinimum.Update(time, input.Low);
-            Kijun.Update(time, input.Close);
+            KijunMaximum.Update(time, input[HighIdx]);
+            KijunMinimum.Update(time, input[LowIdx]);
+            Kijun.Update(time, input[CloseIdx]);
             if (Kijun.IsReady) DelayedKijunSenkouA.Update(time, Kijun.Current.Value);
 
-            SenkouA.Update(time, input.Close);
+            SenkouA.Update(time, input[CloseIdx]);
 
-            SenkouB.Update(time, input.Close);
-            SenkouBMaximum.Update(time, input.High);
+            SenkouB.Update(time, input[CloseIdx]);
+            SenkouBMaximum.Update(time, input[HighIdx]);
             if (SenkouBMaximum.IsReady) DelayedMaximumSenkouB.Update(time, SenkouBMaximum.Current.Value);
-            SenkouBMinimum.Update(time, input.Low);
+            SenkouBMinimum.Update(time, input[LowIdx]);
             if (SenkouBMinimum.IsReady) DelayedMinimumSenkouB.Update(time, SenkouBMinimum.Current.Value);
 
-            Chikou.Update(time, input.Close);
+            Chikou.Update(time, input[CloseIdx]);
 
-            return input.Close;
+            return input[CloseIdx];
         }
 
         /// <summary>

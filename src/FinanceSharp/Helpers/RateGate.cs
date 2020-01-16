@@ -20,7 +20,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Used to control the rate of some occurrence per unit of time.
     /// </summary>

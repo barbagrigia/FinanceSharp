@@ -19,7 +19,9 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -82,7 +84,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _trueRange.Update(TODO, input);
 
             if (Samples == 1) {
@@ -90,11 +92,11 @@ namespace FinanceSharp.Indicators {
                 return 5.0d;
             }
 
-            var buyingPressure = new Tensor<double> {Value = input.Close - Math.Min(input.Low, _previousInput.Close)};
+            var buyingPressure = new DoubleArray {Value = input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close)};
 
-            _sumBuyingPressure1.Update((long) TODO, (Tensor<double>) buyingPressure);
-            _sumBuyingPressure2.Update((long) TODO, (Tensor<double>) buyingPressure);
-            _sumBuyingPressure3.Update((long) TODO, (Tensor<double>) buyingPressure);
+            _sumBuyingPressure1.Update((long) TODO, (DoubleArray) buyingPressure);
+            _sumBuyingPressure2.Update((long) TODO, (DoubleArray) buyingPressure);
+            _sumBuyingPressure3.Update((long) TODO, (DoubleArray) buyingPressure);
 
             _sumTrueRange1.Update(TODO, _trueRange.Current);
             _sumTrueRange2.Update(TODO, _trueRange.Current);

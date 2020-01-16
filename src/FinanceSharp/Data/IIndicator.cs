@@ -17,7 +17,9 @@
 */
 
 using System;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Data {
 
@@ -45,7 +47,7 @@ namespace FinanceSharp.Data {
         /// 	 Gets the current state of this indicator. If the state has not been updated
         /// 	 then the time on the value will equal DateTime.MinValue.
         /// </summary>
-        Tensor<double> Current { get; }
+        DoubleArray Current { get; }
 
         /// <summary>
         /// 	 Gets the number of samples processed by this indicator
@@ -59,7 +61,7 @@ namespace FinanceSharp.Data {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        bool Update(long time, Tensor<double> input);
+        bool Update(long time, DoubleArray input);
 
         /// <summary>
         /// 	 Resets this indicator to its initial state

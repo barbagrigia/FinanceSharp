@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-namespace FinanceSharp.Helpers {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Shortcut date format strings
     /// </summary>

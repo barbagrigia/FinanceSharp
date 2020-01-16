@@ -21,7 +21,9 @@ using System;
 using System.Linq;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary> 
@@ -110,7 +112,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (window.Count >= 3) {
                 _multipliedDiffWindow.Add((window[0] - window[1]) * (window[1] - window[2]));
             }

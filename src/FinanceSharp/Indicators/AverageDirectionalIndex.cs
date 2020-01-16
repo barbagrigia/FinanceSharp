@@ -19,8 +19,10 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -41,7 +43,7 @@ namespace FinanceSharp.Indicators {
         private readonly IndicatorBase _smoothedDirectionalMovementPlus;
         private readonly IndicatorBase _smoothedDirectionalMovementMinus;
         private readonly IndicatorBase _averageDirectionalIndex;
-        private Tensor<double> _previousInput;
+        private DoubleArray _previousInput;
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -104,7 +106,7 @@ namespace FinanceSharp.Indicators {
                 (time, input) => {
                     // Computes the Plus Directional Indicator(+DI period).
                     if (_smoothedTrueRange != 0 && _smoothedDirectionalMovementPlus.IsReady) {
-                        return (Tensor<double>) 100d * _smoothedDirectionalMovementPlus / _smoothedTrueRange;
+                        return (DoubleArray) 100d * _smoothedDirectionalMovementPlus / _smoothedTrueRange;
                     }
 
                     return Constants.Zero;
@@ -167,14 +169,14 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private Tensor<double> ComputeTrueRange(IBaseDataBar input) {
+        private DoubleArray ComputeTrueRange(TradeBarValue input) {
             if (_previousInput == null) return Constants.Zero;
 
             var range1 = input.High - input.Low;
-            var range2 = torch.abs(input.High - _previousInput.Close);
-            var range3 = torch.abs(input.Low - _previousInput.Close);
+            var range2 = Math.Abs(input.High - _previousInput.Close);
+            var range3 = Math.Abs(input.Low - _previousInput.Close);
 
-            return (Tensor<double>) torch.max((Tensor<double>) range1, torch.max(range2, range3));
+            return Math.Max(range1, Math.Max(range2, range3));
         }
 
         /// <summary>
@@ -182,7 +184,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private double ComputePositiveDirectionalMovement(IBaseDataBar input) {
+        private double ComputePositiveDirectionalMovement(TradeBarValue input) {
             if (_previousInput != null &&
                 input.High > _previousInput.High &&
                 input.High - _previousInput.High >= _previousInput.Low - input.Low) {
@@ -197,7 +199,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private double ComputeNegativeDirectionalMovement(IBaseDataBar input) {
+        private double ComputeNegativeDirectionalMovement(TradeBarValue input) {
             if (_previousInput != null &&
                 _previousInput.Low > input.Low &&
                 _previousInput.Low - input.Low > input.High - _previousInput.High) {
@@ -213,7 +215,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _trueRange.Update(time, input);
             _directionalMovementPlus.Update(time, input);
             _directionalMovementMinus.Update(time, input);
@@ -225,9 +227,9 @@ namespace FinanceSharp.Indicators {
             PositiveDirectionalIndex.Update(time, Current);
             NegativeDirectionalIndex.Update(time, Current);
 
-            var diff = Math.Abs(PositiveDirectionalIndex - NegativeDirectionalIndex);
+            var diff = Math.Abs(PositiveDirectionalIndex.Current.Value - NegativeDirectionalIndex);
             var sum = PositiveDirectionalIndex + NegativeDirectionalIndex;
-            if (sum == 0) return (Tensor) 50d;
+            if (sum == 0) return (DoubleArray) 50d;
 
             _averageDirectionalIndex.Update(time, 100d * diff / sum);
 

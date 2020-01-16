@@ -18,7 +18,9 @@
 
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -38,7 +40,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
     public class ThreeBlackCrows : CandlestickPattern {
         private readonly int _shadowVeryShortAveragePeriod;
 
-        private double[] _shadowVeryShortPeriodTotal = new double[3];
+        private DoubleArray _shadowVeryShortPeriodTotal = new double[3];
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ThreeBlackCrows"/> class using the specified name.
@@ -69,7 +71,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _shadowVeryShortAveragePeriod) {
                     _shadowVeryShortPeriodTotal[2] += GetCandleRange(CandleSettingType.ShadowVeryShort, window[2]);
@@ -105,7 +107,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // three declining
                 window[2].Close > window[1].Close &&
                 // three declining
-                window[1].Close > input.Close
+                window[1].Close > input[CloseIdx]
             )
                 value = -1d;
             else

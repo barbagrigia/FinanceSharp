@@ -19,7 +19,7 @@
 using System;
 using System.Threading;
 
-namespace FinanceSharp.Helpers.RateLimit {
+namespace FinanceSharp.RateLimit {
     /// <summary>
     /// 	 Defines a token bucket for rate limiting
     /// 	 See: https://en.wikipedia.org/wiki/Token_bucket

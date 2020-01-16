@@ -26,10 +26,4 @@
     <Folder Include="Helpers\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Torch.NET">
-      <HintPath>..\..\libs\Torch.NET.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

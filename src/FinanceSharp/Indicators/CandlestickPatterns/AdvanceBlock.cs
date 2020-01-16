@@ -20,8 +20,10 @@
 using System;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using FinanceSharp.Helpers;
-using Torch;
+using FinanceSharp;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>
@@ -46,10 +48,10 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _farAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private double[] _shadowShortPeriodTotal = new double[3];
-        private double[] _shadowLongPeriodTotal = new double[2];
-        private double[] _nearPeriodTotal = new double[3];
-        private double[] _farPeriodTotal = new double[3];
+        private DoubleArray _shadowShortPeriodTotal = new double[3];
+        private DoubleArray _shadowLongPeriodTotal = new double[2];
+        private DoubleArray _nearPeriodTotal = new double[3];
+        private DoubleArray _farPeriodTotal = new double[3];
         private double _bodyLongPeriodTotal;
 
         /// <summary>
@@ -87,7 +89,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _shadowShortAveragePeriod) {
                     _shadowShortPeriodTotal[2] += GetCandleRange(CandleSettingType.ShadowShort, window[2]);
@@ -126,7 +128,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                 // 3rd white
                 GetCandleColor(input) == CandleColor.White &&
                 // consecutive higher closes
-                input.Close > window[1].Close && window[1].Close > window[2].Close &&
+                input[CloseIdx] > window[1].Close && window[1].Close > window[2].Close &&
                 // 2nd opens within/near 1st real body
                 window[1].Open > window[2].Open &&
                 window[1].Open <= window[2].Close + GetCandleAverage(CandleSettingType.Near, _nearPeriodTotal[2], window[2]) &&

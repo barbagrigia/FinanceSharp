@@ -18,7 +18,9 @@
 
 using System;
 using FinanceSharp.Data;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -26,7 +28,7 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     /// <typeparam name="T">The type of input this indicator takes</typeparam>
     public sealed class ConstantIndicator : IndicatorBase {
-        private readonly Tensor<double> _value;
+        private readonly DoubleArray _value;
 
         /// <summary>
         /// 	 Gets true since the ConstantIndicator is always ready to return the same value
@@ -40,7 +42,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The constant value to be returned</param>
         public ConstantIndicator(string name, double value)
             : base(name) {
-            _value = (Tensor<double>) value;
+            _value = (DoubleArray) value;
 
             // set this immediately so it always has the .Value property correctly set,
             // the time will be updated anytime this indicators Update method gets called.
@@ -53,7 +55,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             return _value;
         }
 
@@ -64,7 +66,7 @@ namespace FinanceSharp.Indicators {
             base.Reset();
 
             // re-initialize the current value, constant should ALWAYS return this value
-            Current = new Tensor<double>(_value);
+            Current = new DoubleArray(_value);
             CurrentTime = 0;
         }
     }

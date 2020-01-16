@@ -19,7 +19,9 @@
 using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
-using Torch;
+using static FinanceSharp.Constants;
+using FinanceSharp.Data;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -27,7 +29,7 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     public abstract class WindowIndicator : IndicatorBase {
         // a window of data over a certain look back period
-        private readonly RollingWindow<Tensor<double>> _window;
+        private readonly RollingWindow<DoubleArray> _window;
 
         /// <summary>
         /// 	 Gets the period of this window indicator
@@ -41,7 +43,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The number of data points to hold in the window</param>
         protected WindowIndicator(string name, int period)
             : base(name) {
-            _window = new RollingWindow<Tensor<double>>(period);
+            _window = new RollingWindow<DoubleArray>(period);
         }
 
         /// <summary>
@@ -55,7 +57,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override Tensor Forward(long time, Tensor<double> input) {
+        protected override DoubleArray Forward(long time, DoubleArray input) {
             _window.Add(input);
             return Forward(_window, time, input);
         }
@@ -75,7 +77,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected abstract Tensor<double> Forward(IReadOnlyWindow<Tensor<double>> window, long time, Tensor<double> input);
+        protected abstract DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input);
 
     }
 }
