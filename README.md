@@ -15,7 +15,7 @@ All time processing are always interpreted as UTC. local time is ignored complet
   All Value structures must implement `interface DataStruct : ICloneable`
 
 #### Its not a bug, its a feature
-- TradeValue data are ordered `CHLO` instead of `OHLC` to make `Close` (index 0) complitable with `IndicatorValue` which uses has its `Value` as index 0.
+- TradeValue data are ordered `CHLO` instead of `OHLC` to make `Close` (index 0) complitable with `IndicatorValue` which uses its `Value` at index 0.
 
 ### Copyrights
 The library is based on modified code from [QuantConnect](https://github.com/QuantConnect/Lean), incredible library for full-stack trading algorithm development.
