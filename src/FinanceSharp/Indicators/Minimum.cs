@@ -59,7 +59,7 @@ namespace FinanceSharp.Indicators {
             : base(name, period) { }
 
         /// <inheritdoc />
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (Samples == 1 || input.Value <= Current.Value) {
                 // our first sample or if we're bigger than our previous indicator value
                 // reset the periods since minimum (it's this period) and return the value

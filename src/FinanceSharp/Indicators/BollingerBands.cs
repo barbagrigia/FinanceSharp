@@ -96,8 +96,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>The input is returned unmodified.</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            StandardDeviation.Update(TODO, input);
-            MiddleBand.Update(TODO, input);
+            StandardDeviation.Update(time, input);
+            MiddleBand.Update(time, input);
             return input;
         }
 

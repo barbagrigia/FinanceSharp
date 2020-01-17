@@ -49,7 +49,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _bodyShortAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private DoubleArray _bodyPeriodTotal = new double[5];
+        private DoubleArray _bodyPeriodTotal = new DoubleArray(1, 5);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="MatHold"/> class using the specified name.
@@ -87,11 +87,12 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window of data held in this indicator</param>
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples > Period - _bodyShortAveragePeriod) {
                     _bodyPeriodTotal[3] += GetCandleRange(CandleSettingType.BodyShort, window[3]);
@@ -155,7 +156,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _bodyPeriodTotal = new double[5];
+            _bodyPeriodTotal = new DoubleArray(1, 5);
             base.Reset();
         }
     }

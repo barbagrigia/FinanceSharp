@@ -47,9 +47,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _farAveragePeriod;
         private readonly int _bodyShortAveragePeriod;
 
-        private DoubleArray _shadowVeryShortPeriodTotal = new double[3];
-        private DoubleArray _nearPeriodTotal = new double[3];
-        private DoubleArray _farPeriodTotal = new double[3];
+        private DoubleArray _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
+        private DoubleArray _nearPeriodTotal = new DoubleArray(1, 3);
+        private DoubleArray _farPeriodTotal = new DoubleArray(1, 3);
         private double _bodyShortPeriodTotal;
 
         /// <summary>
@@ -81,11 +81,12 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window of data held in this indicator</param>
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (!IsReady) {
                 if (Samples >= Period - _shadowVeryShortAveragePeriod) {
                     _shadowVeryShortPeriodTotal[2] += GetCandleRange(CandleSettingType.ShadowVeryShort, window[2]);
@@ -171,9 +172,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _shadowVeryShortPeriodTotal = new double[3];
-            _nearPeriodTotal = new double[3];
-            _farPeriodTotal = new double[3];
+            _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
+            _nearPeriodTotal = new DoubleArray(1, 3);
+            _farPeriodTotal = new DoubleArray(1, 3);
             _bodyShortPeriodTotal = 0;
             base.Reset();
         }

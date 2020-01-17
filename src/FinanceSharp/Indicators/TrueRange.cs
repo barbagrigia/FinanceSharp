@@ -31,7 +31,7 @@ namespace FinanceSharp.Indicators {
     /// 	 value3 = distance from yesterday's close to today's low.
     /// </summary>
     public class TrueRange : BarIndicator {
-        private IBaseDataBar _previousInput;
+        private DoubleArray _previousInput;
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="TrueRange"/> class using the specified name.

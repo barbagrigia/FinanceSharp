@@ -119,15 +119,15 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The TradeBar to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            AverageTrueRange.Update(TODO, input);
+            AverageTrueRange.Update(time, input);
 
             var typicalPrice = (input[HighIdx] + input[LowIdx] + input[CloseIdx]) / 3d;
             MiddleBand.Update(time, typicalPrice);
 
             // poke the upper/lower bands, they actually don't use the input, they compute
             // based on the ATR and the middle band
-            LowerBand.Update(TODO, input);
-            UpperBand.Update(TODO, input);
+            LowerBand.Update(time, input);
+            UpperBand.Update(time, input);
             return MiddleBand;
         }
     }

@@ -83,13 +83,13 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _fastWma.Update(TODO, input);
-            _slowWma.Update(TODO, input);
+            _fastWma.Update(time, input);
+            _slowWma.Update(time, input);
             if (_fastWma.IsReady && _slowWma.IsReady) {
-                _hullMa.Update((long) TODO, (DoubleArray) new DoubleArray(time, 2 * _fastWma - _slowWma));
+                _hullMa.Update(time, 2 * _fastWma - _slowWma);
             }
 
-            return _hullMa;
+            return _hullMa.Current;
         }
     }
 }

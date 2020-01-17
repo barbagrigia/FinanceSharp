@@ -89,8 +89,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _price.Update(input.EndTime, GetTimeWeightedAveragePrice(input));
-            _volume.Update(input.EndTime, input[VolumeIdx]);
+            _price.Update(time, GetTimeWeightedAveragePrice(input));
+            _volume.Update(time, input[VolumeIdx]);
             return _vwap.Current.Value;
         }
 
@@ -99,7 +99,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The current trade bar input</param>
         /// <returns>An estimated average price over the trade bar's interval</returns>
-        protected virtual double GetTimeWeightedAveragePrice(TradeBar input) {
+        protected virtual double GetTimeWeightedAveragePrice(DoubleArray input) {
             return (input.Open + input[HighIdx] + input[LowIdx] + input.Value) / 4;
         }
     }

@@ -76,7 +76,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (!IsReady) {
-                _sma.Update(TODO, input);
+                _sma.Update(time, input);
                 return _sma;
             }
 

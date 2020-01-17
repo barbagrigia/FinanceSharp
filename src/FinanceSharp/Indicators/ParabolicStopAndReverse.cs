@@ -29,7 +29,7 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     public class ParabolicStopAndReverse : BarIndicator {
         private bool _isLong;
-        private IBaseDataBar _previousBar;
+        private DoubleArray _previousBar;
         private double _sar;
         private double _ep;
         private double _outputSar;
@@ -89,7 +89,7 @@ namespace FinanceSharp.Indicators {
         protected override DoubleArray Forward(long time, DoubleArray input) {
             // On first iteration we can’t produce an SAR value so we save the current bar and return zero
             if (Samples == 1) {
-                _previousBar = input;
+                _previousBar = input.Clone();
 
                 // return a value that's close to where we will be, returning 0 doesn't make sense
                 return input[CloseIdx];
@@ -116,7 +116,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Initialize the indicator values 
         /// </summary>
-        private void Init(IBaseDataBar currentBar) {
+        private void Init(DoubleArray currentBar) {
             // init position
             _isLong = currentBar.Close >= _previousBar.Close;
 
@@ -134,7 +134,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Calculate indicator value when the position is long
         /// </summary>
-        private void HandleLongPosition(IBaseDataBar currentBar) {
+        private void HandleLongPosition(DoubleArray currentBar) {
             // Switch to short if the low penetrates the SAR value.
             if (currentBar.Low <= _sar) {
                 // Switch and Overide the SAR with the ep
@@ -191,7 +191,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Calculate indicator value when the position is short
         /// </summary>
-        private void HandleShortPosition(IBaseDataBar currentBar) {
+        private void HandleShortPosition(DoubleArray currentBar) {
             // Switch to long if the high penetrates the SAR value.
             if (currentBar.High >= _sar) {
                 // Switch and Overide the SAR with the ep

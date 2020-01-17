@@ -71,7 +71,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _adx.Update(TODO, input);
+            _adx.Update(time, input);
 
             if (_adx.IsReady) {
                 _adxHistory.Add(_adx);

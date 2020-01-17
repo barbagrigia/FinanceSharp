@@ -37,10 +37,11 @@ namespace FinanceSharp.Indicators {
             }
 
             // reset vwap on daily boundaries
-            if (_lastDate != input.EndTime.Date) {
+            var date = time.ToDateTime().Date;
+            if (_lastDate != date) {
                 _sumOfVolume = Constants.Zero;
                 _sumOfPriceTimesVolume = Constants.Zero;
-                _lastDate = input.EndTime.Date;
+                _lastDate = date;
             }
 
             // running totals for Σ PiVi / Σ Vi
@@ -70,21 +71,21 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Determines the volume and price to be used for the current input in the VWAP computation
         /// </summary>
-        protected bool TryGetVolumeAndAveragePrice(BaseData input, out double volume, out double averagePrice) {
-            var tick = input as Tick;
+        protected bool TryGetVolumeAndAveragePrice(DoubleArray input, out double volume, out double averagePrice) {
+            var tick = input;
 
-            if (tick?.TickType == TickType.Trade) {
-                volume = tick.Quantity;
-                averagePrice = tick.LastPrice;
+            if (tick.Properties > 2) {
+                volume = tick.Volume;
+                averagePrice = tick.Value;
                 return true;
             }
 
-            var tradeBar = input as TradeBar;
-            if (tradeBar?.IsFillForward == false) {
-                volume = tradeBar.Volume;
-                averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;
-                return true;
-            }
+            //var tradeBar = input;
+            //if (tradeBar?.IsFillForward == false) {
+            //    volume = tradeBar.Volume;
+            //    averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;
+            //    return true;
+            //}
 
             volume = 0;
             averagePrice = 0;
@@ -97,18 +98,18 @@ namespace FinanceSharp.Indicators {
         protected bool TryGetVolumeAndAveragePrice(long time, DoubleArray input, out double volume, out double averagePrice) {
             var tick = input;
 
-            if (tick?.TickType == TickType.Trade) {
-                volume = tick.Quantity;
-                averagePrice = tick.LastPrice;
+            if (tick.Properties > 2) {
+                volume = tick.Volume;
+                averagePrice = tick.Value;
                 return true;
             }
 
-            var tradeBar = input;
-            if (tradeBar?.IsFillForward == false) {
-                volume = tradeBar.Volume;
-                averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;
-                return true;
-            }
+            //var tradeBar = input;
+            //if (tradeBar?.IsFillForward == false) {
+            //    volume = tradeBar.Volume;
+            //    averagePrice = (tradeBar.High + tradeBar.Low + tradeBar.Close) / 3d;
+            //    return true;
+            //}
 
             volume = 0;
             averagePrice = 0;

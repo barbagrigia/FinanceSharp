@@ -16,13 +16,16 @@
  * limitations under the License.
 */
 
+using System;
+using System.Diagnostics;
+using FinanceSharp.Data;
 using FinanceSharp.Data.Market;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
-    /// 	 The BarIndicator is an indicator that accepts IBaseDataBar data as its input.
+    /// 	 The BarIndicator is an indicator that accepts DoubleArray data as its input.
     /// 
-    /// 	 This type is more of a shim/typedef to reduce the need to refer to things as IndicatorBase&lt;IBaseDataBar&gt;
+    /// 	 This type is more of a shim/typedef to reduce the need to refer to things as IndicatorBase&lt;DoubleArray&gt;
     /// </summary>
     public abstract class BarIndicator : IndicatorBase {
         /// <summary>
@@ -31,5 +34,21 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         protected BarIndicator(string name)
             : base(name) { }
+
+        /// <summary>
+        /// 	 Computes the next value of this indicator from the given state
+        /// 	 and returns an instance of the <see cref="IndicatorResult"/> class
+        /// </summary>
+        /// <param name="input">The input given to the indicator</param>
+        /// <returns>An IndicatorResult object including the status of the indicator</returns>
+        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
+#if DEBUG
+
+            if (input.Properties < 4)
+                throw new ArgumentException("input doesn't have more than 4 values - therefore can't be considered a TradeBarValue.");
+#endif
+            // default implementation always returns IndicatorStatus.Success
+            return new IndicatorResult(Forward(time, input));
+        }
     }
 }

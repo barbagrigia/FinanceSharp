@@ -73,8 +73,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _sma1.Update(TODO, input);
-            _sma2.Update(TODO, _sma1.Current);
+            _sma1.Update(time, input);
+            _sma2.Update(time, _sma1.Current);
 
             return _sma2;
         }

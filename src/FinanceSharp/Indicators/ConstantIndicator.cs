@@ -50,6 +50,20 @@ namespace FinanceSharp.Indicators {
         }
 
         /// <summary>
+        /// 	 Creates a new ConstantIndicator that will always return the specified value
+        /// </summary>
+        /// <param name="name">The name of this indicator</param>
+        /// <param name="value">The constant value to be returned</param>
+        public ConstantIndicator(string name, DoubleArray value)
+            : base(name) {
+            _value = value;
+
+            // set this immediately so it always has the .Value property correctly set,
+            // the time will be updated anytime this indicators Update method gets called.
+            Current = _value;
+        }
+
+        /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="time"></param>
@@ -66,7 +80,7 @@ namespace FinanceSharp.Indicators {
             base.Reset();
 
             // re-initialize the current value, constant should ALWAYS return this value
-            Current = new DoubleArray(_value);
+            Current = _value;
             CurrentTime = 0;
         }
     }

@@ -37,56 +37,74 @@ namespace FinanceSharp.Data.Consolidators {
         public IDataConsolidator Second { get; private set; }
 
         /// <summary>
+        /// 	 Gets a name for this indicator
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
+        /// 	 Gets the number of samples processed by this indicator
+        /// </summary>
+        public long Samples { get; protected set; }
+
+        /// <summary>
         /// 	 Gets the most recently consolidated piece of data. This will be null if this consolidator
         /// 	 has not produced any data yet.
         ///
         /// 	 For a SequentialConsolidator, this is the output from the 'Second' consolidator.
         /// </summary>
-        public IBaseData Consolidated {
-            get { return Second.Consolidated; }
-        }
+        public DoubleArray Current => Second.Current;
+
+        /// <summary>
+        /// 	 Gets the current time of <see cref="IUpdatable.Current"/>.
+        /// </summary>
+        public long CurrentTime => Second.CurrentTime;
 
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated
         /// </summary>
-        public IBaseData WorkingData {
-            get { return Second.WorkingData; }
-        }
+        public DoubleArray WorkingData => Second.WorkingData;
 
         /// <summary>
-        /// 	 Gets the type consumed by this consolidator
+        /// 	 Event handler that fires after this updatable is updated.
         /// </summary>
-        public Type InputType {
-            get { return First.InputType; }
-        }
+        public event UpdatedHandler Updated;
 
         /// <summary>
-        /// 	 Gets the type produced by this consolidator
+        ///     Event handler that fires after this updatable is reset.
         /// </summary>
-        public Type OutputType {
-            get { return Second.OutputType; }
-        }
+        public event ResettedHandler Resetted;
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public void Update(IBaseData data) {
-            First.Update(data);
+        public bool Update(long time, DoubleArray data) {
+            return First.Update(time, data);
         }
+
+        /// <summary>
+        /// 	 Resets this updatable to its initial state
+        /// </summary>
+        public void Reset() {
+            First.Reset();
+            Second.Reset();
+            Resetted?.Invoke(this);
+            Samples = 0;
+        }
+
+        /// <summary>
+        /// 	 Gets a flag indicating when this updatable is ready and fully initialized
+        /// </summary>
+        public bool IsReady => Second.IsReady;
 
         /// <summary>
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
         /// </summary>
         /// <param name="currentLocalTime">The current time in the local time zone (same as <see cref="BaseData.Time"/>)</param>
-        public void Scan(DateTime currentLocalTime) {
+        public void Scan(long currentLocalTime) {
             First.Scan(currentLocalTime);
         }
-
-        /// <summary>
-        /// 	 Event handler that fires when a new piece of data is produced
-        /// </summary>
-        public event DataConsolidatedHandler DataConsolidated;
 
         /// <summary>
         /// 	 Creates a new consolidator that will pump date through the first, and then the output
@@ -94,20 +112,16 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <param name="first">The first consolidator to receive data</param>
         /// <param name="second">The consolidator to receive first's output</param>
-        public SequentialConsolidator(IDataConsolidator first, IDataConsolidator second) {
-            if (!second.InputType.IsAssignableFrom(first.OutputType)) {
-                throw new ArgumentException("first.OutputType must equal second.OutputType!");
-            }
-
+        public SequentialConsolidator(IDataConsolidator first, IDataConsolidator second, string name = "") {
             First = first;
             Second = second;
-
+            Name = name;
             // wire up the second one to get data from the first
-            first.DataConsolidated += (sender, consolidated) => second.Update(consolidated);
+            first.Updated += (time, updated) => second.Update(time, updated);
 
             // wire up the second one's events to also fire this consolidator's event so consumers
             // can attach
-            second.DataConsolidated += (sender, consolidated) => OnDataConsolidated(consolidated);
+            second.Updated += (time, updated) => OnDataConsolidated(time, updated);
         }
 
         /// <summary>
@@ -115,9 +129,10 @@ namespace FinanceSharp.Data.Consolidators {
         /// 	 by derived classes when they have consolidated a new piece of data.
         /// </summary>
         /// <param name="consolidated">The newly consolidated data</param>
-        protected virtual void OnDataConsolidated(IBaseData consolidated) {
-            var handler = DataConsolidated;
-            if (handler != null) handler(this, consolidated);
+        protected virtual bool OnDataConsolidated(long time, DoubleArray consolidated) {
+            Samples++;
+            Updated?.Invoke(time, consolidated);
+            return true;
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
@@ -125,7 +140,7 @@ namespace FinanceSharp.Data.Consolidators {
         public void Dispose() {
             First.Dispose();
             Second.Dispose();
-            DataConsolidated = null;
+            Updated = null;
         }
     }
 }

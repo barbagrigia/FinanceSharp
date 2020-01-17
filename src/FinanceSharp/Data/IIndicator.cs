@@ -24,48 +24,63 @@ using FinanceSharp.Data;
 namespace FinanceSharp.Data {
 
     /// <summary>
+    ///     Represents an object that can be updated.
+    /// </summary>
+    public interface IUpdatable {
+        /// <summary>
+        /// 	 Event handler that fires after this updatable is updated.
+        /// </summary>
+        event UpdatedHandler Updated;
+
+        /// <summary>
+        ///     Event handler that fires after this updatable is reset.
+        /// </summary>
+        event ResettedHandler Resetted;
+
+        /// <summary>
+        /// 	 Updates the state of this updatable with the given value and returns true
+        /// 	 if this updatable is ready, false otherwise
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="input">The value to use to update this updatable</param>
+        /// <returns>True if this updatable is ready, false otherwise</returns>
+        bool Update(long time, DoubleArray input);
+
+        /// <summary>
+        /// 	 Resets this updatable to its initial state
+        /// </summary>
+        void Reset();
+
+        /// <summary>
+        /// 	 Gets a flag indicating when this updatable is ready and fully initialized
+        /// </summary>
+        bool IsReady { get; }
+
+        /// <summary>
+        /// 	 Gets the current state of this updatable. If the state has not been updated
+        /// 	 then the value will be null.
+        /// </summary>
+        DoubleArray Current { get; }
+
+        /// <summary>
+        /// 	 Gets the current time of <see cref="Current"/>.
+        /// </summary>
+        long CurrentTime { get; }
+    }
+
+    /// <summary>
     /// 	 Represents an indicator that can receive data updates and emit events when the value of
     /// 	 the indicator has changed.
     /// </summary>
-    public interface IIndicator : IComparable<IIndicator>, IComparable {
-        /// <summary>
-        /// 	 Event handler that fires after this indicator is updated
-        /// </summary>
-        event IndicatorUpdatedHandler Updated;
-
+    public interface IIndicator : IUpdatable {
         /// <summary>
         /// 	 Gets a name for this indicator
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// 	 Gets a flag indicating when this indicator is ready and fully initialized
-        /// </summary>
-        bool IsReady { get; }
-
-        /// <summary>
-        /// 	 Gets the current state of this indicator. If the state has not been updated
-        /// 	 then the time on the value will equal DateTime.MinValue.
-        /// </summary>
-        DoubleArray Current { get; }
-
-        /// <summary>
         /// 	 Gets the number of samples processed by this indicator
         /// </summary>
         long Samples { get; }
-
-        /// <summary>
-        /// 	 Updates the state of this indicator with the given value and returns true
-        /// 	 if this indicator is ready, false otherwise
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="input">The value to use to update this indicator</param>
-        /// <returns>True if this indicator is ready, false otherwise</returns>
-        bool Update(long time, DoubleArray input);
-
-        /// <summary>
-        /// 	 Resets this indicator to its initial state
-        /// </summary>
-        void Reset();
     }
 }

@@ -61,7 +61,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the Heikin-Ashi current TradeBar
         /// </summary>
-        public TradeBar CurrentBar => new TradeBar(Open.Current.Time, Open, High, Low, Close, Volume);
+        public TradeBarVolumedValue CurrentBar => new TradeBarVolumedValue(Open.Current.Value, High.Current.Value, Low.Current.Value, Close.Current.Value, Volume.Current.Value);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="HeikinAshi"/> class using the specified name.
@@ -100,18 +100,18 @@ namespace FinanceSharp.Indicators {
         /// <returns> A new value for this indicator </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (!IsReady) {
-                Open.Update(time, (input.Open + input[Close]) / 2);
-                Close.Update(time, (input.Open + input[High] + input[Low] + input[Close]) / 4);
-                High.Update(time, input[High]);
-                Low.Update(time, input[Low]);
+                Open.Update(time, (input.Open + input.Close) / 2);
+                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
+                High.Update(time, input.High);
+                Low.Update(time, input.Low);
             } else {
                 Open.Update(time, (Open + Close) / 2);
-                Close.Update(time, (input.Open + input[High] + input[Low] + input[Close]) / 4);
-                High.Update(time, Math.Max(input[High], Math.Max(Open, Close)));
-                Low.Update(time, Math.Min(input[Low], Math.Min(Open, Close)));
+                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
+                High.Update(time, Math.Max(input.High, Math.Max(Open.Current.Value, Close.Current.Value)));
+                Low.Update(time, Math.Min(input.Low, Math.Min(Open.Current.Value, Close.Current.Value)));
             }
 
-            return Close;
+            return Close.Current.Value;
         }
 
         /// <summary>

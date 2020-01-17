@@ -30,6 +30,7 @@ namespace FinanceSharp.Indicators {
     public abstract class WindowIndicator : IndicatorBase {
         // a window of data over a certain look back period
         private readonly RollingWindow<DoubleArray> _window;
+        private readonly RollingWindow<long> _windowTimes;
 
         /// <summary>
         /// 	 Gets the period of this window indicator
@@ -44,6 +45,7 @@ namespace FinanceSharp.Indicators {
         protected WindowIndicator(string name, int period)
             : base(name) {
             _window = new RollingWindow<DoubleArray>(period);
+            _windowTimes = new RollingWindow<long>(period);
         }
 
         /// <summary>
@@ -59,7 +61,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             _window.Add(input);
-            return Forward(_window, time, input);
+            return Forward(_windowTimes, _window, time, input);
         }
 
         /// <summary>
@@ -68,16 +70,17 @@ namespace FinanceSharp.Indicators {
         public override void Reset() {
             base.Reset();
             _window.Reset();
+            _windowTimes.Reset();
         }
 
         /// <summary>
         /// 	 Computes the next value for this indicator from the given state.
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window of data held in this indicator</param>
         /// <param name="time"></param>
         /// <param name="input"></param>
         /// <returns>A new value for this indicator</returns>
-        protected abstract DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input);
-
+        protected abstract DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input);
     }
 }

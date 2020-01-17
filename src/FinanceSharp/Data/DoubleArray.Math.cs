@@ -1,8 +1,107 @@
 ﻿using System;
 
 namespace FinanceSharp.Data {
+    public delegate double BinaryFunctionHandler(double lhs, double rhs);
+
+    public delegate double UnaryFunctionHandler(double lhs);
+
+    public static class DoubleArrayMathExt {
+        /// <summary>
+        ///     Performs a binary function on lhs and rhs with broadcasting support.
+        /// </summary>
+        /// <param name="lhs"></param>
+        /// <param name="rhs"></param>
+        /// <param name="function"></param>
+        /// <returns></returns>
+        public static unsafe DoubleArray Function(this DoubleArray lhs, DoubleArray rhs, BinaryFunctionHandler function) {
+            if (lhs.IsScalar && rhs.IsScalar)
+                return *lhs.Address * *rhs.Address;
+
+            DoubleArray ret;
+            if (lhs.IsScalar) {
+                ret = rhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var rhsAddr = rhs.Address;
+                var propsRhs = rhs.Properties;
+                var lhs_val = lhs.Value;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsRhs;
+                    dstAndLhsAddr[offset] = function(lhs_val, rhsAddr[i * propsRhs]);
+                }
+            } else if (rhs.IsScalar) {
+                ret = lhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var lhsAddr = lhs.Address;
+                var propsLhs = lhs.Properties;
+                var rhsVal = rhs.Value;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsLhs;
+                    dstAndLhsAddr[offset] = function(lhsAddr[offset], rhsVal);
+                }
+            } else {
+                ret = lhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var rhsAddr = rhs.Address;
+                var propsLhs = lhs.Properties;
+                var propsRhs = rhs.Properties;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsLhs;
+                    dstAndLhsAddr[offset] = function(dstAndLhsAddr[offset], rhsAddr[i * propsRhs]);
+                }
+            }
+
+            return ret;
+        }
+
+        public static unsafe DoubleArray Function(this DoubleArray lhs, DoubleArray rhs, int property, BinaryFunctionHandler function) {
+            if (lhs.IsScalar && rhs.IsScalar)
+                return lhs[property] * rhs[property];
+
+            DoubleArray ret;
+            if (lhs.IsScalar) {
+                ret = rhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var rhsAddr = rhs.Address;
+                var propsRhs = rhs.Properties;
+                var lhs_val = lhs.Value;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsRhs + property;
+                    dstAndLhsAddr[offset] = function(lhs_val, rhsAddr[i * propsRhs + property]);
+                }
+            } else if (rhs.IsScalar) {
+                ret = lhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var lhsAddr = lhs.Address;
+                var propsLhs = lhs.Properties;
+                var rhsVal = rhs.Value;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsLhs + property;
+                    dstAndLhsAddr[offset] = function(lhsAddr[offset], rhsVal);
+                }
+            } else {
+                ret = lhs.Clone();
+                var len = ret.Count;
+                var dstAndLhsAddr = ret.Address;
+                var rhsAddr = rhs.Address;
+                var propsLhs = lhs.Properties;
+                var propsRhs = rhs.Properties;
+                for (int i = 0; i < len; i++) {
+                    var offset = i * propsLhs + property;
+                    dstAndLhsAddr[offset] = function(dstAndLhsAddr[offset], rhsAddr[i * propsRhs + property]);
+                }
+            }
+
+            return ret;
+        }
+    }
+
     public unsafe partial class DoubleArray {
-        public DoubleArray Select(int property, Func<double, double> function, bool copy = false) {
+        public DoubleArray Function(int property, UnaryFunctionHandler function, bool copy = false) {
             var @this = copy ? this.Clone() : this;
             var len = @this.Count;
             var ptr = @this.Address;
@@ -15,7 +114,7 @@ namespace FinanceSharp.Data {
             return @this;
         }
 
-        public DoubleArray Select(Func<double, double> function, bool copy = false) {
+        public DoubleArray Function(UnaryFunctionHandler function, bool copy = false) {
             var @this = copy ? this.Clone() : this;
             var len = @this.Count * @this.Properties;
             var ptr = @this.Address;
@@ -30,7 +129,7 @@ namespace FinanceSharp.Data {
         /// </summary>
         /// <typeparam name="TStruct"></typeparam>
         /// <param name="function"></param>
-        public DoubleArray Select<TStruct>(ManipulateStructHandler<TStruct> function, bool copy = false) where TStruct : unmanaged, DataStruct {
+        public DoubleArray Function<TStruct>(ManipulateStructHandler<TStruct> function, bool copy = false) where TStruct : unmanaged, DataStruct {
             var @this = copy ? this.Clone() : this;
             var len = @this.Count;
             var ptr = (TStruct*) @this.Address;
@@ -41,7 +140,7 @@ namespace FinanceSharp.Data {
             return @this;
         }
 
-        public DoubleArray Sum(int property, Func<double, double> function, bool copy = false) {
+        public DoubleArray Sum(int property, UnaryFunctionHandler function, bool copy = false) {
             var @this = copy ? this.Clone() : this;
             var len = @this.Count;
             var ptr = @this.Address;

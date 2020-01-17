@@ -169,7 +169,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private DoubleArray ComputeTrueRange(TradeBarValue input) {
+        private DoubleArray ComputeTrueRange(long time, DoubleArray input) {
             if (_previousInput == null) return Constants.Zero;
 
             var range1 = input.High - input.Low;
@@ -184,7 +184,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private double ComputePositiveDirectionalMovement(TradeBarValue input) {
+        private DoubleArray ComputePositiveDirectionalMovement(long time, DoubleArray input) {
             if (_previousInput != null &&
                 input.High > _previousInput.High &&
                 input.High - _previousInput.High >= _previousInput.Low - input.Low) {
@@ -199,7 +199,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
-        private double ComputeNegativeDirectionalMovement(TradeBarValue input) {
+        private DoubleArray ComputeNegativeDirectionalMovement(long time, DoubleArray input) {
             if (_previousInput != null &&
                 _previousInput.Low > input.Low &&
                 _previousInput.Low - input.Low > input.High - _previousInput.High) {
@@ -222,7 +222,7 @@ namespace FinanceSharp.Indicators {
             _smoothedTrueRange.Update(time, Current);
             _smoothedDirectionalMovementPlus.Update(time, Current);
             _smoothedDirectionalMovementMinus.Update(time, Current);
-            _previousInput = input;
+            _previousInput = input.Clone();
 
             PositiveDirectionalIndex.Update(time, Current);
             NegativeDirectionalIndex.Update(time, Current);

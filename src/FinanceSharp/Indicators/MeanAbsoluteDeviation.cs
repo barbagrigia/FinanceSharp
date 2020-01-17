@@ -68,13 +68,14 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window for the input history</param>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
-            Mean.Update((long) TODO, (DoubleArray) input);
-            return Samples < 2 ? Constants.Zero : window.Average(v => Math.Abs(v - Mean.Current.Value));
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+            Mean.Update(time, input);
+            return Samples < 2 ? Constants.Zero : window.Average(v => Math.Abs(v.Value - Mean.Current.Value));
         }
 
         /// <summary>

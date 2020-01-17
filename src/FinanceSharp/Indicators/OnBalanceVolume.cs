@@ -30,7 +30,7 @@ namespace FinanceSharp.Indicators {
     /// 	 result in negative value.
     /// </summary>
     public class OnBalanceVolume : TradeBarIndicator {
-        private TradeBar _previousInput;
+        private DoubleArray _previousInput;
 
         /// <summary>
         /// 	 Initializes a new instance of the Indicator class using the specified name.
@@ -67,14 +67,14 @@ namespace FinanceSharp.Indicators {
             if (_previousInput != null) {
                 if (input.Value > _previousInput.Value) {
                     obv += input[VolumeIdx];
-                    Update(TODO, input);
+                    Update(time, input);
                 } else if (input.Value < _previousInput.Value) {
                     obv -= input[VolumeIdx];
-                    Update(TODO, input);
+                    Update(time, input);
                 }
             } else {
                 obv = input[VolumeIdx];
-                Update(TODO, input);
+                Update(time, input);
             }
 
             _previousInput = input;

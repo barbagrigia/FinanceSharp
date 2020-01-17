@@ -90,8 +90,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _shortRoc.Update(TODO, input);
-            _longRoc.Update(TODO, input);
+            _shortRoc.Update(time, input);
+            _longRoc.Update(time, input);
             if (!_longRoc.IsReady || !_shortRoc.IsReady) {
                 return Constants.Zero;
             }

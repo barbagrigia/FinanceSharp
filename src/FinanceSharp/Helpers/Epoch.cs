@@ -1,52 +1,12 @@
 ﻿using System;
+using FinanceSharp.Data;
 
-namespace FinanceSharp.Data {
-    public interface IDataType { }
-
-    public struct DataValue : IDataType {
-        public double Value;
-
-        public DataValue(double value) {
-            Value = value;
-        }
-    }
-
-    public struct DataPoint : IDataType {
-        public DataValue Value;
-        public long Time;
-
-        public DataPoint(double value, long time) {
-            Value = new DataValue(value);
-            Time = time;
-        }
-
-        public DataPoint(double value, DateTime time) {
-            Value = new DataValue(value);
-            Time = time.ToEpochTime();
-        }
-
-        public DataPoint(double value, TimeSpan time) {
-            Value = new DataValue(value);
-            Time = time.ToEpochTime();
-        }
-
-        public DataPoint(DataValue value, long time) {
-            Value = value;
-            Time = time;
-        }
-
-        public DataPoint(DataValue value, DateTime time) {
-            Value = value;
-            Time = time.ToEpochTime();
-        }
-
-        public DataPoint(DataValue value, TimeSpan time) {
-            Value = value;
-            Time = time.ToEpochTime();
-        }
-    }
-
-    public static partial class Time {
+// ReSharper disable once CheckNamespace
+namespace FinanceSharp {
+    /// <summary>
+    ///     Conversion methods for epoch time and other time formats.
+    /// </summary>
+    public static class Epoch {
         public static readonly DateTime EpochStart = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
         /// <summary>
@@ -74,7 +34,7 @@ namespace FinanceSharp.Data {
         ///     Converts milliseconds-epoch time to <see cref="DateTime"/> represented by <see cref="long"/>.
         /// </summary>
         public static DateTime ToDateTime(this long epochMilliseconds) {
-            return EpochStart.AddMilliseconds(epochMilliseconds).ToLocalTime();
+            return EpochStart.AddMilliseconds(epochMilliseconds);
         }
     }
 }

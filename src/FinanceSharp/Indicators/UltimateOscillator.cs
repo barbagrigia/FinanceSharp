@@ -31,7 +31,7 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     public class UltimateOscillator : BarIndicator {
         private readonly int _period;
-        private IBaseDataBar _previousInput;
+        private DoubleArray _previousInput;
         private readonly TrueRange _trueRange;
         private readonly Sum _sumBuyingPressure1;
         private readonly Sum _sumBuyingPressure2;
@@ -85,22 +85,22 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _trueRange.Update(TODO, input);
+            _trueRange.Update(time, input);
 
             if (Samples == 1) {
-                _previousInput = input;
+                _previousInput = input.Clone();
                 return 5.0d;
             }
 
-            var buyingPressure = new DoubleArray {Value = input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close)};
+            var buyingPressure = new DoubleArray(1, IndicatorValue.Properties) {Value = input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close)};
 
-            _sumBuyingPressure1.Update((long) TODO, (DoubleArray) buyingPressure);
-            _sumBuyingPressure2.Update((long) TODO, (DoubleArray) buyingPressure);
-            _sumBuyingPressure3.Update((long) TODO, (DoubleArray) buyingPressure);
+            _sumBuyingPressure1.Update(time, buyingPressure);
+            _sumBuyingPressure2.Update(time, buyingPressure);
+            _sumBuyingPressure3.Update(time, buyingPressure);
 
-            _sumTrueRange1.Update(TODO, _trueRange.Current);
-            _sumTrueRange2.Update(TODO, _trueRange.Current);
-            _sumTrueRange3.Update(TODO, _trueRange.Current);
+            _sumTrueRange1.Update(time, _trueRange.Current);
+            _sumTrueRange2.Update(time, _trueRange.Current);
+            _sumTrueRange3.Update(time, _trueRange.Current);
 
             _previousInput = input;
 

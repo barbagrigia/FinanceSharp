@@ -16,15 +16,16 @@
  * limitations under the License.
 */
 
+using System.Threading;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
-
 
 namespace FinanceSharp.Data {
     /// <summary>
     /// 	 Event handler type for the IndicatorBase.Updated event
     /// </summary>
-    /// <param name="sender">The indicator that fired the event</param>
+    /// <param name="time">The time representing <paramref name="updated"/>.</param>
     /// <param name="updated">The new piece of data produced by the indicator</param>
-    public delegate void IndicatorUpdatedHandler(object sender, long time, DoubleArray updated);
+    /// <returns>True if the update has caused consolidation and IsReady is true.</returns>
+    public delegate void UpdatedHandler(long time, DoubleArray updated);
 }

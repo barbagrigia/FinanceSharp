@@ -52,12 +52,13 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window for the input history</param>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
-            return Math.Sqrt(base.Forward(window, input));
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+            return Math.Sqrt(base.Forward(timeWindow, window, time, input).Value);
         }
     }
 }

@@ -28,9 +28,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// </summary>
     /// <typeparam name="T">The input type of the consolidator</typeparam>
     /// <typeparam name="TConsolidated">The output type of the consolidator</typeparam>
-    public abstract class PeriodCountConsolidatorBase<T, TConsolidated> : DataConsolidator<T>
-        where T : IBaseData
-        where TConsolidated : BaseData {
+    public abstract class PeriodCountConsolidatorBase : DataConsolidator {
         // The symbol that we are consolidating for.
 
         //The number of data updates between creating new bars.
@@ -46,10 +44,13 @@ namespace FinanceSharp.Data.Consolidators {
         private int _currentCount;
 
         //The working bar used for aggregating the data
-        private TConsolidated _workingBar;
+        private DoubleArray _workingBar;
+
+        //The working time used for aggregating the data
+        private long _workingTime;
 
         //The last time we emitted a consolidated bar
-        private DateTime? _lastEmit;
+        private long? _lastEmit;
 
         private PeriodCountConsolidatorBase(IPeriodSpecification periodSpecification) {
             _periodSpecification = periodSpecification;
@@ -85,29 +86,12 @@ namespace FinanceSharp.Data.Consolidators {
         }
 
         /// <summary>
-        /// 	 Creates a consolidator to produce a new <typeparamref name="TConsolidated"/> instance representing the last count pieces of data or the period, whichever comes first
-        /// </summary>
-        /// <param name="func">Func that defines the start time of a consolidated data</param>
-        protected PeriodCountConsolidatorBase(Func<DateTime, CalendarInfo> func)
-            : this(new FuncPeriodSpecification(func)) {
-            _period = Time.OneSecond;
-        }
-
-        /// <summary>
-        /// 	 Gets the type produced by this consolidator
-        /// </summary>
-        public override Type OutputType => typeof(TConsolidated);
 
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated
         /// </summary>
-        public override IBaseData WorkingData => _workingBar?.Clone();
+        public override DoubleArray WorkingData => _workingBar;
 
-        /// <summary>
-        /// 	 Event handler that fires when a new piece of data is produced. We define this as a 'new'
-        /// 	 event so we can expose it as a <typeparamref name="TConsolidated"/> instead of a <see cref="BaseData"/> instance
-        /// </summary>
-        public new event EventHandler<TConsolidated> DataConsolidated;
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data. This method is
@@ -118,7 +102,8 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when multiple symbols are being consolidated.</exception>
         /// <param name="data">The new data for the consolidator</param>
-        public override void Update(T data) {
+        public override bool Update(long time, DoubleArray data)
+        {
             //Decide to fire the event
             var fireDataConsolidated = false;
 
@@ -126,77 +111,82 @@ namespace FinanceSharp.Data.Consolidators {
             // always aggregate before firing in counting mode
             bool aggregateBeforeFire = _maxCount.HasValue;
 
-            if (_maxCount.HasValue) {
+            if (_maxCount.HasValue)
+            {
                 // we're in count mode
                 _currentCount++;
-                if (_currentCount >= _maxCount.Value) {
+                if (_currentCount >= _maxCount.Value)
+                {
                     _currentCount = 0;
                     fireDataConsolidated = true;
                 }
             }
 
-            if (!_lastEmit.HasValue) {
+            if (!_lastEmit.HasValue)
+            {
                 // initialize this value for period computations
-                _lastEmit = IsTimeBased ? DateTime.MinValue : data.Time;
+                _lastEmit = IsTimeBased ? 0 : time;
             }
 
-            if (_period.HasValue) {
+            if (_period.HasValue)
+            {
                 // we're in time span mode and initialized
-                if (_workingBar != null && data.Time - _workingBar.Time >= _period.Value && GetRoundedBarTime(data.Time) > _lastEmit) {
+                if (_workingBar != null && (time - _workingTime) >= _period.Value.TotalMilliseconds && GetRoundedBarTime(time) > _lastEmit)
+                {
                     fireDataConsolidated = true;
                 }
 
                 // special case: always aggregate before event trigger when TimeSpan is zero
-                if (_period.Value == TimeSpan.Zero) {
+                if (_period.Value == TimeSpan.Zero)
+                {
                     fireDataConsolidated = true;
                     aggregateBeforeFire = true;
                 }
             }
 
-            if (aggregateBeforeFire) {
-                if (data.Time >= _lastEmit) {
-                    AggregateBar(ref _workingBar, data);
+            if (aggregateBeforeFire)
+            {
+                if (time >= _lastEmit)
+                {
+                    AggregateBar(ref _workingTime, ref _workingBar, time, data);
                 }
             }
 
             //Fire the event
-            if (fireDataConsolidated) {
-                var workingTradeBar = _workingBar as TradeBar;
-                if (workingTradeBar != null) {
-                    // we kind of are cheating here...
-                    if (_period.HasValue) {
-                        workingTradeBar.Period = _period.Value;
-                    }
-                    // since trade bar has period it aggregates this properly
-                    else if (!(data is TradeBar)) {
-                        workingTradeBar.Period = data.Time - _lastEmit.Value;
-                    }
-                }
-
-                OnDataConsolidated(_workingBar);
-                _lastEmit = IsTimeBased && _workingBar != null ? _workingBar.Time.Add(Period ?? TimeSpan.Zero) : data.Time;
+            if (fireDataConsolidated)
+            {
+                OnDataConsolidated(_workingTime, _workingBar);
+                _lastEmit = IsTimeBased && _workingBar != null ? (long) (_workingTime + (Period ?? TimeSpan.Zero).TotalMilliseconds) : time;
                 _workingBar = null;
             }
 
-            if (!aggregateBeforeFire) {
-                if (data.Time >= _lastEmit) {
-                    AggregateBar(ref _workingBar, data);
+            if (!aggregateBeforeFire)
+            {
+                if (time >= _lastEmit)
+                {
+                    AggregateBar(ref _workingTime, ref _workingBar, time, data);
                 }
             }
+
+            return fireDataConsolidated;
         }
 
         /// <summary>
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
         /// </summary>
         /// <param name="currentLocalTime">The current time in the local time zone (same as <see cref="BaseData.Time"/>)</param>
-        public override void Scan(DateTime currentLocalTime) {
-            if (_period.HasValue && _workingBar != null) {
+        public override void Scan(long currentLocalTime)
+        {
+            if (_period.HasValue && _workingBar != null)
+            {
                 currentLocalTime = GetRoundedBarTime(currentLocalTime);
 
-                if (_period.Value != TimeSpan.Zero && currentLocalTime - _workingBar.Time >= _period.Value && currentLocalTime > _lastEmit) {
-                    OnDataConsolidated(_workingBar);
+                if (_period.Value != TimeSpan.Zero && (currentLocalTime - _workingTime) >= _period.Value.TotalMilliseconds && currentLocalTime > _lastEmit)
+                {
+                    OnDataConsolidated(_workingTime, _workingBar);
                     _lastEmit = currentLocalTime;
                     _workingBar = null;
+                    _workingTime = 0;
                 }
             }
         }
@@ -217,14 +207,14 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <param name="workingBar">The bar we're building, null if the event was just fired and we're starting a new consolidated bar</param>
         /// <param name="data">The new data</param>
-        protected abstract void AggregateBar(ref TConsolidated workingBar, T data);
+        protected abstract void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data);
 
         /// <summary>
         /// 	 Gets a rounded-down bar time. Called by AggregateBar in derived classes.
         /// </summary>
         /// <param name="time">The bar time to be rounded down</param>
         /// <returns>The rounded bar time</returns>
-        protected DateTime GetRoundedBarTime(DateTime time) {
+        protected long GetRoundedBarTime(long time) {
             var barTime = _periodSpecification.GetRoundedBarTime(time);
 
             // In the case of a new bar, define the period defined at opening time
@@ -236,20 +226,11 @@ namespace FinanceSharp.Data.Consolidators {
         }
 
         /// <summary>
-        /// 	 Event invocator for the <see cref="DataConsolidated"/> event
-        /// </summary>
-        /// <param name="e">The consolidated data</param>
-        protected virtual void OnDataConsolidated(TConsolidated e) {
-            base.OnDataConsolidated(e);
-            DataConsolidated?.Invoke(this, e);
-        }
-
-        /// <summary>
         /// 	 Distinguishes between the different ways a consolidated data start time can be specified
         /// </summary>
         private interface IPeriodSpecification {
             TimeSpan? Period { get; }
-            DateTime GetRoundedBarTime(DateTime time);
+            long GetRoundedBarTime(long time);
         }
 
         /// <summary>
@@ -258,7 +239,7 @@ namespace FinanceSharp.Data.Consolidators {
         private class BarCountPeriodSpecification : IPeriodSpecification {
             public TimeSpan? Period { get; } = null;
 
-            public DateTime GetRoundedBarTime(DateTime time) => time;
+            public long GetRoundedBarTime(long time) => time;
         }
 
         /// <summary>
@@ -271,7 +252,7 @@ namespace FinanceSharp.Data.Consolidators {
                 Period = period;
             }
 
-            public DateTime GetRoundedBarTime(DateTime time) => time;
+            public long GetRoundedBarTime(long time) => time;
         }
 
         /// <summary>
@@ -284,30 +265,7 @@ namespace FinanceSharp.Data.Consolidators {
                 Period = period;
             }
 
-            public DateTime GetRoundedBarTime(DateTime time) => time.RoundDown(Period.Value);
-        }
-
-        /// <summary>
-        /// 	 Special case for bars where the open time is defined by a function
-        /// </summary>
-        private class FuncPeriodSpecification : IPeriodSpecification {
-            public TimeSpan? Period { get; private set; }
-
-            public readonly Func<DateTime, CalendarInfo> _calendarInfoFunc;
-
-            public FuncPeriodSpecification(Func<DateTime, CalendarInfo> expiryFunc) {
-                if (expiryFunc(DateTime.Now).Start > DateTime.Now) {
-                    throw new ArgumentException($"{nameof(FuncPeriodSpecification)}: Please use a function that computes a date/time in the past (e.g.: Time.StartOfWeek and Time.StartOfMonth)");
-                }
-
-                _calendarInfoFunc = expiryFunc;
-            }
-
-            public DateTime GetRoundedBarTime(DateTime time) {
-                var calendarInfo = _calendarInfoFunc(time);
-                Period = calendarInfo.Period;
-                return calendarInfo.Start;
-            }
+            public long GetRoundedBarTime(long time) => time.RoundDown(Period.Value);
         }
     }
 }

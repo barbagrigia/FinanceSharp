@@ -54,7 +54,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            var value = base.Forward(input);
+            var value = base.Forward(time, input);
 
             return Slow != 0 ? 100 * value / Slow : Constants.Zero;
         }

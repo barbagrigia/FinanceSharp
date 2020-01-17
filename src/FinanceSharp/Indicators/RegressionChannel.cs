@@ -101,8 +101,8 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _standardDeviation.Update(TODO, input);
-            LinearRegression.Update(TODO, input);
+            _standardDeviation.Update(time, input);
+            LinearRegression.Update(time, input);
 
             return LinearRegression.Current;
         }

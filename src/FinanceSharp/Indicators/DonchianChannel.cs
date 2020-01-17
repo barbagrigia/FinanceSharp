@@ -32,7 +32,8 @@ namespace FinanceSharp.Indicators {
     /// 	 the given timeframe.
     /// </summary>
     public class DonchianChannel : BarIndicator {
-        private IBaseDataBar _previousInput;
+        private DoubleArray _previousInput;
+        private long _previousTime;
 
         /// <summary>
         /// 	 Gets the upper band of the Donchian Channel.
@@ -98,11 +99,12 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator, which by convention is the mean value of the upper band and lower band.</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (_previousInput != null) {
-                UpperBand.Update(_previousInput.Time, _previousInput.High);
-                LowerBand.Update(_previousInput.Time, _previousInput.Low);
+                UpperBand.Update(_previousTime, _previousInput.High);
+                LowerBand.Update(_previousTime, _previousInput.Low);
             }
 
-            _previousInput = input;
+            _previousInput = input.Clone();
+            _previousTime = time;
             return (UpperBand + LowerBand) / 2;
         }
 
@@ -113,6 +115,8 @@ namespace FinanceSharp.Indicators {
             base.Reset();
             UpperBand.Reset();
             LowerBand.Reset();
+            _previousInput = null;
+            _previousTime = 0;
         }
     }
 }

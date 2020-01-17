@@ -73,13 +73,13 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _ema1.Update(TODO, input);
+            _ema1.Update(time, input);
 
             if (_ema1.IsReady)
-                _ema2.Update(TODO, _ema1.Current);
+                _ema2.Update(time, _ema1.Current);
 
             if (_ema2.IsReady)
-                _ema3.Update(TODO, _ema2.Current);
+                _ema3.Update(time, _ema2.Current);
 
             return IsReady ? 3d * _ema1 - 3d * _ema2 + _ema3 : Constants.Zero;
         }

@@ -16,11 +16,13 @@
  * limitations under the License.
 */
 
-namespace FinanceSharp.Data.Market {
+namespace FinanceSharp.Data.Market
+{
     /// <summary>
-    /// 	 The type of the RenkoBar
+    /// 	 The type of the DoubleArray
     /// </summary>
-    public enum RenkoType {
+    public enum RenkoType
+    {
         /// <summary>
         /// 	 Indicates that the RenkoConsolidator works in a
         /// "Classic" manner (ie. that it only returns a single

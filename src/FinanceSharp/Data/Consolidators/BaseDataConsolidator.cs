@@ -23,7 +23,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// <summary>
     /// 	 Type capable of consolidating trade bars from any base data instance
     /// </summary>
-    public class BaseDataConsolidator : TradeBarConsolidatorBase<BaseData> {
+    public class BaseDataConsolidator : TradeBarConsolidatorBase {
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>
@@ -47,33 +47,21 @@ namespace FinanceSharp.Data.Consolidators {
             : base(maxCount, period) { }
 
         /// <summary>
-        /// 	 Initializes a new instance of the <see cref="BaseDataConsolidator"/> class
-        /// </summary>
-        /// <param name="func">Func that defines the start time of a consolidated data</param>
-        public BaseDataConsolidator(Func<DateTime, CalendarInfo> func)
-            : base(func) { }
-
-        /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be
         /// 	 null following the event firing
         /// </summary>
         /// <param name="workingBar">The bar we're building, null if the event was just fired and we're starting a new trade bar</param>
         /// <param name="data">The new data</param>
-        protected override void AggregateBar(ref TradeBar workingBar, BaseData data) {
+        protected override void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data) {
             if (workingBar == null) {
-                workingBar = new TradeBar {
-                    Time = GetRoundedBarTime(data.Time),
-                    Close = data.Value,
-                    High = data.Value,
-                    Low = data.Value,
-                    Open = data.Value,
-                    Value = data.Value
-                };
+                workingBar = new StructArray<TradeBarVolumedValue>(new TradeBarVolumedValue(data.Close, data.High, data.Low, data.Open, data.Volume));
+                workingTime = GetRoundedBarTime(time);
             } else {
                 //Aggregate the working bar
-                workingBar.Close = data.Value;
-                if (data.Value < workingBar.Low) workingBar.Low = data.Value;
-                if (data.Value > workingBar.High) workingBar.High = data.Value;
+                workingBar.Close = data.Close;
+                workingBar.Volume += data.Volume;
+                if (data.Low < workingBar.Low) workingBar.Low = data.Low;
+                if (data.High > workingBar.High) workingBar.High = data.High;
             }
         }
     }

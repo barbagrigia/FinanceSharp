@@ -6,10 +6,37 @@ using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
 namespace FinanceSharp.Data {
-    public class StructArray<T> where T : unmanaged { }
+    public unsafe class StructArray<TStruct> : DoubleArray where TStruct : unmanaged, DataStruct {
+        public new TStruct* Address;
+
+        /// <summary>
+        ///     
+        /// </summary>
+        /// <param name="count">The number of items in this array.</param>
+        /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
+        public StructArray(int count, int properties) {
+            Count = count;
+            Properties = properties;
+            Address = (TStruct*) Marshal.AllocHGlobal(count * properties * sizeof(double));
+            base.Address = (double*) Address;
+            AsDoubleSpan.Fill(0);
+        }
+
+        /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
+        public StructArray(TStruct value) : this(1, value.Properties) {
+            *Address = value;
+        }
+
+        public TStruct this[int i] {
+            get => Address[i];
+            set => Address[i] = value;
+        }
+
+        protected StructArray() { }
+    }
 
     /// <summary>
-    ///     A block of memory represented as two dimensions or scalar.
+    ///     A block of memory represented as two dimensions or a scalar.
     /// </summary>
     /// <remarks>First dimension of this array is <see cref="Count"/> and 2nd dimension is <see cref="Properties"/>, which for a OHLC trade bar would be (n, 4).</remarks>
     public unsafe partial class DoubleArray : ICloneable, IDisposable {
@@ -31,6 +58,7 @@ namespace FinanceSharp.Data {
             Count = count;
             Properties = properties;
             Address = (double*) Marshal.AllocHGlobal(count * properties * sizeof(double));
+            AsDoubleSpan.Fill(0);
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>

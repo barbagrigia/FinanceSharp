@@ -39,7 +39,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => _weightVector.Length;
+        public int WarmUpPeriod => _weightVector.Count;
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ArnaudLegouxMovingAverage" /> class.
@@ -64,9 +64,10 @@ namespace FinanceSharp.Indicators {
                 .Select(i => Math.Exp(-(i - m) * (i - m) / (2 * s * s)))
                 .ToArray();
 
-            _weightVector = tmpVector
+            _weightVector = DoubleArray.FromArray(
+                tmpVector
                 .Select(i => i / tmpVector.Sum()).Reverse()
-                .ToArray();
+                .ToArray(), false, properties: 1);
         }
 
         /// <summary>
@@ -102,6 +103,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value for this indicator from the given state.
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window">The window of data held in this indicator</param>
         /// <param name="time"></param>
         /// <param name="input">The input value to this indicator on this time step</param>
@@ -109,11 +111,11 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         /// <exception cref="System.NotImplementedException"></exception>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window,
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window,
             long time,
             DoubleArray input) {
             return IsReady
-                ? window.Select((t, i) => t.Price * _weightVector[i]).Sum()
+                ? window.Select((t, i) => t.Value * _weightVector[i]).Sum()
                 : input;
         }
     }

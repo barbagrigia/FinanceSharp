@@ -22,7 +22,7 @@
 //    /// <summary>
 //    /// 	 Base Data Class: Type, Timestamp, Key -- Base Features.
 //    /// </summary>
-//    public interface IBaseData {
+//    public interface DoubleArray {
 //        /// <summary>
 //        /// 	 Time keeper of data -- all data is timeseries based.
 //        /// </summary>

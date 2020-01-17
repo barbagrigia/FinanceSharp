@@ -28,7 +28,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 Use this consolidator to turn data of a lower resolution into data of a higher resolution,
     /// 	 for example, if you subscribe to minute data but want to have a 15 minute bar.
     /// </summary>
-    public class TradeBarConsolidator : TradeBarConsolidatorBase<TradeBar> {
+    public class TradeBarConsolidator : TradeBarConsolidatorBase {
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>
@@ -52,34 +52,19 @@ namespace FinanceSharp.Data.Consolidators {
             : base(maxCount, period) { }
 
         /// <summary>
-        /// 	 Creates a consolidator to produce a new 'TradeBar' representing the last count pieces of data or the period, whichever comes first
-        /// </summary>
-        /// <param name="func">Func that defines the start time of a consolidated data</param>
-        public TradeBarConsolidator(Func<DateTime, CalendarInfo> func)
-            : base(func) { }
-
-        /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be
         /// 	 null following the event firing
         /// </summary>
         /// <param name="workingBar">The bar we're building, null if the event was just fired and we're starting a new trade bar</param>
         /// <param name="data">The new data</param>
-        protected override void AggregateBar(ref TradeBar workingBar, TradeBar data) {
+        protected override void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data) {
             if (workingBar == null) {
-                workingBar = new TradeBar {
-                    Time = GetRoundedBarTime(data.Time),
-                    Open = data.Open,
-                    High = data.High,
-                    Low = data.Low,
-                    Close = data.Close,
-                    Volume = data.Volume,
-                    Period = IsTimeBased && Period.HasValue ? (TimeSpan) Period : data.Period
-                };
+                workingBar = new StructArray<TradeBarVolumedValue>(new TradeBarVolumedValue(data.Close, data.High, data.Low, data.Open, data.Volume));
+                workingTime = GetRoundedBarTime(time);
             } else {
                 //Aggregate the working bar
                 workingBar.Close = data.Close;
                 workingBar.Volume += data.Volume;
-                if (!IsTimeBased) workingBar.Period += data.Period;
                 if (data.Low < workingBar.Low) workingBar.Low = data.Low;
                 if (data.High > workingBar.High) workingBar.High = data.High;
             }

@@ -142,20 +142,20 @@ namespace FinanceSharp.Indicators {
 
             DoubleArray newLeftData = null;
             DoubleArray newRightData = null;
-            Left.Updated += (sender, time, updated) => {
+            Left.Updated += (time, updated) => {
                 newLeftData = updated;
 
                 // if we have left and right data (or if right is a constant) then we need to update
                 if (newRightData != null || rightIsConstant) {
-                    
                     Update(MaxTime(time, updated), updated);
                     // reset these to null after each update
                     newLeftData = null;
                     newRightData = null;
                 }
+
             };
 
-            Right.Updated += (sender, time,  updated) => {
+            Right.Updated += (time, updated) => {
                 newRightData = updated;
 
                 // if we have left and right data (or if left is a constant) then we need to update
@@ -165,6 +165,7 @@ namespace FinanceSharp.Indicators {
                     newLeftData = null;
                     newRightData = null;
                 }
+
             };
         }
 

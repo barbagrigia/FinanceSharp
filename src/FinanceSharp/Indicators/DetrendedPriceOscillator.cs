@@ -82,8 +82,8 @@ namespace FinanceSharp.Indicators {
         /// 	 A new value for this indicator
         /// </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _priceLag.Update(TODO, input);
-            _sma.Update(TODO, input);
+            _priceLag.Update(time, input);
+            _sma.Update(time, input);
             return _priceLag - _sma;
         }
     }

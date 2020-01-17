@@ -24,42 +24,38 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 Represents the simplest DataConsolidator implementation, one that is defined
     /// 	 by a straight pass through of the data. No projection or aggregation is performed.
     /// </summary>
-    /// <typeparam name="T">The type of data</typeparam>
-    public class IdentityDataConsolidator<T> : DataConsolidator<T>
-        where T : IBaseData {
-        private static readonly bool IsTick = typeof(T) == typeof(Tick);
-
-        private T _last;
+    /// <typeparam name="DoubleArray">The type of data</typeparam>
+    public class IdentityDataConsolidator : DataConsolidator {
+        private DoubleArray _last;
+        private long _last_time;
 
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated
         /// </summary>
-        public override IBaseData WorkingData {
+        public override DoubleArray WorkingData {
             get { return _last == null ? null : _last.Clone(); }
-        }
-
-        /// <summary>
-        /// 	 Gets the type produced by this consolidator
-        /// </summary>
-        public override Type OutputType {
-            get { return typeof(T); }
         }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public override void Update(T data) {
-            if (IsTick || _last == null || _last.EndTime != data.EndTime) {
-                OnDataConsolidated(data);
+        public override bool Update(long time, DoubleArray data) {
+            if (_last == null || _last_time != time) {
+                OnDataConsolidated(time, data);
                 _last = data;
+                _last_time = time;
+                return true;
             }
+
+            return false;
         }
 
         /// <summary>
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
         /// </summary>
         /// <param name="currentLocalTime">The current time in the local time zone (same as <see cref="BaseData.Time"/>)</param>
-        public override void Scan(DateTime currentLocalTime) { }
+        public override void Scan(long currentLocalTime) { }
     }
 }

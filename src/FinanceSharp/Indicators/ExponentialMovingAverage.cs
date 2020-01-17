@@ -93,10 +93,10 @@ namespace FinanceSharp.Indicators {
         protected override DoubleArray Forward(long time, DoubleArray input) {
             // our first data point just return identity
             if (Samples == 1) {
-                return input;
+                return input.Value;
             }
 
-            return input * _k + Current * (1 - _k);
+            return input.Value * _k + Current.Value * (1 - _k);
         }
     }
 }

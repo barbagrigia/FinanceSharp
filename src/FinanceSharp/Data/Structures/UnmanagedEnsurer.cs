@@ -4,8 +4,6 @@
     /// </summary>
     internal class UnmanagedEnsurer {
 #pragma warning disable 169
-        private MustBeUnmanaged<DataValue> _a;
-        private MustBeUnmanaged<DataPoint> _b;
         private MustBeUnmanaged<TradeBarValue> _c;
         private MustBeUnmanaged<TradeBarVolumedValue> _d;
         private MustBeUnmanaged<IndicatorValue> _e;

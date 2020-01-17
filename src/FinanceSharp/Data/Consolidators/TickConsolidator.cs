@@ -24,7 +24,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 A data consolidator that can make bigger bars from ticks over a given
     /// 	 time span or a count of pieces of data.
     /// </summary>
-    public class TickConsolidator : TradeBarConsolidatorBase<Tick> {
+    public class TickConsolidator : TradeBarConsolidatorBase {
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>
@@ -48,38 +48,34 @@ namespace FinanceSharp.Data.Consolidators {
             : base(maxCount, period) { }
 
         /// <summary>
-        /// 	 Initializes a new instance of the <see cref="TickQuoteBarConsolidator"/> class
-        /// </summary>
-        /// <param name="func">Func that defines the start time of a consolidated data</param>
-        public TickConsolidator(Func<DateTime, CalendarInfo> func)
-            : base(func) { }
-
-        /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be
         /// 	 null following the event firing
         /// </summary>
-        /// <param name="workingBar">The bar we're building</param>
+        /// <param name="workingBar">The bar we're building, null if the event was just fired and we're starting a new consolidated bar</param>
         /// <param name="data">The new data</param>
-        protected override void AggregateBar(ref TradeBar workingBar, Tick data) {
+        protected override void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data) {
+#if DEBUG
+            if (data.Properties < TickValue.Properties)
+                throw new ArgumentException($"data was expected to be TickValue with properties>={TickValue.Properties}", nameof(data));
+#endif
+            var value = data.Value;
             if (workingBar == null) {
-                workingBar = new TradeBar {
-                    Time = GetRoundedBarTime(data.Time),
-                    Close = data.Value,
-                    High = data.Value,
-                    Low = data.Value,
-                    Open = data.Value,
-                    Value = data.Value,
-                    Volume = data.Quantity
+                workingTime = GetRoundedBarTime(time);
+                workingBar = new DoubleArray(1, TradeBarVolumedValue.Properties) {
+                    Close = value,
+                    High = value,
+                    Low = value,
+                    Open = value,
+                    Volume = data.Volume
                 };
-
-                if (Period.HasValue) workingBar.Period = Period.Value;
             } else {
                 //Aggregate the working bar
-                workingBar.Close = data.Value;
-                workingBar.Volume += data.Quantity;
-                if (data.Value < workingBar.Low) workingBar.Low = data.Value;
-                if (data.Value > workingBar.High) workingBar.High = data.Value;
+                workingBar.Close = value;
+                workingBar.Volume += data.Volume;
+                if (data.Value < workingBar.Low) workingBar.Low = value;
+                if (data.Value > workingBar.High) workingBar.High = value;
             }
         }
     }
 }
+

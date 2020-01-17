@@ -29,15 +29,17 @@ namespace FinanceSharp.Indicators {
     /// 	 Provides a base type for all indicators
     /// </summary>
     /// <typeparam name="T">The type of data input into this indicator</typeparam>
-    [DebuggerDisplay("{ToDetailedString()}")]
+    [DebuggerDisplay("{" + nameof(ToDetailedString) + "()}")]
     public abstract partial class IndicatorBase : IIndicator {
-        /// <summary>the most recent input that was given to this indicator</summary>
-        private DoubleArray _previousInput;
-
         /// <summary>
         /// 	 Event handler that fires after this indicator is updated
         /// </summary>
-        public event IndicatorUpdatedHandler Updated;
+        public event UpdatedHandler Updated;
+
+        /// <summary>
+        ///     Event handler that fires after this updatable is reset.
+        /// </summary>
+        public event ResettedHandler Resetted;
 
         /// <summary>
         /// 	 Initializes a new instance of the Indicator class using the specified name.
@@ -75,6 +77,14 @@ namespace FinanceSharp.Indicators {
         public long Samples { get; private set; }
 
         /// <summary>
+        /// 	 Updates this consolidator with the specified data
+        /// </summary>
+        /// <param name="data">The new data for the consolidator</param>
+        public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
+            return Update(time, DoubleArray.FromStruct(data));
+        }
+
+        /// <summary>
         /// 	 Updates the state of this indicator with the given value and returns true
         /// 	 if this indicator is ready, false otherwise
         /// </summary>
@@ -85,12 +95,11 @@ namespace FinanceSharp.Indicators {
             // compute a new value and update our previous time
             Samples++;
 
-            _previousInput = input;
-
             var nextResult = ValidateAndForward(time, input);
             if (nextResult.Status == IndicatorStatus.Success) {
-                Current = new DoubleArray(nextResult.Value);
-                //TODO!: we need to set time here too!
+                Current = nextResult.Value;
+                CurrentTime = time;
+
                 // let others know we've produced a new data point
                 OnUpdated(time, Current);
             }
@@ -114,43 +123,10 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         public virtual void Reset() {
             Samples = 0;
-            _previousInput = default;
             Current = Constants.Zero;
             CurrentTime = 0;
         }
 
-        /// <summary>
-        /// 	 Compares the current object with another object of the same type.
-        /// </summary>
-        /// <returns>
-        /// 	 A value that indicates the relative order of the objects being compared. The return value has the following meanings: Value Meaning Less than zero This object is less than the <paramref name="other"/> parameter.Zero This object is equal to <paramref name="other"/>. Greater than zero This object is greater than <paramref name="other"/>.
-        /// </returns>
-        /// <param name="other">An object to compare with this object.</param>
-        public int CompareTo(IIndicator other) {
-            if (ReferenceEquals(other, null)) {
-                // everything is greater than null via MSDN
-                return 1;
-            }
-            //TODO!: this:
-            //return (Current > other.Current).nonzero().any();
-            return (Current.Handle != other.Current.Handle) ? 0 : 1;
-        }
-
-        /// <summary>
-        /// 	 Compares the current instance with another object of the same type and returns an integer that indicates whether the current instance precedes, follows, or occurs in the same position in the sort order as the other object.
-        /// </summary>
-        /// <returns>
-        /// 	 A value that indicates the relative order of the objects being compared. The return value has these meanings: Value Meaning Less than zero This instance precedes <paramref name="obj"/> in the sort order. Zero This instance occurs in the same position in the sort order as <paramref name="obj"/>. Greater than zero This instance follows <paramref name="obj"/> in the sort order.
-        /// </returns>
-        /// <param name="obj">An object to compare with this instance. </param><exception cref="T:System.ArgumentException"><paramref name="obj"/> is not the same type as this instance. </exception><filterpriority>2</filterpriority>
-        public int CompareTo(object obj) {
-            var other = obj as IndicatorBase;
-            if (other == null) {
-                throw new ArgumentException("Object must be of type " + GetType().GetBetterTypeName());
-            }
-
-            return CompareTo(other);
-        }
 
         /// <summary>
         /// 	 Determines whether the specified object is equal to the current object.
@@ -219,7 +195,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
         protected virtual IndicatorResult ValidateAndForward(long time, DoubleArray input) {
             // default implementation always returns IndicatorStatus.Success
-            return new IndicatorResult(new DoubleArray(Forward(time, input))); //TODO:! this is not good! we'll do that every computation.
+            return new IndicatorResult(Forward(time, input));
         }
 
         /// <summary>
@@ -227,8 +203,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
         protected virtual void OnUpdated(long time, DoubleArray consolidated) {
-            var handler = Updated;
-            if (handler != null) handler(this, time, consolidated);
+            Updated?.Invoke(time, consolidated);
         }
     }
 }

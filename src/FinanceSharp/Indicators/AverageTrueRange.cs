@@ -35,7 +35,7 @@ namespace FinanceSharp.Indicators {
     ///   ABS(Low - PreviousClose)
     /// </summary>
     public class AverageTrueRange : BarIndicator {
-        private IBaseDataBar _previous;
+        private DoubleArray _previous;
 
         /// <summary>This indicator is used to smooth the TrueRange computation</summary>
         /// <remarks>This is not exposed publicly since it is the same value as this indicator, meaning
@@ -69,7 +69,7 @@ namespace FinanceSharp.Indicators {
 
             _smoother = movingAverageType.AsIndicator($"{name}_{movingAverageType}", period);
 
-            TrueRange = new FunctionalIndicator(name + "_TrueRange", currentBar => {
+            TrueRange = new FunctionalIndicator(name + "_TrueRange", (time, currentBar) => {
                     // in our Forward function we'll just call the ComputeTrueRange
                     var nextValue = ComputeTrueRange(_previous, currentBar);
                     _previous = currentBar;
@@ -98,7 +98,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="previous">The previous trade bar</param>
         /// <param name="current">The current trade bar</param>
         /// <returns>The true range</returns>
-        public static double ComputeTrueRange(IBaseDataBar previous, IBaseDataBar current) {
+        public static double ComputeTrueRange(DoubleArray previous, DoubleArray current) {
             var range1 = current.High - current.Low;
             if (previous == null) {
                 return range1;
@@ -118,7 +118,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             // compute the true range and then send it to our smoother
-            TrueRange.Update(TODO, input);
+            TrueRange.Update(time, input);
             _smoother.Update(time, TrueRange);
 
             return _smoother.Current.Value;

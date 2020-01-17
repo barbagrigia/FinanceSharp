@@ -16,14 +16,13 @@
 using System;
 using FinanceSharp.Data;
 using FinanceSharp.Indicators.CandlestickPatterns;
-using QuantConnect.Data.Market;
 
-namespace QuantConnect.Indicators.CandlestickPatterns
+namespace FinanceSharp.Indicators.CandlestickPatterns
 {
     /// <summary>
     /// Abstract base class for a candlestick pattern indicator
     /// </summary>
-    public abstract class CandlestickPattern : WindowIndicator<DoubleArray>
+    public abstract class CandlestickPattern : WindowIndicator
     {
         /// <summary>
         /// Creates a new <see cref="CandlestickPattern"/> with the specified name
@@ -81,7 +80,7 @@ namespace QuantConnect.Indicators.CandlestickPatterns
                     return GetUpperShadow(tradeBar) + GetLowerShadow(tradeBar);
 
                 default:
-                    return 0m;
+                    return 0d;
             }
         }
 
@@ -147,7 +146,7 @@ namespace QuantConnect.Indicators.CandlestickPatterns
 
             return defaultSetting.Factor *
                 (defaultSetting.AveragePeriod != 0 ? sum / defaultSetting.AveragePeriod : GetCandleRange(type, tradeBar)) /
-                (defaultSetting.RangeType == CandleRangeType.Shadows ? 2.0m : 1.0m);
+                (defaultSetting.RangeType == CandleRangeType.Shadows ? 2.0d : 1.0d);
         }
     }
 }

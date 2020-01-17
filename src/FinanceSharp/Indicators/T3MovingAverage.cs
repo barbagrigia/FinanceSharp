@@ -75,19 +75,19 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _gd1.Update(TODO, input);
+            _gd1.Update(time, input);
 
             if (!_gd1.IsReady)
-                return _gd1;
+                return _gd1.Current;
 
-            _gd2.Update(TODO, _gd1.Current);
+            _gd2.Update(time, _gd1.Current);
 
             if (!_gd2.IsReady)
-                return _gd2;
+                return _gd2.Current;
 
-            _gd3.Update(TODO, _gd2.Current);
+            _gd3.Update(time, _gd2.Current);
 
-            return _gd3;
+            return _gd3.Current;
         }
 
         /// <summary>

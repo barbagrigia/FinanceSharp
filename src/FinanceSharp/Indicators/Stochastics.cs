@@ -65,13 +65,13 @@ namespace FinanceSharp.Indicators {
             _sumSlowK = new Sum(name + "_SumD", dPeriod);
 
             FastStoch = new FunctionalIndicator(name + "_FastStoch",
-                (time, input) => ComputeFastStoch(period, input),
+                (time, input) => ComputeFastStoch(period, time, input),
                 fastStoch => _maximum.IsReady,
                 () => { }
             );
 
             StochK = new FunctionalIndicator(name + "_StochK",
-                (time, input) => ComputeStochK(period, kPeriod, input),
+                (time, input) => ComputeStochK(period, kPeriod, time, input),
                 stochK => _maximum.IsReady,
                 () => { }
             );
@@ -113,11 +113,11 @@ namespace FinanceSharp.Indicators {
         protected override DoubleArray Forward(long time, DoubleArray input) {
             _maximum.Update(time, input[HighIdx]);
             _minimum.Update(time, input[LowIdx]);
-            FastStoch.Update(TODO, input);
-            StochK.Update(TODO, input);
-            StochD.Update(TODO, input);
+            FastStoch.Update(time, input);
+            StochK.Update(time, input);
+            StochD.Update(time, input);
 
-            return FastStoch;
+            return FastStoch.Current;
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period.</param>
         /// <param name="input">The input.</param>
         /// <returns>The Fast Stochastics %K value.</returns>
-        private double ComputeFastStoch(int period, IBaseDataBar input) {
+        private double ComputeFastStoch(int period, long time, DoubleArray input) {
             var denominator = _maximum - _minimum;
 
             // if there's no range, just return constant zero
@@ -148,7 +148,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="constantK">The constant k.</param>
         /// <param name="input">The input.</param>
         /// <returns>The Slow Stochastics %K value.</returns>
-        private double ComputeStochK(int period, int constantK, IBaseData input) {
+        private double ComputeStochK(int period, int constantK, long time, DoubleArray input) {
             var stochK = _maximum.Samples >= (period + constantK - 1) ? _sumFastK / constantK : Constants.Zero;
             _sumSlowK.Update(time, stochK);
             return stochK * 100;

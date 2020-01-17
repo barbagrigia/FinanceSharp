@@ -68,8 +68,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _maximum.Update(TODO, input);
-            _minimum.Update(TODO, input);
+            _maximum.Update(time, input);
+            _minimum.Update(time, input);
 
             return (_maximum + _minimum) / 2;
         }

@@ -25,82 +25,99 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 and/or aggregated data.
     /// </summary>
     /// <typeparam name="TInput">The type consumed by the consolidator</typeparam>
-    public abstract class DataConsolidator<TInput> : IDataConsolidator
-        where TInput : IBaseData {
-        /// <summary>
-        /// 	 Updates this consolidator with the specified data
-        /// </summary>
-        /// <param name="data">The new data for the consolidator</param>
-        public void Update(IBaseData data) {
-            if (!(data is TInput)) {
-                throw new ArgumentNullException(nameof(data),
-                    $"Received type of {data.GetType().Name} but expected {typeof(TInput).Name}"
-                );
-            }
-
-            Update((TInput) data);
-        }
-
+    public abstract class DataConsolidator : IDataConsolidator {
         /// <summary>
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
         /// </summary>
         /// <param name="currentLocalTime">The current time in the local time zone (same as <see cref="BaseData.Time"/>)</param>
-        public abstract void Scan(DateTime currentLocalTime);
+        public abstract void Scan(long currentLocalTime);
 
         /// <summary>
         /// 	 Event handler that fires when a new piece of data is produced
         /// </summary>
-        public event DataConsolidatedHandler DataConsolidated;
+        public event UpdatedHandler Updated;
+
+        /// <summary>
+        ///     Event handler that fires after this updatable is reset.
+        /// </summary>
+        public event ResettedHandler Resetted;
 
         /// <summary>
         /// 	 Gets the most recently consolidated piece of data. This will be null if this consolidator
         /// 	 has not produced any data yet.
         /// </summary>
-        public IBaseData Consolidated { get; private set; }
+        public DoubleArray Current { get; protected set; }
+
+        /// <summary>
+        /// 	 Gets the current time of <see cref="IUpdatable.Current"/>.
+        /// </summary>
+        public long CurrentTime { get; protected set; }
 
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated
         /// </summary>
-        public abstract IBaseData WorkingData { get; }
+        public abstract DoubleArray WorkingData { get; }
 
         /// <summary>
-        /// 	 Gets the type consumed by this consolidator
+        /// 	 Gets a name for this indicator
         /// </summary>
-        public Type InputType {
-            get { return typeof(TInput); }
+        public string Name { get; protected set; }
+
+        /// <summary>
+        /// 	 Gets a flag indicating when this indicator is ready and fully initialized
+        /// </summary>
+        public virtual bool IsReady => Samples > 0;
+
+
+        /// <summary>
+        /// 	 Gets the number of samples processed by this indicator
+        /// </summary>
+        public long Samples { get; protected set; }
+
+        /// <summary>
+        /// 	 Resets this indicator to its initial state
+        /// </summary>
+        public void Reset() {
+            Samples = 0;
+            Current = null;
+            CurrentTime = 0;
         }
 
         /// <summary>
-        /// 	 Gets the type produced by this consolidator
+        /// 	 Updates this consolidator with the specified data
         /// </summary>
-        public abstract Type OutputType { get; }
+        /// <param name="data">The new data for the consolidator</param>
+        public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
+            return Update(time, DoubleArray.FromStruct(data));
+        }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data. This method is
         /// 	 responsible for raising the DataConsolidated event
         /// </summary>
+        /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public abstract void Update(TInput data);
+        public abstract bool Update(long time, DoubleArray data);
 
         /// <summary>
         /// 	 Event invocator for the DataConsolidated event. This should be invoked
         /// 	 by derived classes when they have consolidated a new piece of data.
         /// </summary>
         /// <param name="consolidated">The newly consolidated data</param>
-        protected virtual void OnDataConsolidated(IBaseData consolidated) {
-            var handler = DataConsolidated;
-            if (handler != null) handler(this, consolidated);
+        protected virtual void OnDataConsolidated(long time, DoubleArray consolidated) {
+            Updated?.Invoke(time, consolidated);
 
             // assign the Consolidated property after the event handlers are fired,
             // this allows the event handlers to look at the new consolidated data
             // and the previous consolidated data at the same time without extra bookkeeping
-            Consolidated = consolidated;
+            Current = consolidated;
+            CurrentTime = time;
         }
 
         /// <summary>Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.</summary>
         /// <filterpriority>2</filterpriority>
         public void Dispose() {
-            DataConsolidated = null;
+            Updated = null;
         }
     }
 }

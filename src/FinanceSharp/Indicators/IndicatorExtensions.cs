@@ -39,11 +39,12 @@ namespace FinanceSharp.Indicators {
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
         public static T Of<T>(this T second, IIndicator first, bool waitForFirstToReady = true)
             where T : IIndicator {
-            first.Updated += (sender, time, consolidated) => {
+            first.Updated += (time, consolidated) => {
                 // only send the data along if we're ready
                 if (!waitForFirstToReady || first.IsReady) {
                     second.Update(time, consolidated);
                 }
+
             };
 
             return second;
@@ -56,25 +57,24 @@ namespace FinanceSharp.Indicators {
         /// <param name="weight">Indicator that provides the average weights</param>
         /// <param name="period">Average period</param>
         /// <returns>Indicator that results of the average of first by weights given by second</returns>
-        public static CompositeIndicator WeightedBy<T, TWeight>(this IndicatorBase value, TWeight weight, int period)
-            where T : IBaseData
+        public static CompositeIndicator WeightedBy<TWeight>(this IndicatorBase value, TWeight weight, int period)
             where TWeight : IndicatorBase {
             var x = new WindowIdentity(period);
             var y = new WindowIdentity(period);
             var numerator = new Sum("Sum_xy", period);
             var denominator = new Sum("Sum_y", period);
 
-            value.Updated += (sender, time, consolidated) => {
-                x.Update((long) time, (DoubleArray) consolidated);
+            value.Updated += (time, consolidated) => {
+                x.Update(time, consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(time, new DoubleArray(consolidated * y.Current));
+                    numerator.Update(time, consolidated * y.Current[0, C]);
                 }
             };
 
-            weight.Updated += (sender, time, consolidated) => {
+            weight.Updated += (time, consolidated) => {
                 y.Update((long) time, (DoubleArray) consolidated);
                 if (x.Samples == y.Samples) {
-                    numerator.Update(time, new DoubleArray(consolidated * x.Current));
+                    numerator.Update(time, consolidated * x.Current[0, C]);
                 }
 
                 denominator.Update((long) time, (DoubleArray) consolidated);
@@ -107,7 +107,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
         public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l + r);
+            return new CompositeIndicator(left, right, (l, r) => l + r);
         }
 
         /// <summary>

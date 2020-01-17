@@ -106,15 +106,16 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window"></param>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (window.Count >= 3) {
-                _multipliedDiffWindow.Add((window[0] - window[1]) * (window[1] - window[2]));
+                _multipliedDiffWindow.Add((window[0].Value - window[1].Value) * (window[1].Value - window[2].Value));
             }
 
             // Estimate the indicator if less than 50% of observation are zero. Avoid division by

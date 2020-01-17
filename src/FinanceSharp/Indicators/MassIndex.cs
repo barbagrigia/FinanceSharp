@@ -87,7 +87,7 @@ namespace FinanceSharp.Indicators {
         protected override DoubleArray Forward(long time, DoubleArray input) {
             _ema1.Update(time, input[HighIdx] - input[LowIdx]);
             if (_ema2.IsReady) {
-                _sum.Update(time, _ema1.Current / _ema2.Current);
+                _sum.Update(time, _ema1 / _ema2);
             }
 
             if (!_sum.IsReady) {

@@ -37,7 +37,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Initializes a new instance of the FilteredIdentity indicator with the specified name
         /// </summary>
         /// <param name="name">The name of the indicator</param>
-        /// <param name="filter">Filters the IBaseData send into the indicator, if null defaults to true (x => true) which means no filter</param>
+        /// <param name="filter">Filters the DoubleArray send into the indicator, if null defaults to true (x => true) which means no filter</param>
         public FilteredIdentity(string name, Func<DoubleArray, bool> filter)
             : base(name) {
             // default our filter to true (do not filter)
@@ -47,7 +47,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
         /// </summary>
-        public override bool IsReady => Samples > 0 && (Current > 0).all();
+        public override bool IsReady => Samples > 0 && (CurrentTime != 0);
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
@@ -57,16 +57,16 @@ namespace FinanceSharp.Indicators {
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (_filter(input)) {
-                _previousInput = input;
+                _previousInput = input.Clone();
                 return input;
             }
 
             if (_previousInput != null) {
-                return _previousInput;
+                return _previousInput.Clone();
             }
 
             _previousInput = Constants.Empty;
-            return _previousInput;
+            return _previousInput.Clone();
         }
     }
 }

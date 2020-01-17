@@ -78,7 +78,7 @@ namespace FinanceSharp.Indicators {
 
             if (Samples == _period + 1) {
                 // first output value is SMA of TrueRange
-                _atr.Update(TODO, input);
+                _atr.Update(time, input);
                 _lastAtrValue = _atr;
             } else {
                 // next TrueRange values are smoothed using Wilder's approach

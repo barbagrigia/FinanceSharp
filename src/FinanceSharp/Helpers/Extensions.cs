@@ -193,17 +193,6 @@ namespace FinanceSharp {
             return scale * Math.Round(d / scale, digits);
         }
 
-        /// <summary>
-        /// Extension method to round a double value to a fixed number of significant figures instead of a fixed double places.
-        /// </summary>
-        /// <param name="d">Double we're rounding</param>
-        /// <param name="digits">Number of significant figures</param>
-        /// <returns>New double rounded to digits-significant figures</returns>
-        public static decimal RoundToSignificantDigits(this decimal d, int digits) {
-            if (d == 0) return 0;
-            var scale = (decimal) Math.Pow(10, Math.Floor(Math.Log10((double) Math.Abs(d))) + 1);
-            return scale * Math.Round(d / scale, digits);
-        }
 
         /// <summary>
         /// Will truncate the provided double, without rounding, to 3 double places
@@ -246,19 +235,6 @@ namespace FinanceSharp {
             if (input <= double.MinValue) return double.MinValue;
             if (input >= double.MaxValue) return double.MaxValue;
             return input;
-        }
-
-        /// <summary>
-        /// Will remove any trailing zeros for the provided double input
-        /// </summary>
-        /// <param name="input">The <see cref="double"/> to remove trailing zeros from</param>
-        /// <returns>Provided input with no trailing zeros</returns>
-        /// <remarks>Will not have the expected behavior when called from Python,
-        /// since the returned <see cref="double"/> will be converted to python float,
-        /// <see cref="NormalizeToStr"/></remarks>
-        public static decimal Normalize(this decimal input) {
-            // http://stackoverflow.com/a/7983330/1582922
-            return input / 1.000000000000000000000000000000000m;
         }
 
         /// <summary>
@@ -440,15 +416,15 @@ namespace FinanceSharp {
         /// <param name="dateTime">Base DateTime object we're rounding down.</param>
         /// <param name="interval">Timespan interval to round to.</param>
         /// <returns>Rounded datetime</returns>
-        public static DateTime RoundDown(this DateTime dateTime, TimeSpan interval) {
+        public static long RoundDown(this long dateTime, TimeSpan interval) {
             if (interval == TimeSpan.Zero) {
                 // divide by zero exception
                 return dateTime;
             }
 
-            var amount = dateTime.Ticks % interval.Ticks;
+            var amount = dateTime % interval.TotalMilliseconds;
             if (amount > 0) {
-                return dateTime.AddTicks(-amount);
+                return (long) (dateTime - amount);
             }
 
             return dateTime;

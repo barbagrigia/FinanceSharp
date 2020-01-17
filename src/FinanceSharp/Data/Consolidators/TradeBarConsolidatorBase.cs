@@ -27,8 +27,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 This type acts as the base for other consolidators that produce bars on a given time step or for a count of data.
     /// </summary>
     /// <typeparam name="T">The input type into the consolidator's Update method</typeparam>
-    public abstract class TradeBarConsolidatorBase<T> : PeriodCountConsolidatorBase<T, TradeBar>
-        where T : IBaseData {
+    public abstract class TradeBarConsolidatorBase : PeriodCountConsolidatorBase  {
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>
@@ -52,15 +51,14 @@ namespace FinanceSharp.Data.Consolidators {
             : base(maxCount, period) { }
 
         /// <summary>
-        /// 	 Creates a consolidator to produce a new 'TradeBar' representing the last count pieces of data or the period, whichever comes first
-        /// </summary>
-        /// <param name="func">Func that defines the start time of a consolidated data</param>
-        protected TradeBarConsolidatorBase(Func<DateTime, CalendarInfo> func)
-            : base(func) { }
-
-        /// <summary>
         /// 	 Gets a copy of the current 'workingBar'.
         /// </summary>
-        public TradeBar WorkingBar => (TradeBar) WorkingData;
+        public TradeBarValue WorkingBar {
+            get {
+                unsafe {
+                    return *(TradeBarValue*) WorkingData.Address;
+                }
+            }
+        }
     }
 }

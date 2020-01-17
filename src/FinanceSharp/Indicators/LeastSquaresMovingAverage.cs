@@ -37,7 +37,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Array representing the time.
         /// </summary>
-        private readonly DoubleArray _t;
+        private readonly double[] _t;
 
         /// <summary>
         /// 	 The point where the regression line crosses the y-axis (price-axis)
@@ -76,20 +76,21 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
         /// </summary>
+        /// <param name="timeWindow"></param>
         /// <param name="window"></param>
         /// <param name="time"></param>
         /// <param name="input">The input given to the indicator</param>
         /// <returns>
         /// 	 A new value for this indicator
         /// </returns>
-        protected override DoubleArray Forward(IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
+        protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             // Until the window is ready, the indicator returns the input value.
             if (window.Samples <= window.Size) return input;
 
             // Sort the window by time, convert the observations to double and transform it to an array
-            var series = window
-                .OrderBy(i => i.Time)
-                .Select(i => Convert.ToDouble(i.Value))
+            var series = window.Zip(timeWindow, (a, b) => (time: b,array: a))
+                .OrderBy(i => i.time)
+                .Select(i => Convert.ToDouble(i.array.Value))
                 .ToArray();
             // Fit OLS
             var ols = Fit.Line(x: _t, y: series);
