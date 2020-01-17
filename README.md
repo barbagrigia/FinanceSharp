@@ -1,5 +1,5 @@
 # FinanceSharp
-High Performance Financial Graph Computation for Quant-Trading.
+High Performance Financial Computation for Quant-Trading.
 
 ## Architecture
 FinanceSharp favors high productivity while still maintaining performant computation alogrithms.
