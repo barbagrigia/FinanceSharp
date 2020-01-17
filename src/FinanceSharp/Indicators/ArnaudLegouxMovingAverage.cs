@@ -66,8 +66,8 @@ namespace FinanceSharp.Indicators {
 
             _weightVector = DoubleArray.FromArray(
                 tmpVector
-                .Select(i => i / tmpVector.Sum()).Reverse()
-                .ToArray(), false, properties: 1);
+                    .Select(i => i / tmpVector.Sum()).Reverse()
+                    .ToArray(), false, properties: 1);
         }
 
         /// <summary>

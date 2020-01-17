@@ -23,7 +23,7 @@ namespace FinanceSharp.Data.Rolling {
     ///     Interface type used to pass windows around without worry of external modification
     /// </summary>
     /// <typeparam name="T">The type of data in the window</typeparam>
-    public interface IReadOnlyWindow<out T> : IEnumerable<T> {
+    public interface IReadOnlyWindow<out T> : IEnumerable<T>, IIndicator {
         /// <summary>
         ///     Gets the size of this window
         /// </summary>
@@ -35,23 +35,12 @@ namespace FinanceSharp.Data.Rolling {
         int Count { get; }
 
         /// <summary>
-        ///     Gets the number of samples that have been added to this window over its lifetime
-        /// </summary>
-        double Samples { get; }
-
-        /// <summary>
         ///     Indexes into this window, where index 0 is the most recently
         ///     entered value
         /// </summary>
         /// <param name="i">the index, i</param>
         /// <returns>the ith most recent entry</returns>
         T this[int i] { get; }
-
-        /// <summary>
-        ///     Gets a value indicating whether or not this window is ready, i.e,
-        ///     it has been filled to its capacity, this is when the Size==Count
-        /// </summary>
-        bool IsReady { get; }
 
         /// <summary>
         ///     Gets the most recently removed item from the window. This is the

@@ -17,7 +17,6 @@
 */
 
 using System;
-using FinanceSharp.Data.Market;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 

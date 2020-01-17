@@ -152,7 +152,6 @@ namespace FinanceSharp.Indicators {
                     newLeftData = null;
                     newRightData = null;
                 }
-
             };
 
             Right.Updated += (time, updated) => {
@@ -165,7 +164,6 @@ namespace FinanceSharp.Indicators {
                     newLeftData = null;
                     newRightData = null;
                 }
-
             };
         }
 

@@ -16,7 +16,7 @@
  * limitations under the License.
 */
 
-using FinanceSharp.Data.Market;
+
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 

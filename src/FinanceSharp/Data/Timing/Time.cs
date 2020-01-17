@@ -20,7 +20,7 @@ using System;
 using FinanceSharp;
 using static FinanceSharp.StringExtensions;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Time helper class collection for working with trading dates
     /// </summary>

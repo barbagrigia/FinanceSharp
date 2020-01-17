@@ -2,7 +2,6 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Indicators {
     public abstract partial class IndicatorBase {
-
         public static bool operator ==(IndicatorBase lhs, IndicatorBase rhs) {
             if (lhs is null || rhs is null)
                 return false;
@@ -43,231 +42,905 @@ namespace FinanceSharp.Indicators {
         %
         %
 #else
-        public static double operator +(IndicatorBase lhs, IndicatorBase rhs) { return lhs.Current.Value + rhs.Current.Value; }        
-        public static double operator +(sbyte lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, sbyte rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(byte lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, byte rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(short lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, short rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(ushort lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, ushort rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(int lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, int rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(uint lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, uint rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(ulong lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, ulong rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(long lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, long rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(float lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, float rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator +(double lhs, IndicatorBase rhs) { return lhs + rhs.Current.Value; }        
-        public static double operator +(IndicatorBase lhs, double rhs) { return lhs.Current.Value + rhs; }        
-        public static double operator -(IndicatorBase lhs, IndicatorBase rhs) { return lhs.Current.Value - rhs.Current.Value; }        
-        public static double operator -(sbyte lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, sbyte rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(byte lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, byte rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(short lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, short rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(ushort lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, ushort rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(int lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, int rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(uint lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, uint rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(ulong lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, ulong rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(long lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, long rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(float lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, float rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator -(double lhs, IndicatorBase rhs) { return lhs - rhs.Current.Value; }        
-        public static double operator -(IndicatorBase lhs, double rhs) { return lhs.Current.Value - rhs; }        
-        public static double operator *(IndicatorBase lhs, IndicatorBase rhs) { return lhs.Current.Value * rhs.Current.Value; }        
-        public static double operator *(sbyte lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, sbyte rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(byte lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, byte rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(short lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, short rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(ushort lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, ushort rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(int lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, int rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(uint lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, uint rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(ulong lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, ulong rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(long lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, long rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(float lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, float rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator *(double lhs, IndicatorBase rhs) { return lhs * rhs.Current.Value; }        
-        public static double operator *(IndicatorBase lhs, double rhs) { return lhs.Current.Value * rhs; }        
-        public static double operator /(IndicatorBase lhs, IndicatorBase rhs) { return lhs.Current.Value / rhs.Current.Value; }        
-        public static double operator /(sbyte lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, sbyte rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(byte lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, byte rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(short lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, short rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(ushort lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, ushort rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(int lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, int rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(uint lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, uint rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(ulong lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, ulong rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(long lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, long rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(float lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, float rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator /(double lhs, IndicatorBase rhs) { return lhs / rhs.Current.Value; }        
-        public static double operator /(IndicatorBase lhs, double rhs) { return lhs.Current.Value / rhs; }        
-        public static double operator %(IndicatorBase lhs, IndicatorBase rhs) { return lhs.Current.Value % rhs.Current.Value; }        
-        public static double operator %(sbyte lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, sbyte rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(byte lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, byte rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(short lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, short rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(ushort lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, ushort rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(int lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, int rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(uint lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, uint rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(ulong lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, ulong rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(long lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, long rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(float lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, float rhs) { return lhs.Current.Value % rhs; }        
-        public static double operator %(double lhs, IndicatorBase rhs) { return lhs % rhs.Current.Value; }        
-        public static double operator %(IndicatorBase lhs, double rhs) { return lhs.Current.Value % rhs; }        
-        public static bool operator ==(sbyte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(sbyte lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, sbyte rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, sbyte rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(byte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(byte lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, byte rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, byte rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(short lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(short lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, short rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, short rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(ushort lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(ushort lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, ushort rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, ushort rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(int lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(int lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, int rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, int rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(uint lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(uint lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, uint rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, uint rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(ulong lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(ulong lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, ulong rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, ulong rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(long lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(long lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, long rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, long rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(float lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(float lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, float rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, float rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator ==(double lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs == rhs.Current.Value; }        
-        public static bool operator !=(double lhs, IndicatorBase rhs) { return !rhs.Current.IsScalar || lhs != rhs.Current.Value; }        
-        public static bool operator ==(IndicatorBase lhs, double rhs) { return lhs.Current.IsScalar && lhs.Current.Value == rhs; }        
-        public static bool operator !=(IndicatorBase lhs, double rhs) { return !lhs.Current.IsScalar || lhs.Current.Value != rhs; }        
-        public static bool operator >(sbyte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, sbyte rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(sbyte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, sbyte rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(sbyte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, sbyte rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(sbyte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, sbyte rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(byte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, byte rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(byte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, byte rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(byte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, byte rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(byte lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, byte rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(short lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, short rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(short lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, short rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(short lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, short rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(short lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, short rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(ushort lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, ushort rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(ushort lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, ushort rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(ushort lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, ushort rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(ushort lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, ushort rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(int lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, int rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(int lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, int rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(int lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, int rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(int lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, int rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(uint lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, uint rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(uint lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, uint rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(uint lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, uint rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(uint lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, uint rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(ulong lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, ulong rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(ulong lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, ulong rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(ulong lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, ulong rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(ulong lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, ulong rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(long lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, long rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(long lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, long rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(long lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, long rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(long lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, long rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(float lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, float rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(float lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, float rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(float lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, float rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(float lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, float rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
-        public static bool operator >(double lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs > rhs.Current.Value; }        
-        public static bool operator >(IndicatorBase lhs, double rhs) { return lhs.Current.IsScalar && lhs.Current.Value > rhs; }        
-        public static bool operator <(double lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs < rhs.Current.Value; }        
-        public static bool operator <(IndicatorBase lhs, double rhs) { return lhs.Current.IsScalar && lhs.Current.Value < rhs; }        
-        public static bool operator >=(double lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs >= rhs.Current.Value; }        
-        public static bool operator >=(IndicatorBase lhs, double rhs) { return lhs.Current.IsScalar && lhs.Current.Value >= rhs; }        
-        public static bool operator <=(double lhs, IndicatorBase rhs) { return rhs.Current.IsScalar && lhs <= rhs.Current.Value; }        
-        public static bool operator <=(IndicatorBase lhs, double rhs) { return lhs.Current.IsScalar && lhs.Current.Value <= rhs; }        
+        public static double operator +(IndicatorBase lhs, IndicatorBase rhs) {
+            return lhs.Current.Value + rhs.Current.Value;
+        }
+
+        public static double operator +(sbyte lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(byte lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(short lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, short rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(ushort lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(int lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, int rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(uint lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(ulong lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(long lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, long rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(float lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, float rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator +(double lhs, IndicatorBase rhs) {
+            return lhs + rhs.Current.Value;
+        }
+
+        public static double operator +(IndicatorBase lhs, double rhs) {
+            return lhs.Current.Value + rhs;
+        }
+
+        public static double operator -(IndicatorBase lhs, IndicatorBase rhs) {
+            return lhs.Current.Value - rhs.Current.Value;
+        }
+
+        public static double operator -(sbyte lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(byte lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(short lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, short rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(ushort lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(int lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, int rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(uint lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(ulong lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(long lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, long rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(float lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, float rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator -(double lhs, IndicatorBase rhs) {
+            return lhs - rhs.Current.Value;
+        }
+
+        public static double operator -(IndicatorBase lhs, double rhs) {
+            return lhs.Current.Value - rhs;
+        }
+
+        public static double operator *(IndicatorBase lhs, IndicatorBase rhs) {
+            return lhs.Current.Value * rhs.Current.Value;
+        }
+
+        public static double operator *(sbyte lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(byte lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(short lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, short rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(ushort lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(int lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, int rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(uint lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(ulong lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(long lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, long rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(float lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, float rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator *(double lhs, IndicatorBase rhs) {
+            return lhs * rhs.Current.Value;
+        }
+
+        public static double operator *(IndicatorBase lhs, double rhs) {
+            return lhs.Current.Value * rhs;
+        }
+
+        public static double operator /(IndicatorBase lhs, IndicatorBase rhs) {
+            return lhs.Current.Value / rhs.Current.Value;
+        }
+
+        public static double operator /(sbyte lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(byte lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(short lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, short rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(ushort lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(int lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, int rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(uint lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(ulong lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(long lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, long rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(float lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, float rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator /(double lhs, IndicatorBase rhs) {
+            return lhs / rhs.Current.Value;
+        }
+
+        public static double operator /(IndicatorBase lhs, double rhs) {
+            return lhs.Current.Value / rhs;
+        }
+
+        public static double operator %(IndicatorBase lhs, IndicatorBase rhs) {
+            return lhs.Current.Value % rhs.Current.Value;
+        }
+
+        public static double operator %(sbyte lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(byte lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(short lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, short rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(ushort lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(int lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, int rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(uint lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(ulong lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(long lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, long rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(float lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, float rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static double operator %(double lhs, IndicatorBase rhs) {
+            return lhs % rhs.Current.Value;
+        }
+
+        public static double operator %(IndicatorBase lhs, double rhs) {
+            return lhs.Current.Value % rhs;
+        }
+
+        public static bool operator ==(sbyte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(sbyte lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, sbyte rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(byte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(byte lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, byte rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(short lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(short lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, short rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, short rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(ushort lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(ushort lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, ushort rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(int lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(int lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, int rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, int rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(uint lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(uint lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, uint rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(ulong lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(ulong lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, ulong rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(long lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(long lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, long rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, long rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(float lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(float lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, float rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, float rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator ==(double lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs == rhs.Current.Value;
+        }
+
+        public static bool operator !=(double lhs, IndicatorBase rhs) {
+            return !rhs.Current.IsScalar || lhs != rhs.Current.Value;
+        }
+
+        public static bool operator ==(IndicatorBase lhs, double rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value == rhs;
+        }
+
+        public static bool operator !=(IndicatorBase lhs, double rhs) {
+            return !lhs.Current.IsScalar || lhs.Current.Value != rhs;
+        }
+
+        public static bool operator >(sbyte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(sbyte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(sbyte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(sbyte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, sbyte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(byte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(byte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(byte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(byte lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, byte rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(short lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, short rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(short lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, short rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(short lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, short rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(short lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, short rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(ushort lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(ushort lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(ushort lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(ushort lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, ushort rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(int lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, int rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(int lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, int rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(int lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, int rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(int lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, int rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(uint lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(uint lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(uint lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(uint lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, uint rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(ulong lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(ulong lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(ulong lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(ulong lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, ulong rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(long lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, long rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(long lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, long rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(long lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, long rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(long lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, long rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(float lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, float rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(float lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, float rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(float lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, float rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(float lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, float rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
+
+        public static bool operator >(double lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs > rhs.Current.Value;
+        }
+
+        public static bool operator >(IndicatorBase lhs, double rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value > rhs;
+        }
+
+        public static bool operator <(double lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs < rhs.Current.Value;
+        }
+
+        public static bool operator <(IndicatorBase lhs, double rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value < rhs;
+        }
+
+        public static bool operator >=(double lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs >= rhs.Current.Value;
+        }
+
+        public static bool operator >=(IndicatorBase lhs, double rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value >= rhs;
+        }
+
+        public static bool operator <=(double lhs, IndicatorBase rhs) {
+            return rhs.Current.IsScalar && lhs <= rhs.Current.Value;
+        }
+
+        public static bool operator <=(IndicatorBase lhs, double rhs) {
+            return lhs.Current.IsScalar && lhs.Current.Value <= rhs;
+        }
 #endif
     }
 }

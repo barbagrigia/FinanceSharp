@@ -89,8 +89,8 @@ namespace FinanceSharp.Data.Consolidators {
         public void Reset() {
             First.Reset();
             Second.Reset();
-            Resetted?.Invoke(this);
             Samples = 0;
+            Resetted?.Invoke(this);
         }
 
         /// <summary>

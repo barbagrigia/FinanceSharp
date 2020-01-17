@@ -18,7 +18,6 @@
 */
 
 using System;
-using FinanceSharp.Data.Market;
 using FinanceSharp;
 
 namespace FinanceSharp.Data.Consolidators {
@@ -86,7 +85,6 @@ namespace FinanceSharp.Data.Consolidators {
         }
 
         /// <summary>
-
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated
         /// </summary>
@@ -102,8 +100,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when multiple symbols are being consolidated.</exception>
         /// <param name="data">The new data for the consolidator</param>
-        public override bool Update(long time, DoubleArray data)
-        {
+        public override bool Update(long time, DoubleArray data) {
             //Decide to fire the event
             var fireDataConsolidated = false;
 
@@ -111,59 +108,48 @@ namespace FinanceSharp.Data.Consolidators {
             // always aggregate before firing in counting mode
             bool aggregateBeforeFire = _maxCount.HasValue;
 
-            if (_maxCount.HasValue)
-            {
+            if (_maxCount.HasValue) {
                 // we're in count mode
                 _currentCount++;
-                if (_currentCount >= _maxCount.Value)
-                {
+                if (_currentCount >= _maxCount.Value) {
                     _currentCount = 0;
                     fireDataConsolidated = true;
                 }
             }
 
-            if (!_lastEmit.HasValue)
-            {
+            if (!_lastEmit.HasValue) {
                 // initialize this value for period computations
                 _lastEmit = IsTimeBased ? 0 : time;
             }
 
-            if (_period.HasValue)
-            {
+            if (_period.HasValue) {
                 // we're in time span mode and initialized
-                if (_workingBar != null && (time - _workingTime) >= _period.Value.TotalMilliseconds && GetRoundedBarTime(time) > _lastEmit)
-                {
+                if (_workingBar != null && (time - _workingTime) >= _period.Value.TotalMilliseconds && GetRoundedBarTime(time) > _lastEmit) {
                     fireDataConsolidated = true;
                 }
 
                 // special case: always aggregate before event trigger when TimeSpan is zero
-                if (_period.Value == TimeSpan.Zero)
-                {
+                if (_period.Value == TimeSpan.Zero) {
                     fireDataConsolidated = true;
                     aggregateBeforeFire = true;
                 }
             }
 
-            if (aggregateBeforeFire)
-            {
-                if (time >= _lastEmit)
-                {
+            if (aggregateBeforeFire) {
+                if (time >= _lastEmit) {
                     AggregateBar(ref _workingTime, ref _workingBar, time, data);
                 }
             }
 
             //Fire the event
-            if (fireDataConsolidated)
-            {
+            if (fireDataConsolidated) {
                 OnDataConsolidated(_workingTime, _workingBar);
                 _lastEmit = IsTimeBased && _workingBar != null ? (long) (_workingTime + (Period ?? TimeSpan.Zero).TotalMilliseconds) : time;
                 _workingBar = null;
             }
 
-            if (!aggregateBeforeFire)
-            {
-                if (time >= _lastEmit)
-                {
+            if (!aggregateBeforeFire) {
+                if (time >= _lastEmit) {
                     AggregateBar(ref _workingTime, ref _workingBar, time, data);
                 }
             }
@@ -175,14 +161,11 @@ namespace FinanceSharp.Data.Consolidators {
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
         /// </summary>
         /// <param name="currentLocalTime">The current time in the local time zone (same as <see cref="BaseData.Time"/>)</param>
-        public override void Scan(long currentLocalTime)
-        {
-            if (_period.HasValue && _workingBar != null)
-            {
+        public override void Scan(long currentLocalTime) {
+            if (_period.HasValue && _workingBar != null) {
                 currentLocalTime = GetRoundedBarTime(currentLocalTime);
 
-                if (_period.Value != TimeSpan.Zero && (currentLocalTime - _workingTime) >= _period.Value.TotalMilliseconds && currentLocalTime > _lastEmit)
-                {
+                if (_period.Value != TimeSpan.Zero && (currentLocalTime - _workingTime) >= _period.Value.TotalMilliseconds && currentLocalTime > _lastEmit) {
                     OnDataConsolidated(_workingTime, _workingBar);
                     _lastEmit = currentLocalTime;
                     _workingBar = null;

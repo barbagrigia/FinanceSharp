@@ -88,7 +88,7 @@ namespace FinanceSharp.Indicators {
             if (window.Samples <= window.Size) return input;
 
             // Sort the window by time, convert the observations to double and transform it to an array
-            var series = window.Zip(timeWindow, (a, b) => (time: b,array: a))
+            var series = window.Zip(timeWindow, (a, b) => (time: b, array: a))
                 .OrderBy(i => i.time)
                 .Select(i => Convert.ToDouble(i.array.Value))
                 .ToArray();

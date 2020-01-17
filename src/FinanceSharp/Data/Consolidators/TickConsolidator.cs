@@ -17,7 +17,7 @@
 */
 
 using System;
-using FinanceSharp.Data.Market;
+
 
 namespace FinanceSharp.Data.Consolidators {
     /// <summary>
@@ -78,4 +78,3 @@ namespace FinanceSharp.Data.Consolidators {
         }
     }
 }
-

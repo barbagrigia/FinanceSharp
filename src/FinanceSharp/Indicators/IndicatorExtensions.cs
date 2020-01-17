@@ -44,7 +44,6 @@ namespace FinanceSharp.Indicators {
                 if (!waitForFirstToReady || first.IsReady) {
                     second.Update(time, consolidated);
                 }
-
             };
 
             return second;

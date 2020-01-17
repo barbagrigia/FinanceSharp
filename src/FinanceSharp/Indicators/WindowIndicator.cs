@@ -17,7 +17,6 @@
 */
 
 using FinanceSharp.Data;
-using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
@@ -60,7 +59,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _window.Add(input);
+            _window.Add(time, input);
             return Forward(_windowTimes, _window, time, input);
         }
 

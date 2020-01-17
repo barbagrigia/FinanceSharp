@@ -17,6 +17,7 @@ namespace FinanceSharp.Data {
             Low = low;
             Open = open;
         }
+
         int DataStruct.Properties => Properties;
         public const int Properties = 4;
 

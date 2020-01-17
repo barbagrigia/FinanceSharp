@@ -5,7 +5,7 @@ High Performance Financial Computation for Quant-Trading.
 FinanceSharp favors high productivity while still maintaining performant computation alogrithms.
 We use an 2D array to represent both scalar, indicator value, trade value and tick.
 #### Time
-We use `long` to represent time as 1970-epoch-milliseconds as baseline. Converts are available in static `Epoch` class.
+We use `long` to represent time as 1970-epoch-milliseconds as baseline. Converts are available in static `Time` class.
 Unlike in QuantConnect/Lean, our time value is always passed seperatly from the values of our data type.
 All time processing are always interpreted as UTC. local time is ignored completely and always swallen and interpreted as UTC.
 

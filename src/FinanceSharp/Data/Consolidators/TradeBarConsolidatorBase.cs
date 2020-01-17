@@ -18,7 +18,7 @@
 */
 
 using System;
-using FinanceSharp.Data.Market;
+
 
 namespace FinanceSharp.Data.Consolidators {
     /// <summary>
@@ -27,7 +27,7 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 This type acts as the base for other consolidators that produce bars on a given time step or for a count of data.
     /// </summary>
     /// <typeparam name="T">The input type into the consolidator's Update method</typeparam>
-    public abstract class TradeBarConsolidatorBase : PeriodCountConsolidatorBase  {
+    public abstract class TradeBarConsolidatorBase : PeriodCountConsolidatorBase {
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>

@@ -19,7 +19,7 @@
 using System;
 using System.Diagnostics;
 using FinanceSharp.Data;
-using FinanceSharp.Data.Market;
+
 
 namespace FinanceSharp.Indicators {
     /// <summary>

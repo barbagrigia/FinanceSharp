@@ -17,7 +17,6 @@
 */
 
 using FinanceSharp.Data;
-using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
@@ -74,7 +73,7 @@ namespace FinanceSharp.Indicators {
             _adx.Update(time, input);
 
             if (_adx.IsReady) {
-                _adxHistory.Add(_adx);
+                _adxHistory.Add(time, _adx);
             }
 
             return IsReady ? (_adx + _adxHistory[_period - 1]) / 2 : 5.0d;

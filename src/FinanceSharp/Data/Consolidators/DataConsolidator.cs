@@ -81,6 +81,7 @@ namespace FinanceSharp.Data.Consolidators {
             Samples = 0;
             Current = null;
             CurrentTime = 0;
+            Resetted?.Invoke(this);
         }
 
         /// <summary>

@@ -17,7 +17,6 @@
 */
 
 using FinanceSharp.Data;
-using FinanceSharp.Data.Market;
 using Python.Runtime;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;

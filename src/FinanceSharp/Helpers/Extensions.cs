@@ -688,56 +688,6 @@ namespace FinanceSharp {
             return @enum.ToString().ToLowerInvariant();
         }
 
-        /// <summary>
-        /// Converts the specified <paramref name="securityType"/> value to its corresponding lower-case string representation
-        /// </summary>
-        /// <remarks>This method provides faster performance than <see cref="ToLower"/></remarks>
-        /// <param name="securityType">The SecurityType value</param>
-        /// <returns>A lower-case string representation of the specified SecurityType value</returns>
-        public static string SecurityTypeToLower(this SecurityType securityType) {
-            switch (securityType) {
-                case SecurityType.Base:
-                    return "base";
-                case SecurityType.Equity:
-                    return "equity";
-                case SecurityType.Option:
-                    return "option";
-                case SecurityType.Commodity:
-                    return "commodity";
-                case SecurityType.Forex:
-                    return "forex";
-                case SecurityType.Future:
-                    return "future";
-                case SecurityType.Cfd:
-                    return "cfd";
-                case SecurityType.Crypto:
-                    return "crypto";
-                default:
-                    // just in case
-                    return securityType.ToLower();
-            }
-        }
-
-        /// <summary>
-        /// Converts the specified <paramref name="tickType"/> value to its corresponding lower-case string representation
-        /// </summary>
-        /// <remarks>This method provides faster performance than <see cref="ToLower"/></remarks>
-        /// <param name="tickType">The tickType value</param>
-        /// <returns>A lower-case string representation of the specified tickType value</returns>
-        public static string TickTypeToLower(this TickType tickType) {
-            switch (tickType) {
-                case TickType.Trade:
-                    return "trade";
-                case TickType.Quote:
-                    return "quote";
-                case TickType.OpenInterest:
-                    return "openinterest";
-                default:
-                    // just in case
-                    return tickType.ToLower();
-            }
-        }
-
         public static void ProcessUntilEmpty<T>(this IProducerConsumerCollection<T> collection, Action<T> handler) {
             T item;
             while (collection.TryTake(out item)) {

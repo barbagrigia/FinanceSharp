@@ -18,7 +18,6 @@
 */
 
 using System;
-using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;

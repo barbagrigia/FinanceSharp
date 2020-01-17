@@ -87,7 +87,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="tool"></param>
         public SwissArmyKnife(string name, int period, double delta, SwissArmyKnifeTool tool)
             : base(name) {
-            _filt = new RollingWindow<double>(2) {0, 0};
+            _filt = new RollingWindow<double>(2) {{0, 0}, {0, 0}};
             _price = new RollingWindow<double>(3);
             _period = period;
             var beta = 2.415 * (1 - Math.Cos(2 * Math.PI / period));
@@ -151,16 +151,16 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _price.Add(input.Value);
+            _price.Add(time, input.Value);
 
             if (_price.Samples == 1) {
-                _price.Add(_price[0]);
-                _price.Add(_price[0]);
+                _price.Add(time, _price[0]);
+                _price.Add(time, _price[0]);
             }
 
             var signal = _a0 * _c0 * (_b0 * _price[0] + _b1 * _price[1] + _b2 * _price[2]) + _a0 * (_a1 * _filt[0] + _a2 * _filt[1]);
 
-            _filt.Add(signal);
+            _filt.Add(time, signal);
 
             return signal;
         }
@@ -171,8 +171,8 @@ namespace FinanceSharp.Indicators {
         public override void Reset() {
             _price.Reset();
             _filt.Reset();
-            _filt.Add(0);
-            _filt.Add(0);
+            _filt.Add(0, 0);
+            _filt.Add(0, 0);
             base.Reset();
         }
     }

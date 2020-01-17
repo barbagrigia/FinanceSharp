@@ -16,7 +16,6 @@
  * limitations under the License.
 */
 
-using FinanceSharp.Data.Market;
 
 namespace FinanceSharp.Indicators {
     /// <summary>

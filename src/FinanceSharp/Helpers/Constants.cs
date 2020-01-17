@@ -45,7 +45,6 @@ namespace FinanceSharp {
         public const int VolumeIdx = V;
 
 
-        static Constants() {
-        }
+        static Constants() { }
     }
 }

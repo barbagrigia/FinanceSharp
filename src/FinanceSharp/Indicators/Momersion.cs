@@ -115,7 +115,7 @@ namespace FinanceSharp.Indicators {
         /// </returns>
         protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (window.Count >= 3) {
-                _multipliedDiffWindow.Add((window[0].Value - window[1].Value) * (window[1].Value - window[2].Value));
+                _multipliedDiffWindow.Add(time, (window[0].Value - window[1].Value) * (window[1].Value - window[2].Value));
             }
 
             // Estimate the indicator if less than 50% of observation are zero. Avoid division by

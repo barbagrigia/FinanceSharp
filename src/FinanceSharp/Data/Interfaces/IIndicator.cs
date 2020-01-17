@@ -22,7 +22,6 @@ using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Data {
-
     /// <summary>
     ///     Represents an object that can be updated.
     /// </summary>

@@ -18,7 +18,6 @@
 
 using System;
 using System.Linq;
-using FinanceSharp.Data.Market;
 using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
@@ -75,8 +74,8 @@ namespace FinanceSharp.Indicators {
         /// <returns>The average value</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             var price = (input[HighIdx] + input[LowIdx]) / 2;
-            _high.Add(input[HighIdx]);
-            _low.Add(input[LowIdx]);
+            _high.Add(time, input[HighIdx]);
+            _low.Add(time, input[LowIdx]);
 
             // our first data point just return identity
             if (_high.Samples <= _high.Size) {
