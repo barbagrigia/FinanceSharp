@@ -25,7 +25,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <summary>
         ///     The number of properties <see cref="DataConsolidator.Current"/> will have.
         /// </summary>
-        public override int Properties => TradeBarVolumedValue.Properties;
+        public override int Properties => TradeBarValue.Properties;
 
         /// <summary>
         ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.

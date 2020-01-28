@@ -20,7 +20,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class AverageDirectionalMovementIndexRatingTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class AverageDirectionalMovementIndexRatingTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new AverageDirectionalMovementIndexRating(14);
         }

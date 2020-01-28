@@ -20,7 +20,7 @@ using System;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class IchimokuKinkoHyoTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class IchimokuKinkoHyoTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new IchimokuKinkoHyo();
         }

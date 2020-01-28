@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class UltimateOscillatorTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class UltimateOscillatorTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new UltimateOscillator(7, 14, 28);
         }

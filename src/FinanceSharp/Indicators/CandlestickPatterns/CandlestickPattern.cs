@@ -25,7 +25,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// <summary>
         ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
         /// </summary>
-        public override int InputProperties => TradeBarValue.Properties;
+        public override int InputProperties => BarValue.Properties;
 
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.

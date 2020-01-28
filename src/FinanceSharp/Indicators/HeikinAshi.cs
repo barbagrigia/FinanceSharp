@@ -57,7 +57,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the Heikin-Ashi current TradeBar
         /// </summary>
-        public TradeBarVolumedValue CurrentBar => new TradeBarVolumedValue(Open.Current.Value, High.Current.Value, Low.Current.Value, Close.Current.Value, Volume.Current.Value);
+        public TradeBarValue CurrentBar => new TradeBarValue(Open.Current.Value, High.Current.Value, Low.Current.Value, Close.Current.Value, Volume.Current.Value);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="HeikinAshi"/> class using the specified name.

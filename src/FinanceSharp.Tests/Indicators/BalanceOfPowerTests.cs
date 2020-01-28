@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class BalanceOfPowerTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class BalanceOfPowerTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new BalanceOfPower();
         }

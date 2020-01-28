@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class TrueRangeTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class TrueRangeTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new TrueRange();
         }

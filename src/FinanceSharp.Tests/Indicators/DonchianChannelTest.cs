@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class DonchianChannelTest : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class DonchianChannelTest : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new DonchianChannel(50);
         }

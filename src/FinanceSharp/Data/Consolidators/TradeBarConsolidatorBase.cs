@@ -49,10 +49,10 @@ namespace FinanceSharp.Data.Consolidators {
         /// <summary>
         /// 	 Gets a copy of the current 'workingBar'.
         /// </summary>
-        public TradeBarVolumedValue WorkingBar {
+        public TradeBarValue WorkingBar {
             get {
                 unsafe {
-                    return *(TradeBarVolumedValue*) WorkingData.Address;
+                    return *(TradeBarValue*) WorkingData.Address;
                 }
             }
         }

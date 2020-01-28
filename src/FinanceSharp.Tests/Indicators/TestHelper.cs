@@ -173,7 +173,7 @@ namespace FinanceSharp.Tests.Indicators {
                 }
 
                 var time = Time.ParseDate(parts[0]).ToEpochTime();
-                var tradebar = new TradeBarVolumedValue {
+                var tradebar = new TradeBarValue {
                     Open = parts[1].ToDouble(),
                     High = parts[2].ToDouble(),
                     Low = parts[3].ToDouble(),
@@ -255,8 +255,8 @@ namespace FinanceSharp.Tests.Indicators {
         /// <summary>
         /// Gets a stream of trade bars from the specified file
         /// </summary>
-        public static IEnumerable<(long Time, TradeBarVolumedValue Value)> GetTradeBarStream(string externalDataFilename, bool fileHasVolume = true) {
-            return GetCsvFileStream(externalDataFilename).Select(values => (Time.ParseDate(values.GetCsvValue("date", "time")).ToEpochTime(), new TradeBarVolumedValue {
+        public static IEnumerable<(long Time, TradeBarValue Value)> GetTradeBarStream(string externalDataFilename, bool fileHasVolume = true) {
+            return GetCsvFileStream(externalDataFilename).Select(values => (Time.ParseDate(values.GetCsvValue("date", "time")).ToEpochTime(), new TradeBarValue {
                 Open = values.GetCsvValue("open").ToDouble(),
                 High = values.GetCsvValue("high").ToDouble(),
                 Low = values.GetCsvValue("low").ToDouble(),

@@ -20,7 +20,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class AverageTrueRangeTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class AverageTrueRangeTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new AverageTrueRange(14);
         }
@@ -38,7 +38,7 @@ namespace FinanceSharp.Tests.Indicators {
         [Test]
         public void ResetsProperly() {
             var atr = new AverageTrueRange(14, MovingAverageType.Simple);
-            atr.Update(DateTime.Today, new TradeBarVolumedValue {
+            atr.Update(DateTime.Today, new TradeBarValue {
                 Open = 1d,
                 High = 3d,
                 Low = .5d,
@@ -57,7 +57,7 @@ namespace FinanceSharp.Tests.Indicators {
             var atr = new AverageTrueRange(14, MovingAverageType.Simple);
             Assert.IsFalse(atr.TrueRange.IsReady);
 
-            atr.Update(DateTime.Today, new TradeBarVolumedValue {
+            atr.Update(DateTime.Today, new TradeBarValue {
                 Open = 1d,
                 High = 3d,
                 Low = .5d,

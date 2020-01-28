@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class AccumulationDistributionTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class AccumulationDistributionTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new AccumulationDistribution("AD");
         }

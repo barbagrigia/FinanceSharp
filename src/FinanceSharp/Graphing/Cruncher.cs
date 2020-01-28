@@ -57,7 +57,7 @@ namespace FinanceSharp.Graphing {
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
-        ///     e.g. if <paramref name="updatables"/> emit <see cref="TradeBarValue"/> (4 properties), selecting 1 will take only <see cref="TradeBarValue.Close"/>.
+        ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
         public static Cruncher OnAllUpdatedOnce(IEnumerable<IUpdatable> updatables, int properties = 1) {
@@ -136,7 +136,7 @@ namespace FinanceSharp.Graphing {
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
-        ///     e.g. if <paramref name="updatables"/> emit <see cref="TradeBarValue"/> (4 properties), selecting 1 will take only <see cref="TradeBarValue.Close"/>.
+        ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
         public static Cruncher OnEveryUpdate(IEnumerable<IUpdatable> updatables, int interval = 1, int properties = 1) {
@@ -223,7 +223,7 @@ namespace FinanceSharp.Graphing {
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
-        ///     e.g. if <paramref name="updatables"/> emit <see cref="TradeBarValue"/> (4 properties), selecting 1 will take only <see cref="TradeBarValue.Close"/>.
+        ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
         public static Cruncher OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable crunchTrigger, int interval = 1, int properties = 1) {

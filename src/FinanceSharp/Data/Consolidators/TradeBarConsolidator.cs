@@ -28,7 +28,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <summary>
         ///     The number of properties <see cref="DataConsolidator.Current"/> will have.
         /// </summary>
-        public override int Properties => TradeBarVolumedValue.Properties;
+        public override int Properties => TradeBarValue.Properties;
 
         /// <summary>
         ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
@@ -65,7 +65,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <param name="data">The new data</param>
         protected override void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data) {
             if (workingBar == null) {
-                workingBar = new StructArray<TradeBarVolumedValue>(new TradeBarVolumedValue(data.Close, data.High, data.Low, data.Open, data.Volume));
+                workingBar = new StructArray<TradeBarValue>(new TradeBarValue(data.Close, data.High, data.Low, data.Open, data.Volume));
                 workingTime = GetRoundedBarTime(time);
             } else {
                 //Aggregate the working bar

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Diagnostics;
 using FinanceSharp.Data;
@@ -237,6 +238,10 @@ namespace FinanceSharp.Indicators {
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
         protected virtual IndicatorResult ValidateAndForward(long time, DoubleArray input) {
             // default implementation always returns IndicatorStatus.Success
+#if DEBUG
+            if (this.InputProperties > input.Properties)
+                throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
+#endif
             return new IndicatorResult(Forward(time, input));
         }
 

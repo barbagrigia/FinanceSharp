@@ -23,7 +23,7 @@ namespace FinanceSharp.Indicators {
     /// 	 The Acceleration Bands created by Price Headley plots upper and lower envelope bands around a moving average.
     /// </summary>
     /// <seealso cref="Indicators.IndicatorBase{DoubleArray}" />
-    public class AccelerationBands : IndicatorBase {
+    public class AccelerationBands : BarIndicator {
         private readonly double _width;
 
         /// <summary>

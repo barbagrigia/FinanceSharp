@@ -19,8 +19,8 @@ namespace FinanceSharp.Data {
     /// </summary>
     internal class UnmanagedEnsurer {
 #pragma warning disable 169
-        private MustBeUnmanaged<TradeBarValue> _c;
-        private MustBeUnmanaged<TradeBarVolumedValue> _d;
+        private MustBeUnmanaged<BarValue> _c;
+        private MustBeUnmanaged<TradeBarValue> _d;
         private MustBeUnmanaged<IndicatorValue> _e;
 #pragma warning restore 169
 

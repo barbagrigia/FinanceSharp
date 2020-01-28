@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class MidPriceTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class MidPriceTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new MidPrice(5);
         }

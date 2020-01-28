@@ -41,7 +41,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Creates a new TradeBarIndicator with the specified name
         /// </summary>
         /// <param name="name">The name of this indicator</param>
-        protected BarIndicator(string name, int properties = TradeBarValue.Properties)
+        protected BarIndicator(string name, int properties = BarValue.Properties)
             : base(name) {
             _properties = properties;
         }
@@ -54,9 +54,8 @@ namespace FinanceSharp.Indicators {
         /// <returns>An IndicatorResult object including the status of the indicator</returns>
         protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
 #if DEBUG
-
-            if (input.Properties < 4) //4 for OHLC
-                throw new ArgumentException("input doesn't have more than 4 values - therefore can't be considered a TradeBarValue.");
+            if (this.InputProperties > input.Properties)
+                throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
 #endif
             // default implementation always returns IndicatorStatus.Success
             return new IndicatorResult(Forward(time, input));

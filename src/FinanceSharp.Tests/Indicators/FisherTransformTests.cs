@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class FisherTransformTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class FisherTransformTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new FisherTransform(10);
         }

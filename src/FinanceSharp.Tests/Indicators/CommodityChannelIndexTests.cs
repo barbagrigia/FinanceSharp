@@ -21,7 +21,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class CommodityChannelIndexTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class CommodityChannelIndexTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new CommodityChannelIndex(14);
         }
@@ -37,7 +37,7 @@ namespace FinanceSharp.Tests.Indicators {
         [Test]
         public void ResetsProperly() {
             var cci = new CommodityChannelIndex(2);
-            cci.Update(DateTime.Today, new TradeBarVolumedValue {
+            cci.Update(DateTime.Today, new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,
@@ -45,7 +45,7 @@ namespace FinanceSharp.Tests.Indicators {
                 Volume = 10
             });
             Assert.IsFalse(cci.IsReady);
-            cci.Update(DateTime.Today.AddSeconds(1), new TradeBarVolumedValue {
+            cci.Update(DateTime.Today.AddSeconds(1), new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,

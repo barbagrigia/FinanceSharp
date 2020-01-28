@@ -88,12 +88,12 @@ namespace FinanceSharp.Data {
         /// 	 Gets a selector that selectors the Volume value
         /// </summary>
         public static Func<DoubleArray, double> Volume {
-            get { return BaseDataBarPropertyOrValue(x => x.Properties >= TradeBarValue.Properties ? x.Volume : Constants.Zero, x => Constants.Zero); }
+            get { return BaseDataBarPropertyOrValue(x => x.Properties >= BarValue.Properties ? x.Volume : Constants.Zero, x => Constants.Zero); }
         }
 
         private static Func<DoubleArray, double> BaseDataBarPropertyOrValue(Func<DoubleArray, double> selector, Func<DoubleArray, double> defaultSelector = null) {
             return x => {
-                if (x.Properties >= TradeBarValue.Properties)
+                if (x.Properties >= BarValue.Properties)
                     return selector(x);
 
                 defaultSelector = defaultSelector ?? (data => data.Value);

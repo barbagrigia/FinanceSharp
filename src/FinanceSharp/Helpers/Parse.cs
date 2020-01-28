@@ -15,6 +15,7 @@
 */
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace FinanceSharp {
     /// <summary>
@@ -25,6 +26,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="System.TimeSpan"/> using <see cref="System.TimeSpan.Parse(string,IFormatProvider)"/>
         /// with <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static TimeSpan TimeSpan(string value) {
             return System.TimeSpan.Parse(value, CultureInfo.InvariantCulture);
         }
@@ -32,6 +34,7 @@ namespace FinanceSharp {
         /// <summary>
         /// Tries to parse the provided value with TryParse as a <see cref="System.TimeSpan"/> using <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string input, out TimeSpan value) {
             return System.TimeSpan.TryParse(input, CultureInfo.InvariantCulture, out value);
         }
@@ -45,6 +48,7 @@ namespace FinanceSharp {
         /// <param name="timeSpanStyle"></param>
         /// <param name="value"></param>
         /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParseExact(string input, string format, TimeSpanStyles timeSpanStyle, out TimeSpan value) {
             return System.TimeSpan.TryParseExact(input, format, CultureInfo.InvariantCulture, timeSpanStyle, out value);
         }
@@ -53,6 +57,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="System.DateTime"/> using <see cref="System.DateTime.Parse(string,IFormatProvider)"/>
         /// with <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime DateTime(string value) {
             return System.DateTime.Parse(value, CultureInfo.InvariantCulture);
         }
@@ -61,6 +66,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="System.DateTime"/> using <see cref="System.DateTime.ParseExact(string,string,IFormatProvider)"/>
         /// with the specified <paramref name="format"/> and <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime DateTimeExact(string value, string format) {
             return System.DateTime.ParseExact(value, format, CultureInfo.InvariantCulture);
         }
@@ -69,6 +75,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="System.DateTime"/> using <see cref="System.DateTime.ParseExact(string,string,IFormatProvider)"/>
         /// with the specified <paramref name="format"/>, <paramref name="dateTimeStyles"/> and <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DateTime DateTimeExact(string value, string format, DateTimeStyles dateTimeStyles) {
             return System.DateTime.ParseExact(value, format, CultureInfo.InvariantCulture, dateTimeStyles);
         }
@@ -77,6 +84,7 @@ namespace FinanceSharp {
         /// Tries to parse the provided value with TryParse as a <see cref="System.DateTime"/> using the specified <paramref name="dateTimeStyle"/>
         /// and <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string input, DateTimeStyles dateTimeStyle, out System.DateTime value) {
             return System.DateTime.TryParse(input, CultureInfo.InvariantCulture, dateTimeStyle, out value);
         }
@@ -86,6 +94,7 @@ namespace FinanceSharp {
         /// specified <paramref name="dateTimeStyle"/>, the format <paramref name="format"/>, and
         /// <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParseExact(string input, string format, DateTimeStyles dateTimeStyle, out System.DateTime value) {
             return System.DateTime.TryParseExact(input, format, CultureInfo.InvariantCulture, dateTimeStyle, out value);
         }
@@ -93,6 +102,7 @@ namespace FinanceSharp {
         /// <summary>
         /// Parses the provided value as a <see cref="double"/> using <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Double(string value) {
             return double.Parse(value, CultureInfo.InvariantCulture);
         }
@@ -101,6 +111,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="double"/> using the specified <paramref name="numberStyles"/>
         /// and <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Double(string value, NumberStyles numberStyles) {
             return double.Parse(value, numberStyles, CultureInfo.InvariantCulture);
         }
@@ -109,6 +120,7 @@ namespace FinanceSharp {
         /// Tries to parse the provided value with TryParse as a <see cref="double"/> using the specified <paramref name="numberStyle"/>
         /// and <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string input, NumberStyles numberStyle, out double value) {
             return double.TryParse(input, numberStyle, CultureInfo.InvariantCulture, out value);
         }
@@ -116,6 +128,7 @@ namespace FinanceSharp {
         /// <summary>
         /// Parses the provided value as a <see cref="int"/> using <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Int(string value) {
             return int.Parse(value, CultureInfo.InvariantCulture);
         }
@@ -124,6 +137,7 @@ namespace FinanceSharp {
         /// Tries to parse the provided value with TryParse as a <see cref="int"/> using the specified <paramref name="numberStyle"/>
         /// and <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string input, NumberStyles numberStyle, out int value) {
             return int.TryParse(input, numberStyle, CultureInfo.InvariantCulture, out value);
         }
@@ -131,6 +145,7 @@ namespace FinanceSharp {
         /// <summary>
         /// Parses the provided value as a <see cref="long"/> using <see cref="CultureInfo.InvariantCulture"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Long(string value) {
             return long.Parse(value, CultureInfo.InvariantCulture);
         }
@@ -139,6 +154,7 @@ namespace FinanceSharp {
         /// Parses the provided value as a <see cref="long"/> using <see cref="CultureInfo.InvariantCulture"/>
         /// and the specified <paramref name="numberStyles"/>
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static long Long(string value, NumberStyles numberStyles) {
             return long.Parse(value, numberStyles, CultureInfo.InvariantCulture);
         }
@@ -147,6 +163,7 @@ namespace FinanceSharp {
         /// Tries to parse the provided value with TryParse as a <see cref="long"/> using the specified <paramref name="numberStyle"/>
         /// and <see cref="CultureInfo.InvariantCulture"/>.
         /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryParse(string input, NumberStyles numberStyle, out long value) {
             return long.TryParse(input, numberStyle, CultureInfo.InvariantCulture, out value);
         }

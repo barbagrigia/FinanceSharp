@@ -61,7 +61,7 @@ namespace FinanceSharp.Tests.Indicators {
         public void ThrowsOnDifferentDataType() {
             var target = new TestIndicator();
 
-            target.Update(0, new TickValue());
+            target.Update(0, new BarValue());
         }
 
         [Test]
@@ -104,21 +104,6 @@ namespace FinanceSharp.Tests.Indicators {
         }
 
         [Test]
-        public void SortsTheSameAsDecimalAsecending() {
-            int count = 100;
-            var targets = Enumerable.Range(0, count).Select(x => new TestIndicator(x.ToString(CultureInfo.InvariantCulture))).ToList();
-            for (int i = 0; i < targets.Count; i++) {
-                targets[i].Update(DateTime.Today, i);
-            }
-
-            var expected = Enumerable.Range(0, count).Select(x => (double) x).OrderBy(x => x).ToList();
-            var actual = targets.OrderBy(x => x).ToList();
-            foreach (var pair in expected.Zip<double, TestIndicator, Tuple<double, TestIndicator>>(actual, Tuple.Create)) {
-                Assert.AreEqual(pair.Item1, pair.Item2.Current.Value);
-            }
-        }
-
-        [Test]
         public void ComparisonFunctions() {
             TestComparisonOperators<int>();
             TestComparisonOperators<long>();
@@ -142,7 +127,7 @@ namespace FinanceSharp.Tests.Indicators {
         [Test]
         public void IndicatorMustBeEqualToItself() {
             var indicators = typeof(Indicator).Assembly.GetTypes()
-                .Where(t => t.BaseType.Name != "CandlestickPattern" && !t.Name.StartsWith("<"))
+                .Where(t => typeof(IIndicator).IsAssignableFrom(t) && t.BaseType != null && t.BaseType.Name != "CandlestickPattern" && !t.Name.StartsWith("<"))
                 .OrderBy(t => t.Name)
                 .ToList();
 

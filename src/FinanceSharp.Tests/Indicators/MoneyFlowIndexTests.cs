@@ -20,7 +20,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class MoneyFlowIndexTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class MoneyFlowIndexTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new MoneyFlowIndex(20);
         }
@@ -33,7 +33,7 @@ namespace FinanceSharp.Tests.Indicators {
         public void TestTradeBarsWithNoVolume() {
             var mfi = new MoneyFlowIndex(3);
             foreach (var data in TestHelper.GetDataStream(4)) {
-                var tradeBar = new TradeBarVolumedValue {
+                var tradeBar = new TradeBarValue {
                     Open = data.Value.Value,
                     Close = data.Value.Value,
                     High = data.Value.Value,

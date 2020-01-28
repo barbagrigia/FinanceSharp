@@ -23,7 +23,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class VolumeWeightedAveragePriceIndicatorTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class VolumeWeightedAveragePriceIndicatorTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new VolumeWeightedAveragePriceIndicator(50);
         }
@@ -43,7 +43,7 @@ namespace FinanceSharp.Tests.Indicators {
             for (var i = 0; i < data.Length; i++) {
                 var datum = data[i];
                 seen.Add(datum);
-                ind.Update(DateTime.Now.AddSeconds(i), new TradeBarVolumedValue(datum, datum, datum, datum, volume));
+                ind.Update(DateTime.Now.AddSeconds(i), new TradeBarValue(datum, datum, datum, datum, volume));
                 // When volume is constant, VWAP is a simple moving average
                 Assert.AreEqual(Enumerable.Reverse(seen).Take(period).Average(), ind.Current.Value);
             }
@@ -53,10 +53,10 @@ namespace FinanceSharp.Tests.Indicators {
         public void IsReadyAfterPeriodUpdates() {
             var ind = new VolumeWeightedAveragePriceIndicator(3);
 
-            ind.Update(DateTime.UtcNow, new TradeBarVolumedValue(1d, 1d, 1d, 1d, 1));
-            ind.Update(DateTime.UtcNow, new TradeBarVolumedValue(1d, 1d, 1d, 1d, 1));
+            ind.Update(DateTime.UtcNow, new TradeBarValue(1d, 1d, 1d, 1d, 1));
+            ind.Update(DateTime.UtcNow, new TradeBarValue(1d, 1d, 1d, 1d, 1));
             Assert.IsFalse(ind.IsReady);
-            ind.Update(DateTime.UtcNow, new TradeBarVolumedValue(1d, 1d, 1d, 1d, 1));
+            ind.Update(DateTime.UtcNow, new TradeBarValue(1d, 1d, 1d, 1d, 1));
             Assert.IsTrue(ind.IsReady);
         }
 
@@ -73,7 +73,7 @@ namespace FinanceSharp.Tests.Indicators {
             ind.Reset();
 
             TestHelper.AssertIndicatorIsInDefaultState(ind);
-            ind.Update(DateTime.UtcNow, new TradeBarVolumedValue(2d, 2d, 2d, 2d, 1));
+            ind.Update(DateTime.UtcNow, new TradeBarValue(2d, 2d, 2d, 2d, 1));
             Assert.AreEqual(ind.Current.Value, 2d);
         }
     }

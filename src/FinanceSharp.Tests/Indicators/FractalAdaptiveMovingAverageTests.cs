@@ -21,7 +21,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class FractalAdaptiveMovingAverageTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class FractalAdaptiveMovingAverageTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new FractalAdaptiveMovingAverage(16);
         }
@@ -39,7 +39,7 @@ namespace FinanceSharp.Tests.Indicators {
             var frama = new FractalAdaptiveMovingAverage(6);
 
             foreach (var data in TestHelper.GetDataStream(7)) {
-                frama.Update(DateTime.UtcNow, new TradeBarVolumedValue {High = data.Value.Value, Low = data.Value.Value});
+                frama.Update(DateTime.UtcNow, new TradeBarValue {High = data.Value.Value, Low = data.Value.Value});
             }
 
             Assert.IsTrue(frama.IsReady);

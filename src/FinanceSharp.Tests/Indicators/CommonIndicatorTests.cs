@@ -53,7 +53,7 @@ namespace FinanceSharp.Tests.Indicators {
                 return (startDate.AddDays(value).ToEpochTime(), new IndicatorValue(100d));
             }
 
-            return (startDate.AddDays(value).ToEpochTime(), new TradeBarVolumedValue {
+            return (startDate.AddDays(value).ToEpochTime(), new TradeBarValue {
                 Open = 100d + value,
                 High = 105d + value,
                 Low = 95d + value,

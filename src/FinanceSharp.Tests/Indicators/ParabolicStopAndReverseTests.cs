@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class ParabolicStopAndReverseTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class ParabolicStopAndReverseTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new ParabolicStopAndReverse();
         }

@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class WilliamsPercentRTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class WilliamsPercentRTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new WilliamsPercentR(14);
         }

@@ -4,7 +4,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class AccelerationBandsTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class AccelerationBandsTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new AccelerationBands(period: 20, width: 4d);
         }
@@ -21,7 +21,7 @@ namespace FinanceSharp.Tests.Indicators {
                 "spy_acceleration_bands_20_4.txt",
                 "LowerBand",
                 (ind, expected) => Assert.AreEqual(expected, (double) ((AccelerationBands) ind).LowerBand.Current.Value,
-                    delta: 1e-4, message: "Lower band test fail.")
+                    delta: 1e-3, message: "Lower band test fail.")
             );
         }
 

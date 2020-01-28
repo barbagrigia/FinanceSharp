@@ -20,7 +20,7 @@ using System;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class OnBalanceVolumeTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class OnBalanceVolumeTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new OnBalanceVolume();
         }

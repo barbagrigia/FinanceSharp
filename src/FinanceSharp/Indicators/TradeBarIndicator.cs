@@ -38,7 +38,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Creates a new TradeBarIndicator with the specified name
         /// </summary>
         /// <param name="name">The name of this indicator</param>
-        protected TradeBarIndicator(string name, int properties = TradeBarVolumedValue.Properties)
+        protected TradeBarIndicator(string name, int properties = TradeBarValue.Properties)
             : base(name) {
             _properties = properties;
         }

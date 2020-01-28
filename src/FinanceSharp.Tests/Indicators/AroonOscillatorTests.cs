@@ -21,7 +21,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class AroonOscillatorTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class AroonOscillatorTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new AroonOscillator(14, 14);
         }
@@ -33,21 +33,21 @@ namespace FinanceSharp.Tests.Indicators {
         [Test]
         public void ResetsProperly() {
             var aroon = new AroonOscillator(3, 3);
-            aroon.Update(DateTime.Today.ToEpochTime(), new TradeBarVolumedValue {
+            aroon.Update(DateTime.Today.ToEpochTime(), new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,
                 Close = 5d,
                 Volume = 10
             });
-            aroon.Update(DateTime.Today.AddSeconds(1).ToEpochTime(), new TradeBarVolumedValue {
+            aroon.Update(DateTime.Today.AddSeconds(1).ToEpochTime(), new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,
                 Close = 5d,
                 Volume = 10
             });
-            aroon.Update(DateTime.Today.AddSeconds(2).ToEpochTime(), new TradeBarVolumedValue {
+            aroon.Update(DateTime.Today.AddSeconds(2).ToEpochTime(), new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,
@@ -55,7 +55,7 @@ namespace FinanceSharp.Tests.Indicators {
                 Volume = 10
             });
             Assert.IsFalse(aroon.IsReady);
-            aroon.Update(DateTime.Today.AddSeconds(3).ToEpochTime(), new TradeBarVolumedValue {
+            aroon.Update(DateTime.Today.AddSeconds(3).ToEpochTime(), new TradeBarValue {
                 Open = 3d,
                 High = 7d,
                 Low = 2d,

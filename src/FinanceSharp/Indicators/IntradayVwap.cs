@@ -45,6 +45,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Computes the new VWAP
         /// </summary>
         protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
+#if DEBUG
+            if (this.InputProperties > input.Properties)
+                throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
+#endif
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
                 return new IndicatorResult(0, IndicatorStatus.InvalidInput);

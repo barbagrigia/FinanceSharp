@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class KeltnerChannelsTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class KeltnerChannelsTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new KeltnerChannels(20, 1.5d);
         }

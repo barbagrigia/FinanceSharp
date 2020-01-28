@@ -19,7 +19,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class HeikinAshiTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class HeikinAshiTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new HeikinAshi();
         }

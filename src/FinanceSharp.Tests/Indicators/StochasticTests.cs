@@ -20,7 +20,7 @@ using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]
-    public class StochasticTests : CommonIndicatorTests<TradeBarVolumedValue> {
+    public class StochasticTests : CommonIndicatorTests<TradeBarValue> {
         protected override IndicatorBase CreateIndicator() {
             return new Stochastic(12, 3, 5);
         }
@@ -86,7 +86,7 @@ namespace FinanceSharp.Tests.Indicators {
             var reference = DateTime.Now;
             var stochastics = new Stochastic("sto", 2, 2, 2);
             for (var i = 0; i < 4; i++) {
-                var bar = new TradeBarVolumedValue(1, 1, 1, 1, 1);
+                var bar = new TradeBarValue(1, 1, 1, 1, 1);
                 stochastics.Update(reference.AddSeconds(i), bar);
                 Assert.AreEqual(0d, stochastics.Current.Value);
             }
