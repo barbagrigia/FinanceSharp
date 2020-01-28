@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,13 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
 */
-
 using System;
 using System.Linq;
 using FinanceSharp.Data;
-using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -115,7 +110,7 @@ namespace FinanceSharp.Indicators {
         /// </returns>
         protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
             if (window.Count >= 3) {
-                _multipliedDiffWindow.Add(time, (window[0].Value - window[1].Value) * (window[1].Value - window[2].Value));
+                _multipliedDiffWindow.Add((window[0].Value - window[1].Value) * (window[1].Value - window[2].Value));
             }
 
             // Estimate the indicator if less than 50% of observation are zero. Avoid division by

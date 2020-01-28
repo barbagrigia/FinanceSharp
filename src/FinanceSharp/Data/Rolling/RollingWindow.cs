@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,14 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using static FinanceSharp.StringExtensions;
 
-namespace FinanceSharp.Data.Rolling {
+namespace FinanceSharp.Data {
     /// <summary>
     ///     This is a window that allows for list access semantics,
     ///     where this[0] refers to the most recent item in the
@@ -40,7 +36,7 @@ namespace FinanceSharp.Data.Rolling {
         private T _mostRecentlyRemoved;
 
         // the total number of samples taken by this indicator
-        private long _samples;
+        private int _samples;
 
         // used to locate the last item in the window as an indexer into the _list
         private int _tail;
@@ -49,14 +45,13 @@ namespace FinanceSharp.Data.Rolling {
         ///     Initializes a new instance of the RollwingWindow class with the specified window size.
         /// </summary>
         /// <param name="size">The number of items to hold in the window</param>
-        public RollingWindow(int size, string name = "") {
+        public RollingWindow(int size) {
             if (size < 1) {
                 throw new ArgumentException("RollingWindow must have size of at least 1.", nameof(size));
             }
 
             _list = new List<T>(size);
             Size = size;
-            Name = name;
         }
 
         /// <summary>
@@ -77,11 +72,6 @@ namespace FinanceSharp.Data.Rolling {
                 }
             }
         }
-
-        /// <summary>
-        /// 	 Gets a name for this indicator
-        /// </summary>
-        public string Name { get; }
 
         /// <summary>
         ///     Gets the number of samples that have been added to this window over its lifetime
@@ -133,11 +123,11 @@ namespace FinanceSharp.Data.Rolling {
                         throw new ArgumentOutOfRangeException(nameof(i), "Rolling window is empty");
                     } else if (i > Size - 1 || i < 0) {
                         throw new ArgumentOutOfRangeException(nameof(i), i,
-                            Invariant($"Index must be between 0 and {Size - 1} (rolling window is of size {Size})")
+                            $"Index must be between 0 and {Size - 1} (rolling window is of size {Size})"
                         );
                     } else if (i > Count - 1) {
                         throw new ArgumentOutOfRangeException(nameof(i), i,
-                            Invariant($"Index must be between 0 and {Count - 1} (entry {i} does not exist yet)")
+                            $"Index must be between 0 and {Count - 1} (entry {i} does not exist yet)"
                         );
                     }
 
@@ -151,7 +141,7 @@ namespace FinanceSharp.Data.Rolling {
                     _listLock.EnterWriteLock();
 
                     if (i < 0 || i > Count - 1) {
-                        throw new ArgumentOutOfRangeException(nameof(i), i, Invariant($"Must be between 0 and {Count - 1}"));
+                        throw new ArgumentOutOfRangeException(nameof(i), i, $"Must be between 0 and {Count - 1}");
                     }
 
                     _list[(Count + _tail - i - 1) % Count] = value;
@@ -175,17 +165,6 @@ namespace FinanceSharp.Data.Rolling {
                 }
             }
         }
-
-        /// <summary>
-        /// 	 Gets the current state of this updatable. If the state has not been updated
-        /// 	 then the value will be null.
-        /// </summary>
-        public DoubleArray Current { get; protected set; }
-
-        /// <summary>
-        /// 	 Gets the current time of <see cref="IUpdatable.Current"/>.
-        /// </summary>
-        public long CurrentTime { get; protected set; }
 
         /// <summary>
         ///     Returns an enumerator that iterates through the collection.
@@ -226,7 +205,7 @@ namespace FinanceSharp.Data.Rolling {
         ///     Adds an item to this window and shifts all other elements
         /// </summary>
         /// <param name="item">The item to be added</param>
-        public void Add(long time, T item) {
+        public void Add(T item) {
             try {
                 _listLock.EnterWriteLock();
 
@@ -243,50 +222,6 @@ namespace FinanceSharp.Data.Rolling {
             } finally {
                 _listLock.ExitWriteLock();
             }
-
-            Current = (DoubleArray) (object) item;
-            Updated?.Invoke(CurrentTime = time, Current);
-        }
-
-        /// <summary>
-        /// 	 Event handler that fires after this updatable is updated.
-        /// </summary>
-        public event UpdatedHandler Updated;
-
-        /// <summary>
-        ///     Event handler that fires after this updatable is reset.
-        /// </summary>
-        public event ResettedHandler Resetted;
-
-        /// <summary>
-        /// 	 Updates the state of this updatable with the given value and returns true
-        /// 	 if this updatable is ready, false otherwise
-        /// </summary>
-        /// <param name="time"></param>
-        /// <param name="input">The value to use to update this updatable</param>
-        /// <returns>True if this updatable is ready, false otherwise</returns>
-        bool IUpdatable.Update(long time, DoubleArray input) {
-            var t = (T) (object) input;
-            try {
-                _listLock.EnterWriteLock();
-
-                _samples++;
-                if (Size == Count) {
-                    // keep track of what's the last element
-                    // so we can reindex on this[ int ]
-                    _mostRecentlyRemoved = _list[_tail];
-                    _list[_tail] = t;
-                    _tail = (_tail + 1) % Size;
-                } else {
-                    _list.Add(t);
-                }
-            } finally {
-                _listLock.ExitWriteLock();
-            }
-
-            Current = input;
-            Updated?.Invoke(CurrentTime = time, Current);
-            return IsReady;
         }
 
         /// <summary>
@@ -302,8 +237,6 @@ namespace FinanceSharp.Data.Rolling {
             } finally {
                 _listLock.ExitWriteLock();
             }
-
-            Resetted?.Invoke(this);
         }
     }
 }

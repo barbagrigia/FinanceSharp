@@ -1,8 +1,6 @@
 /*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 
 
@@ -25,6 +22,16 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 time span or a count of pieces of data.
     /// </summary>
     public class TickConsolidator : TradeBarConsolidatorBase {
+        /// <summary>
+        ///     The number of properties <see cref="DataConsolidator.Current"/> will have.
+        /// </summary>
+        public override int Properties => TradeBarVolumedValue.Properties;
+
+        /// <summary>
+        ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
+        /// </summary>
+        public override int InputProperties => TickValue.Properties;
+
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>
@@ -61,7 +68,7 @@ namespace FinanceSharp.Data.Consolidators {
             var value = data.Value;
             if (workingBar == null) {
                 workingTime = GetRoundedBarTime(time);
-                workingBar = new DoubleArray(1, TradeBarVolumedValue.Properties) {
+                workingBar = new DoubleArray(1, Properties) {
                     Close = value,
                     High = value,
                     Low = value,

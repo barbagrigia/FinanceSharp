@@ -1,8 +1,6 @@
 /*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Diagnostics;
 using FinanceSharp.Data;
@@ -72,6 +69,16 @@ namespace FinanceSharp.Indicators {
         public long CurrentTime { get; protected set; }
 
         /// <summary>
+        ///     The number of properties <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public virtual int Properties => IndicatorValue.Properties;
+
+        /// <summary>
+        ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
+        /// </summary>
+        public virtual int InputProperties => Properties;
+
+        /// <summary>
         /// 	 Gets the number of samples processed by this indicator
         /// </summary>
         public long Samples { get; private set; }
@@ -82,6 +89,30 @@ namespace FinanceSharp.Indicators {
         /// <param name="data">The new data for the consolidator</param>
         public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
             return Update(time, DoubleArray.FromStruct(data));
+        }
+
+        /// <summary>
+        /// 	 Updates this consolidator with the specified data
+        /// </summary>
+        /// <param name="data">The new data for the consolidator</param>
+        internal bool Update<TStruct>(DateTime time, TStruct data) where TStruct : unmanaged, DataStruct {
+            return Update(time.ToEpochTime(), DoubleArray.FromStruct(data));
+        }
+
+        /// <summary>
+        /// 	 Updates this consolidator with the specified data
+        /// </summary>
+        /// <param name="data">The new data for the consolidator</param>
+        internal bool Update<TStruct>((DateTime Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
+            return Update(tuple.Time.ToEpochTime(), DoubleArray.FromStruct(tuple.Value));
+        }
+
+        /// <summary>
+        /// 	 Updates this consolidator with the specified data
+        /// </summary>
+        /// <param name="data">The new data for the consolidator</param>
+        internal bool Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
+            return Update(tuple.Time, DoubleArray.FromStruct(tuple.Value));
         }
 
         /// <summary>
@@ -116,6 +147,17 @@ namespace FinanceSharp.Indicators {
         /// <returns>True if this indicator is ready, false otherwise</returns>
         public bool Update(long time, double value) {
             return Update((long) time, (DoubleArray) value);
+        }
+
+        /// <summary>
+        /// 	 Updates the state of this indicator with the given value and returns true
+        /// 	 if this indicator is ready, false otherwise
+        /// </summary>
+        /// <param name="time">The time associated with the value</param>
+        /// <param name="value">The value to use to update this indicator</param>
+        /// <returns>True if this indicator is ready, false otherwise</returns>
+        internal bool Update(DateTime time, double value) {
+            return Update(time.ToEpochTime(), (DoubleArray) value);
         }
 
         /// <summary>

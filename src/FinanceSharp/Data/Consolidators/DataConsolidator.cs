@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
 */
-
 using System;
 
 namespace FinanceSharp.Data.Consolidators {
@@ -52,6 +48,16 @@ namespace FinanceSharp.Data.Consolidators {
         /// 	 Gets the current time of <see cref="IUpdatable.Current"/>.
         /// </summary>
         public long CurrentTime { get; protected set; }
+
+        /// <summary>
+        ///     The number of properties <see cref="Current"/> will have.
+        /// </summary>
+        public abstract int Properties { get; }
+
+        /// <summary>
+        ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
+        /// </summary>
+        public abstract int InputProperties { get; }
 
         /// <summary>
         /// 	 Gets a clone of the data being currently consolidated

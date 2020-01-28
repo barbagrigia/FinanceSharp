@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using FinanceSharp.Data;
-using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -59,7 +55,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _window.Add(time, input);
+            _window.Add(input);
+            _windowTimes.Add(time);
             return Forward(_windowTimes, _window, time, input);
         }
 

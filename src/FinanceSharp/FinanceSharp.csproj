@@ -5,6 +5,18 @@
     <Platforms>AnyCPU;x64</Platforms>
     <LangVersion>8</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
+    <Company>Ebby Technologies LTD.</Company>
+    <Authors>Eli Belash</Authors>
+    <Description>High Performance Technical Financial Graph Computation for Quant-Trading.</Description>
+    <PackageProjectUrl>https://github.com/Nucs/FinanceSharp</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Nucs/FinanceSharp</RepositoryUrl>
+    <Copyright>Eli Belash (C) Ebby Technologies LTD.</Copyright>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageIconUrl />
+    <PackageIcon>logo.png</PackageIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -34,6 +46,17 @@
 
   <ItemGroup>
     <Folder Include="Graphing\TreeSystem\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\imgs\logo.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

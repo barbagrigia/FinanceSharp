@@ -1,8 +1,6 @@
 /*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Linq;
 using FinanceSharp.Data;
-using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -34,12 +30,12 @@ namespace FinanceSharp.Indicators {
     /// </summary>
     /// <seealso cref="DoubleArray" />
     public class ArnaudLegouxMovingAverage : WindowIndicator {
-        private readonly DoubleArray _weightVector;
+        private readonly double[] _weightVector;
 
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => _weightVector.Count;
+        public int WarmUpPeriod => _weightVector.Length;
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ArnaudLegouxMovingAverage" /> class.
@@ -64,10 +60,10 @@ namespace FinanceSharp.Indicators {
                 .Select(i => Math.Exp(-(i - m) * (i - m) / (2 * s * s)))
                 .ToArray();
 
-            _weightVector = DoubleArray.FromArray(
-                tmpVector
-                    .Select(i => i / tmpVector.Sum()).Reverse()
-                    .ToArray(), false, properties: 1);
+            var vecSum = tmpVector.Sum();
+            _weightVector = tmpVector
+                .Select(i => i / vecSum).Reverse()
+                .ToArray();
         }
 
         /// <summary>

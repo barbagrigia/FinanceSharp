@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,9 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
 */
-
 using System;
 
 
@@ -29,6 +25,16 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 for example, if you subscribe to minute data but want to have a 15 minute bar.
     /// </summary>
     public class TradeBarConsolidator : TradeBarConsolidatorBase {
+        /// <summary>
+        ///     The number of properties <see cref="DataConsolidator.Current"/> will have.
+        /// </summary>
+        public override int Properties => TradeBarVolumedValue.Properties;
+
+        /// <summary>
+        ///     The number of properties of input argument of <see cref="IUpdatable.Update"/> must have.
+        /// </summary>
+        public override int InputProperties => Properties;
+
         /// <summary>
         /// 	 Creates a consolidator to produce a new 'TradeBar' representing the period
         /// </summary>

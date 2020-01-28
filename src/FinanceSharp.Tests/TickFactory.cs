@@ -1,6 +1,5 @@
 ﻿using System;
 using FinanceSharp.Data;
-using FinanceSharp.Data.Market;
 
 namespace FinanceSharp.Tests {
     public class TickFactory {

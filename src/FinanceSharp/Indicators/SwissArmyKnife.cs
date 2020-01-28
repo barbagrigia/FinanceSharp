@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using FinanceSharp.Data;
-using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -58,8 +54,8 @@ namespace FinanceSharp.Indicators {
     /// 	 Swiss Army Knife indicator by John Ehlers
     /// </summary>
     public class SwissArmyKnife : Indicator {
-        private readonly RollingWindow<double> _price;
-        private readonly RollingWindow<double> _filt;
+        private readonly DataRollingWindow<double> _price;
+        private readonly DataRollingWindow<double> _filt;
         private readonly int _period;
         private readonly double _a0 = 1;
         private readonly double _a1;
@@ -87,8 +83,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="tool"></param>
         public SwissArmyKnife(string name, int period, double delta, SwissArmyKnifeTool tool)
             : base(name) {
-            _filt = new RollingWindow<double>(2) {{0, 0}, {0, 0}};
-            _price = new RollingWindow<double>(3);
+            _filt = new DataRollingWindow<double>(2, 1) {{0, 0}, {0, 0}};
+            _price = new DataRollingWindow<double>(3, 1);
             _period = period;
             var beta = 2.415 * (1 - Math.Cos(2 * Math.PI / period));
             var alpha = -beta + Math.Sqrt(Math.Pow(beta, 2) + 2d * beta);

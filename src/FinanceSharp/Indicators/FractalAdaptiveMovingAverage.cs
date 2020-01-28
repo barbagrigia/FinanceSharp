@@ -1,8 +1,6 @@
 ﻿/*
  * All Rights reserved to Ebby Technologies LTD @ Eli Belash, 2020.
- * Original code by: 
- * 
- * QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
+ * Original code by QUANTCONNECT.COM - Democratizing Finance, Empowering Individuals.
  * Lean Algorithmic Trading Engine v2.0. Copyright 2014 QuantConnect Corporation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Linq;
-using FinanceSharp.Data.Rolling;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -30,8 +26,8 @@ namespace FinanceSharp.Indicators {
     public class FractalAdaptiveMovingAverage : BarIndicator {
         private readonly int _n = 16;
         private readonly double _w = -4.6;
-        private readonly RollingWindow<double> _high;
-        private readonly RollingWindow<double> _low;
+        private readonly DataRollingWindow<double> _high;
+        private readonly DataRollingWindow<double> _low;
 
         /// <summary>
         /// 	 Initializes a new instance of the average class
@@ -47,8 +43,8 @@ namespace FinanceSharp.Indicators {
 
             _n = n;
             _w = Math.Log(2d / (1 + longPeriod));
-            _high = new RollingWindow<double>(n);
-            _low = new RollingWindow<double>(n);
+            _high = new DataRollingWindow<double>(n, 1);
+            _low = new DataRollingWindow<double>(n, 1);
         }
 
         /// <summary>
