@@ -74,11 +74,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
-
             // re-initialize the current value, constant should ALWAYS return this value
             Current = _value;
             CurrentTime = 0;
+            base.Reset();
         }
     }
 }

@@ -236,7 +236,6 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             _previousInput = null;
             _trueRange.Reset();
             _directionalMovementPlus.Reset();
@@ -247,6 +246,7 @@ namespace FinanceSharp.Indicators {
             _averageDirectionalIndex.Reset();
             PositiveDirectionalIndex.Reset();
             NegativeDirectionalIndex.Reset();
+            base.Reset();
         }
     }
 }

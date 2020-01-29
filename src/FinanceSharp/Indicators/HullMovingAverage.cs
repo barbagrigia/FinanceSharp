@@ -55,10 +55,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             _slowWma.Reset();
             _fastWma.Reset();
             _hullMa.Reset();
+            base.Reset();
         }
 
         /// <summary>

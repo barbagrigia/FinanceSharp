@@ -231,7 +231,6 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             TenkanMaximum.Reset();
             TenkanMinimum.Reset();
             Tenkan.Reset();
@@ -247,6 +246,7 @@ namespace FinanceSharp.Indicators {
             DelayedMinimumSenkouB.Reset();
             Chikou.Reset();
             SenkouB.Reset();
+            base.Reset();
         }
     }
 }

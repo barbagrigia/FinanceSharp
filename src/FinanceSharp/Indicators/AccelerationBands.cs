@@ -93,10 +93,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             MiddleBand.Reset();
             LowerBand.Reset();
             UpperBand.Reset();
+            base.Reset();
         }
 
         /// <summary>

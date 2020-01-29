@@ -108,11 +108,11 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             UpperBand.Reset();
             LowerBand.Reset();
             _previousInput = null;
             _previousTime = 0;
+            base.Reset();
         }
     }
 }

@@ -66,10 +66,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             _ema1.Reset();
             _ema2.Reset();
             _sum.Reset();
+            base.Reset();
         }
 
         /// <summary>

@@ -64,9 +64,9 @@ namespace FinanceSharp.Indicators {
         ///     Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             _window.Reset();
             _windowTimes.Reset();
+            base.Reset();
         }
 
         /// <summary>

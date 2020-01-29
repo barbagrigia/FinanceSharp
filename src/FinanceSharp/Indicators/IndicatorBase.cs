@@ -168,6 +168,7 @@ namespace FinanceSharp.Indicators {
             Samples = 0;
             Current = Constants.Zero;
             CurrentTime = 0;
+            Resetted?.Invoke(this);
         }
 
 

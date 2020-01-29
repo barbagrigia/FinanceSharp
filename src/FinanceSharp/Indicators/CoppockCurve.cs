@@ -74,10 +74,10 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            base.Reset();
             _shortRoc.Reset();
             _longRoc.Reset();
             _lwma.Reset();
+            base.Reset();
         }
 
         /// <summary>

@@ -20,7 +20,6 @@ namespace FinanceSharp.Data.Consolidators {
     /// 	 Represents a type that consumes BaseData instances and fires an event with consolidated
     /// 	 and/or aggregated data.
     /// </summary>
-    /// <typeparam name="TInput">The type consumed by the consolidator</typeparam>
     public abstract class DataConsolidator : IDataConsolidator {
         /// <summary>
         /// 	 Scans this consolidator to see if it should emit a bar due to time passing
