@@ -373,7 +373,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FinanceSharp\FinanceSharp.csproj" />
+    <ProjectReference Include="..\..\src\FinanceSharp\FinanceSharp.csproj" />
   </ItemGroup>
 
   <ItemGroup>
