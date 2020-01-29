@@ -85,7 +85,7 @@ namespace FinanceSharp.Indicators {
 
             if (Samples == 1) {
                 _previousInput = input.Clone();
-                return 5.0d;
+                return 50.0d;
             }
 
             var buyingPressure = new DoubleArray(1, IndicatorValue.Properties) {Value = input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close)};
@@ -101,13 +101,13 @@ namespace FinanceSharp.Indicators {
             _previousInput = input;
 
             if (!IsReady)
-                return 5.0d;
+                return 50.0d;
 
             var average1 = _sumBuyingPressure1 / _sumTrueRange1;
             var average2 = _sumBuyingPressure2 / _sumTrueRange2;
             var average3 = _sumBuyingPressure3 / _sumTrueRange3;
 
-            return 10.0d * (4 * average1 + 2 * average2 + average3) / 7;
+            return 100.0d * (4 * average1 + 2 * average2 + average3) / 7;
         }
 
         /// <summary>

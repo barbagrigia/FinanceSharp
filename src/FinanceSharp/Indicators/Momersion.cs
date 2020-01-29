@@ -115,13 +115,13 @@ namespace FinanceSharp.Indicators {
 
             // Estimate the indicator if less than 50% of observation are zero. Avoid division by
             // zero and estimations with few real observations in case of forward filled data.
-            if (IsReady && _multipliedDiffWindow.Count(obs => obs == 0) < 0.5 * _multipliedDiffWindow.Count) {
+            if (IsReady && _multipliedDiffWindow.Count(obs => Math.Abs(obs) < ZeroEpsilon) < 0.5 * _multipliedDiffWindow.Count) {
                 var mc = _multipliedDiffWindow.Count(obs => obs > 0);
                 var mRc = _multipliedDiffWindow.Count(obs => obs < 0);
-                return 10.0d * mc / (mc + mRc);
+                return 100.0d * mc / (mc + mRc);
             }
 
-            return 5.0d;
+            return 50.0d;
         }
     }
 }

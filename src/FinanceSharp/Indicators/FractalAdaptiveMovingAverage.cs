@@ -26,8 +26,8 @@ namespace FinanceSharp.Indicators {
     public class FractalAdaptiveMovingAverage : BarIndicator {
         private readonly int _n = 16;
         private readonly double _w = -4.6;
-        private readonly DataRollingWindow<double> _high;
-        private readonly DataRollingWindow<double> _low;
+        private readonly RollingWindow<double> _high;
+        private readonly RollingWindow<double> _low;
 
         /// <summary>
         /// 	 Initializes a new instance of the average class
@@ -43,8 +43,8 @@ namespace FinanceSharp.Indicators {
 
             _n = n;
             _w = Math.Log(2d / (1 + longPeriod));
-            _high = new DataRollingWindow<double>(n, 1);
-            _low = new DataRollingWindow<double>(n, 1);
+            _high = new RollingWindow<double>(n);
+            _low = new RollingWindow<double>(n);
         }
 
         /// <summary>
@@ -70,8 +70,8 @@ namespace FinanceSharp.Indicators {
         /// <returns>The average value</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             var price = (input[HighIdx] + input[LowIdx]) / 2;
-            _high.Add(time, input[HighIdx]);
-            _low.Add(time, input[LowIdx]);
+            _high.Add(input[HighIdx]);
+            _low.Add(input[LowIdx]);
 
             // our first data point just return identity
             if (_high.Samples <= _high.Size) {

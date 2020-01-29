@@ -32,10 +32,10 @@ namespace FinanceSharp.Data {
         %possabilities = ["sbyte", "byte", "short", "ushort", "int", "uint", "ulong", "long", "float", "double", "IndicatorBase"]
 		
         %foreach operators, operators_sign%
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator #2(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l,r) => l+r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator #2(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l #2 r);
             %foreach possabilities%
         [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator #2(DoubleArray lhs, #101 rhs) => lhs.Function(d => d #2 rhs, true);
-        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator #2(#101 lhs, DoubleArray rhs) => rhs.Function(d => d #2 lhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator #2(#101 lhs, DoubleArray rhs) => rhs.Function(d => lhs #2 d, true);
             %
         %				
 
@@ -55,383 +55,135 @@ namespace FinanceSharp.Data {
 
         #region Compute
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(sbyte lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, byte rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(byte lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, short rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(short lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, ushort rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(ushort lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, int rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(int lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, uint rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(uint lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, ulong rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(ulong lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, long rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(long lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, float rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(float lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, double rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(double lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d + rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => d + lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(sbyte lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, byte rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(byte lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, short rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(short lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, ushort rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(ushort lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, int rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(int lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, uint rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(uint lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, ulong rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(ulong lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, long rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(long lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, float rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(float lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, double rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(double lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d - rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => d - lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(sbyte lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, byte rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(byte lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, short rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(short lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, ushort rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(ushort lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, int rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(int lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, uint rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(uint lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, ulong rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(ulong lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, long rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(long lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, float rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(float lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, double rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(double lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d * rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => d * lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(sbyte lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, byte rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(byte lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, short rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(short lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, ushort rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(ushort lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, int rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(int lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, uint rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(uint lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, ulong rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(ulong lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, long rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(long lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, float rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(float lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, double rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(double lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d / rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => d / lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(sbyte lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, byte rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(byte lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, short rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(short lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, ushort rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(ushort lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, int rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(int lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, uint rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(uint lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, ulong rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(ulong lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, long rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(long lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, float rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(float lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, double rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(double lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d % rhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => d % lhs, true);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(DoubleArray lhs, decimal rhs) => lhs + (double) rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator +(decimal lhs, DoubleArray rhs) => (double) lhs + rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(DoubleArray lhs, decimal rhs) => lhs - (double) rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator -(decimal lhs, DoubleArray rhs) => (double) lhs - rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(DoubleArray lhs, decimal rhs) => lhs * (double) rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator *(decimal lhs, DoubleArray rhs) => (double) lhs * rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(DoubleArray lhs, decimal rhs) => lhs / (double) rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator /(decimal lhs, DoubleArray rhs) => (double) lhs / rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(DoubleArray lhs, decimal rhs) => lhs % (double) rhs;
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray operator %(decimal lhs, DoubleArray rhs) => (double) lhs % rhs;
+		
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l + r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(sbyte lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, byte rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(byte lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, short rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(short lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, ushort rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(ushort lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, int rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(int lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, uint rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(uint lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, ulong rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(ulong lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, long rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(long lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, float rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(float lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, double rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(double lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d + rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => lhs + d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l - r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(sbyte lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, byte rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(byte lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, short rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(short lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, ushort rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(ushort lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, int rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(int lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, uint rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(uint lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, ulong rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(ulong lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, long rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(long lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, float rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(float lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, double rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(double lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d - rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => lhs - d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l * r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(sbyte lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, byte rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(byte lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, short rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(short lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, ushort rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(ushort lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, int rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(int lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, uint rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(uint lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, ulong rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(ulong lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, long rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(long lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, float rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(float lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, double rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(double lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d * rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => lhs * d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l / r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(sbyte lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, byte rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(byte lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, short rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(short lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, ushort rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(ushort lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, int rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(int lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, uint rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(uint lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, ulong rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(ulong lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, long rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(long lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, float rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(float lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, double rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(double lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d / rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => lhs / d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, DoubleArray rhs) => lhs.Function(rhs, (l, r) => l % r);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, sbyte rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(sbyte lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, byte rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(byte lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, short rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(short lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, ushort rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(ushort lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, int rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(int lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, uint rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(uint lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, ulong rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(ulong lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, long rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(long lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, float rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(float lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, double rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(double lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, IndicatorBase rhs) => lhs.Function(d => d % rhs, true);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(IndicatorBase lhs, DoubleArray rhs) => rhs.Function(d => lhs % d, true);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(DoubleArray lhs, decimal rhs) => lhs + (double) rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator +(decimal lhs, DoubleArray rhs) => (double) lhs + rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(DoubleArray lhs, decimal rhs) => lhs - (double) rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator -(decimal lhs, DoubleArray rhs) => (double) lhs - rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(DoubleArray lhs, decimal rhs) => lhs * (double) rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator *(decimal lhs, DoubleArray rhs) => (double) lhs * rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(DoubleArray lhs, decimal rhs) => lhs / (double) rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator /(decimal lhs, DoubleArray rhs) => (double) lhs / rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(DoubleArray lhs, decimal rhs) => lhs % (double) rhs;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)] public static DoubleArray operator %(decimal lhs, DoubleArray rhs) => (double) lhs % rhs;
 
         #endregion
-
 #endif
 
 

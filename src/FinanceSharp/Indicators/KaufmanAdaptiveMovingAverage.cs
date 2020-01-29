@@ -26,7 +26,7 @@ namespace FinanceSharp.Indicators {
     /// 	 http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:kaufman_s_adaptive_moving_average
     /// </summary>
     public class KaufmanAdaptiveMovingAverage : WindowIndicator {
-        private const double _constMax = 2d / (3.0d + 1d);
+        private const double _constMax = 2d / (30.0d + 1d);
         private const double _constDiff = 2d / (2d + 1d) - _constMax;
 
         private double _sumRoc1;

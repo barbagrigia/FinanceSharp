@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using FinanceSharp.Data;
 using static FinanceSharp.Constants;
@@ -54,8 +55,8 @@ namespace FinanceSharp.Indicators {
     /// 	 Swiss Army Knife indicator by John Ehlers
     /// </summary>
     public class SwissArmyKnife : Indicator {
-        private readonly DataRollingWindow<double> _price;
-        private readonly DataRollingWindow<double> _filt;
+        private readonly RollingWindow<double> _price;
+        private readonly RollingWindow<double> _filt;
         private readonly int _period;
         private readonly double _a0 = 1;
         private readonly double _a1;
@@ -83,8 +84,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="tool"></param>
         public SwissArmyKnife(string name, int period, double delta, SwissArmyKnifeTool tool)
             : base(name) {
-            _filt = new DataRollingWindow<double>(2, 1) {{0, 0}, {0, 0}};
-            _price = new DataRollingWindow<double>(3, 1);
+            _filt = new RollingWindow<double>(2) {0, 0};
+            _price = new RollingWindow<double>(3);
             _period = period;
             var beta = 2.415 * (1 - Math.Cos(2 * Math.PI / period));
             var alpha = -beta + Math.Sqrt(Math.Pow(beta, 2) + 2d * beta);
@@ -147,16 +148,16 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _price.Add(time, input.Value);
+            _price.Add(input.Value);
 
             if (_price.Samples == 1) {
-                _price.Add(time, _price[0]);
-                _price.Add(time, _price[0]);
+                _price.Add(_price[0]);
+                _price.Add(_price[0]);
             }
 
             var signal = _a0 * _c0 * (_b0 * _price[0] + _b1 * _price[1] + _b2 * _price[2]) + _a0 * (_a1 * _filt[0] + _a2 * _filt[1]);
 
-            _filt.Add(time, signal);
+            _filt.Add(signal);
 
             return signal;
         }
@@ -167,8 +168,8 @@ namespace FinanceSharp.Indicators {
         public override void Reset() {
             _price.Reset();
             _filt.Reset();
-            _filt.Add(0, 0);
-            _filt.Add(0, 0);
+            _filt.Add(0);
+            _filt.Add(0);
             base.Reset();
         }
     }

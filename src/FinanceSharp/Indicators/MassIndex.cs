@@ -25,7 +25,7 @@ namespace FinanceSharp.Indicators {
     /// 	 current trend. Developed by Donald Dorsey.
     /// </summary>
     /// <seealso cref="IndicatorBase{TradeBar}"/>
-    public class MassIndex : IndicatorBase {
+    public class MassIndex : BarIndicator {
         private readonly ExponentialMovingAverage _ema1;
         private readonly ExponentialMovingAverage _ema2;
         private readonly Sum _sum;
@@ -87,7 +87,7 @@ namespace FinanceSharp.Indicators {
             }
 
             if (!_sum.IsReady) {
-                return (DoubleArray) _sum.Period;
+                return _sum.Period;
             }
 
             return _sum;

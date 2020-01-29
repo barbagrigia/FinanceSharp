@@ -26,7 +26,7 @@ namespace FinanceSharp.Tests.Indicators {
             var mom = new Momentum(5);
             foreach (var data in TestHelper.GetDataStream(5)) {
                 mom.Update(data);
-                Assert.AreEqual(data.Value, mom.Current.Value);
+                Assert.AreEqual(data.Value.Value, mom.Current.Value);
             }
         }
 

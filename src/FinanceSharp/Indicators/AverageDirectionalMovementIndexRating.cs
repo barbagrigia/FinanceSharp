@@ -72,7 +72,7 @@ namespace FinanceSharp.Indicators {
                 _adxHistory.Add(_adx);
             }
 
-            return IsReady ? (_adx + _adxHistory[_period - 1]) / 2 : 5.0d;
+            return IsReady ? (_adx + _adxHistory[_period - 1]) / 2 : 50.0d;
         }
 
         /// <summary>

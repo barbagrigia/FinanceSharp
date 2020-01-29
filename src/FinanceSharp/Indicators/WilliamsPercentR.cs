@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
+using System;
 using static FinanceSharp.Constants;
 using FinanceSharp.Data;
 
@@ -87,7 +89,7 @@ namespace FinanceSharp.Indicators {
 
             var range = Maximum.Current.Value - Minimum.Current.Value;
 
-            return range == 0 ? 0 : -10.0d * (Maximum.Current.Value - input[CloseIdx]) / range;
+            return Math.Abs(range) < ZeroEpsilon ? 0 : -100.0d * (Maximum.Current.Value - input[CloseIdx]) / range;
         }
     }
 }

@@ -77,7 +77,8 @@ namespace FinanceSharp.Indicators {
             // re-initialize the current value, constant should ALWAYS return this value
             Current = _value;
             CurrentTime = 0;
-            base.Reset();
+            Samples = 0;
+            base.OnReset();
         }
     }
 }

@@ -91,7 +91,7 @@ namespace FinanceSharp.Tests.Indicators {
 
             identity.Update(DateTime.UtcNow, 3d);
             Assert.IsTrue(sma.IsReady);
-            Assert.AreEqual(2d, sma);
+            Assert.AreEqual(2d, sma.Current.Value);
         }
 
         [Test]
@@ -122,7 +122,7 @@ namespace FinanceSharp.Tests.Indicators {
             Assert.IsTrue(delay.IsReady);
             Assert.IsTrue(sma.IsReady);
 
-            Assert.AreEqual(1.5d, sma);
+            Assert.AreEqual(1.5d, sma.Current.Value);
         }
 
         [Test]

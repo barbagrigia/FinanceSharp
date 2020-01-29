@@ -91,7 +91,7 @@ namespace FinanceSharp.Indicators {
             _prevGain /= Period;
 
             var sum = _prevGain + _prevLoss;
-            return sum != 0 ? 10.0d * ((_prevGain - _prevLoss) / sum) : Constants.Zero;
+            return sum != 0 ? 100.0d * ((_prevGain - _prevLoss) / sum) : Constants.Zero;
         }
 
         /// <summary>

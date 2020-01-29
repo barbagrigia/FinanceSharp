@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 namespace FinanceSharp.Data {
@@ -30,7 +31,7 @@ namespace FinanceSharp.Data {
         /// <returns></returns>
         public static unsafe DoubleArray Function(this DoubleArray lhs, DoubleArray rhs, BinaryFunctionHandler function) {
             if (lhs.IsScalar && rhs.IsScalar)
-                return *lhs.Address * *rhs.Address;
+                return function(*lhs.Address, *rhs.Address);
 
             DoubleArray ret;
             if (lhs.IsScalar) {

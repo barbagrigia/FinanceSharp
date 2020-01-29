@@ -91,11 +91,11 @@ namespace FinanceSharp.Indicators {
             _previousInput = input;
             if (AverageLoss == Constants.Zero) {
                 // all up days is 100
-                return 10.0d;
+                return 100.0d;
             }
 
             var rs = AverageGain / AverageLoss;
-            return 10.0d - (10.0d / (1 + rs));
+            return 100.0d - (100.0d / (1 + rs));
         }
 
         /// <summary>

@@ -35,13 +35,13 @@ namespace FinanceSharp.Tests.Indicators {
             Assert.AreEqual(1d, std.Current.Value);
 
             std.Update(reference.AddDays(3), 1d);
-            Assert.AreEqual(0.942809041582063d, std.Current.Value);
+            Assert.AreEqual(0.942809041582063d, std.Current.Value, 0.0000001);
 
             std.Update(reference.AddDays(4), -2d);
-            Assert.AreEqual(1.24721912892465d, std.Current.Value);
+            Assert.AreEqual(1.24721912892465d, std.Current.Value, 0.0000001);
 
             std.Update(reference.AddDays(5), 3d);
-            Assert.AreEqual(2.05480466765633d, std.Current.Value);
+            Assert.AreEqual(2.05480466765633d, std.Current.Value, 0.0000001);
         }
 
         [Test]

@@ -103,7 +103,7 @@ namespace FinanceSharp.Indicators {
                 return 0.0d;
             }
 
-            return (typicalPrice - TypicalPriceAverage) / weightedMeanDeviation;
+            return (typicalPrice - TypicalPriceAverage.Current.Value) / weightedMeanDeviation;
         }
 
         /// <summary>

@@ -107,7 +107,7 @@ namespace FinanceSharp.Indicators {
                 return 100.0d;
             }
 
-            return 10.0d * PositiveMoneyFlow / totalMoneyFlow;
+            return 100.0d * PositiveMoneyFlow / totalMoneyFlow;
         }
     }
 }

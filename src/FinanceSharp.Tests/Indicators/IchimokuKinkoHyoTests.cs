@@ -79,7 +79,7 @@ namespace FinanceSharp.Tests.Indicators {
                 CreateIndicator(),
                 TestFileName,
                 "Kijun",
-                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).Kijun.Current.Value)
+                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).Kijun.Current.Value, Constants.ZeroEpsilon)
             );
         }
 
@@ -89,7 +89,7 @@ namespace FinanceSharp.Tests.Indicators {
                 CreateIndicator(),
                 TestFileName,
                 "DelayedTenkanSenkouA",
-                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).DelayedTenkanSenkouA.Current.Value)
+                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).DelayedTenkanSenkouA.Current.Value, Constants.ZeroEpsilon)
             );
         }
 
@@ -100,7 +100,7 @@ namespace FinanceSharp.Tests.Indicators {
                 CreateIndicator(),
                 TestFileName,
                 "DelayedKijunSenkouA",
-                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).DelayedKijunSenkouA.Current.Value)
+                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).DelayedKijunSenkouA.Current.Value, Constants.ZeroEpsilon)
             );
         }
 
@@ -110,7 +110,7 @@ namespace FinanceSharp.Tests.Indicators {
                 CreateIndicator(),
                 TestFileName,
                 "Senkou A",
-                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).SenkouA.Current.Value)
+                (ind, expected) => Assert.AreEqual(expected, (double) ((IchimokuKinkoHyo) ind).SenkouA.Current.Value, Constants.ZeroEpsilon)
             );
         }
 

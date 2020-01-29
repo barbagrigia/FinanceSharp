@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 namespace FinanceSharp.Data {
@@ -32,7 +33,8 @@ namespace FinanceSharp.Data {
         public override bool Equals(object obj) {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
+            if (obj is double d) return Math.Abs(d - this.Value) < Constants.ZeroEpsilon;
+            if (!(obj is DoubleArray)) return false;
             return Equals((DoubleArray) obj);
         }
 

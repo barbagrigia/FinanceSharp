@@ -102,7 +102,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>The AroonUp value</returns>
         private static double ComputeAroonUp(int upPeriod, Maximum max, long time, DoubleArray input) {
             max.Update(time, input);
-            return 10.0d * (upPeriod - max.PeriodsSinceMaximum) / upPeriod;
+            return 100.0d * (upPeriod - max.PeriodsSinceMaximum) / upPeriod;
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace FinanceSharp.Indicators {
         /// <returns>The AroonDown value</returns>
         private static double ComputeAroonDown(int downPeriod, Minimum min, long time, DoubleArray input) {
             min.Update(time, (DoubleArray) input);
-            return 10.0d * (downPeriod - min.PeriodsSinceMinimum) / downPeriod;
+            return 100.0d * (downPeriod - min.PeriodsSinceMinimum) / downPeriod;
         }
 
         /// <summary>

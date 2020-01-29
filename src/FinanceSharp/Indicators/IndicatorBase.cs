@@ -82,7 +82,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the number of samples processed by this indicator
         /// </summary>
-        public long Samples { get; private set; }
+        public long Samples { get; protected set; }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
@@ -126,7 +126,7 @@ namespace FinanceSharp.Indicators {
         public bool Update(long time, DoubleArray input) {
             // compute a new value and update our previous time
             Samples++;
-
+            
             var nextResult = ValidateAndForward(time, input);
             if (nextResult.Status == IndicatorStatus.Success) {
                 Current = nextResult.Value;
@@ -168,6 +168,13 @@ namespace FinanceSharp.Indicators {
             Samples = 0;
             Current = Constants.Zero;
             CurrentTime = 0;
+            Resetted?.Invoke(this);
+        }
+
+        /// <summary>
+        /// 	 Triggers event <see cref="Resetted"/>.
+        /// </summary>
+        protected void OnReset() {
             Resetted?.Invoke(this);
         }
 

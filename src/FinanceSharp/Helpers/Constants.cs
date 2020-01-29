@@ -27,7 +27,7 @@ namespace FinanceSharp {
         public const double One = 1;
         public const bool True = true;
         public const bool False = false;
-
+        public const double ZeroEpsilon = 1e-6;
 
         /// Close 
         public const int C = 0;

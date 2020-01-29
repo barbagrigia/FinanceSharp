@@ -57,14 +57,6 @@ namespace FinanceSharp.Tests.Indicators {
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentException), MatchType = MessageMatch.Contains, ExpectedMessage = "expected to be of type")]
-        public void ThrowsOnDifferentDataType() {
-            var target = new TestIndicator();
-
-            target.Update(0, new BarValue());
-        }
-
-        [Test]
         public void PassesOnDuplicateTimes() {
             var target = new TestIndicator();
 
@@ -79,28 +71,6 @@ namespace FinanceSharp.Tests.Indicators {
             // data based on time
             target.Update(time, data);
             Assert.AreEqual(value1, target.Current.Value);
-        }
-
-        [Test]
-        public void SortsTheSameAsDecimalDescending() {
-            int count = 100;
-            var targets = Enumerable.Range(0, count)
-                .Select(x => new TestIndicator(x.ToString(CultureInfo.InvariantCulture)))
-                .ToList();
-
-            for (int i = 0; i < targets.Count; i++) {
-                targets[i].Update(DateTime.Today, i);
-            }
-
-            var expected = Enumerable.Range(0, count)
-                .Select(x => (double) x)
-                .OrderByDescending(x => x)
-                .ToList();
-
-            var actual = targets.OrderByDescending(x => x).ToList();
-            foreach (var pair in expected.Zip<double, TestIndicator, Tuple<double, TestIndicator>>(actual, Tuple.Create)) {
-                Assert.AreEqual(pair.Item1, pair.Item2.Current.Value);
-            }
         }
 
         [Test]
