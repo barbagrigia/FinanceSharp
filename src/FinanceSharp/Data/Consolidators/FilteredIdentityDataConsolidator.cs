@@ -38,6 +38,8 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         public override bool Update(long time, DoubleArray data) {
+            Samples++;
+
             // only permit data that passes our predicate function to be passed through
             if (_predicate(time, data)) {
                 base.Update(time, data);

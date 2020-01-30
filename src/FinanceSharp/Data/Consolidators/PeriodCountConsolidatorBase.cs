@@ -97,6 +97,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <exception cref="InvalidOperationException">Thrown when multiple symbols are being consolidated.</exception>
         /// <param name="data">The new data for the consolidator</param>
         public override bool Update(long time, DoubleArray data) {
+            Samples++;
             //Decide to fire the event
             var fireDataConsolidated = false;
 

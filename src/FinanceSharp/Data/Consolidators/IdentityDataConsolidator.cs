@@ -55,6 +55,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
         public override bool Update(long time, DoubleArray data) {
+            Samples++;
             if (_last == null || _last_time != time) {
                 OnDataConsolidated(time, data);
                 _last = data;
