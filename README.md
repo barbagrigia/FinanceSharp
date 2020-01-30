@@ -1,5 +1,9 @@
 # FinanceSharp
-High Performance Financial Computation for Quant-Trading.
+<p align="center">
+  <img align="center" src="https://i.imgur.com/6601cb9.png" height=200  />
+</p> 
+High performance financial computation for technical analysis with a versatile and productive piping and consolidation techniques.
+
 
 ## Architecture
 FinanceSharp favors high productivity while still maintaining performant computation alogrithms.
