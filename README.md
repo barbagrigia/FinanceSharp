@@ -4,6 +4,8 @@
 </p> 
 High performance financial computation for technical analysis with a versatile and productive piping and consolidation techniques.
 
+## Getting Started
+Have a look at [/examples](https://github.com/Nucs/FinanceSharp/blob/master/examples/FinanceSharp.Examples/Program.cs) directory.
 
 ## Architecture
 FinanceSharp favors high productivity while still maintaining performant computation alogrithms.
