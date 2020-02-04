@@ -75,6 +75,8 @@ namespace FinanceSharp {
     /// 	 the indicator has changed.
     /// </summary>
     public interface IIndicator : IUpdatable {
+        //TODO: add WarmUpPeriod
+
         /// <summary>
         /// 	 Gets a name for this indicator
         /// </summary>

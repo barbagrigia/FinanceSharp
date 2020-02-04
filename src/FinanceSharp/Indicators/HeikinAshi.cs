@@ -30,45 +30,39 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the Heikin-Ashi Open
         /// </summary>
-        public IndicatorBase Open { get; }
+        public double Open => Current.Open;
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi High
         /// </summary>
-        public IndicatorBase High { get; }
+        public double High => Current.High;
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Low
         /// </summary>
-        public IndicatorBase Low { get; }
+        public double Low => Current.Low;
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Close
         /// </summary>
-        public IndicatorBase Close { get; }
+        public double Close => Current.Close;
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi Volume
         /// </summary>
-        public IndicatorBase Volume { get; }
+        public double Volume => Current.Volume;
 
         /// <summary>
         /// 	 Gets the Heikin-Ashi current TradeBar
         /// </summary>
-        public TradeBarValue CurrentBar => new TradeBarValue(Open.Current.Value, High.Current.Value, Low.Current.Value, Close.Current.Value, Volume.Current.Value);
+        public TradeBarValue CurrentBar => Current.Get<TradeBarValue>(0);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="HeikinAshi"/> class using the specified name.
         /// </summary> 
         /// <param name="name">The name of this indicator</param>
         public HeikinAshi(string name)
-            : base(name) {
-            Open = new Identity(name + "_Open");
-            High = new Identity(name + "_High");
-            Low = new Identity(name + "_Low");
-            Close = new Identity(name + "_Close");
-            Volume = new Identity(name + "_Volume");
-        }
+            : base(name) { }
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="HeikinAshi"/> class.
@@ -94,30 +88,19 @@ namespace FinanceSharp.Indicators {
         /// <returns> A new value for this indicator </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (!IsReady) {
-                Open.Update(time, (input.Open + input.Close) / 2);
-                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(time, input.High);
-                Low.Update(time, input.Low);
+                Current = new DoubleArray2DManaged(1, TradeBarValue.Properties);
+                Current.Open = (input.Open + input.Close) / 2d;
+                Current.Close = (input.Open + input.High + input.Low + input.Close) / 4d;
+                Current.High = input.High;
+                Current.Low = input.Low;
             } else {
-                Open.Update(time, (Open + Close) / 2);
-                Close.Update(time, (input.Open + input.High + input.Low + input.Close) / 4);
-                High.Update(time, Math.Max(input.High, Math.Max(Open.Current.Value, Close.Current.Value)));
-                Low.Update(time, Math.Min(input.Low, Math.Min(Open.Current.Value, Close.Current.Value)));
+                Current.Open = (Current.Open + Current.Close) / 2d;
+                Current.Close = (input.Open + input.High + input.Low + input.Close) / 4d;
+                Current.High = Math.Max(input.High, Math.Max(Current.Open, Current.Close));
+                Current.Low = Math.Min(input.Low, Math.Min(Current.Open, Current.Close));
             }
 
-            return Close.Current.Value;
-        }
-
-        /// <summary>
-        /// 	 Resets this indicator to its initial state
-        /// </summary>
-        public override void Reset() {
-            Open.Reset();
-            High.Reset();
-            Low.Reset();
-            Close.Reset();
-            Volume.Reset();
-            base.Reset();
+            return Current;
         }
     }
 }

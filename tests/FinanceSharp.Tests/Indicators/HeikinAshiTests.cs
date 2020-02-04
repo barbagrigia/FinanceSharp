@@ -30,23 +30,23 @@ namespace FinanceSharp.Tests.Indicators {
 
         [Test]
         public override void ComparesAgainstExternalData() {
-            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Open", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Open.Current.Value, 1e-3));
-            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_High", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).High.Current.Value, 1e-3));
-            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Low", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Low.Current.Value, 1e-3));
-            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Close", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Close.Current.Value, 1e-3));
+            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Open", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Open, 1e-3));
+            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_High", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).High, 1e-3));
+            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Low", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Low, 1e-3));
+            TestHelper.TestIndicator(new HeikinAshi(), TestFileName, "HA_Close", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Close, 1e-3));
         }
 
         [Test]
         public override void ComparesAgainstExternalDataAfterReset() {
             var indicator = CreateIndicator();
             for (var i = 1; i <= 2; i++) {
-                TestHelper.TestIndicator(indicator, TestFileName, "HA_Open", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Open.Current.Value, 1e-3));
+                TestHelper.TestIndicator(indicator, TestFileName, "HA_Open", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Open, 1e-3));
                 indicator.Reset();
-                TestHelper.TestIndicator(indicator, TestFileName, "HA_High", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).High.Current.Value, 1e-3));
+                TestHelper.TestIndicator(indicator, TestFileName, "HA_High", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).High, 1e-3));
                 indicator.Reset();
-                TestHelper.TestIndicator(indicator, TestFileName, "HA_Low", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Low.Current.Value, 1e-3));
+                TestHelper.TestIndicator(indicator, TestFileName, "HA_Low", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Low, 1e-3));
                 indicator.Reset();
-                TestHelper.TestIndicator(indicator, TestFileName, "HA_Close", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Close.Current.Value, 1e-3));
+                TestHelper.TestIndicator(indicator, TestFileName, "HA_Close", (ind, expected) => Assert.AreEqual(expected, (double) ((HeikinAshi) ind).Close, 1e-3));
                 indicator.Reset();
             }
         }
