@@ -21,37 +21,41 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace FinanceSharp.Graphing {
-    public class Cruncher {
-        public CrunchingOptions Options { get; set; }
-        public event UpdatedHandler Crunched;
-
+    /// <summary>
+    ///     Provides various methods to join <see cref="IUpdatable"/>'s output into a single <see cref="DoubleArray"/>.
+    /// </summary>
+    public partial class Cruncher {
         protected int counter;
-        protected bool[] singelCounter;
+        protected bool[] signalCounter;
         protected int length;
-        protected int properties;
         protected IUpdatable[] observing;
         protected IUpdatable[] crunching;
         protected DoubleArray workingTarget;
 
         /// <summary>
-        ///     Should the cruncher clone when passing to an event.
+        ///     Should the cruncher clone <see cref="Current"/> when <see cref="Updated"/> is fired.
         /// </summary>
         public bool CloneCrunched { get; set; } = false;
+
+        public CrunchingOptions Options { get; protected set; }
 
         protected Cruncher() { }
 
         /// <summary>
-        ///     Triggers <see cref="Crunched"/>.
+        ///     Triggers <see cref="Updated"/>.
         /// </summary>
         /// <param name="time">The time </param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected void OnCrunched(long time) {
-            Crunched?.Invoke(time, CloneCrunched ? workingTarget.Clone() : workingTarget);
+        protected void OnUpdated(long time) {
+            Samples++;
+            CurrentTime = time;
+            Updated?.Invoke(time, CloneCrunched ? workingTarget.Clone() : workingTarget);
         }
 
         /// <summary>
         ///     Crunches when all <see cref="IUpdatable"/> were updated atleast once.
         /// </summary>
+        /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
@@ -59,15 +63,17 @@ namespace FinanceSharp.Graphing {
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnAllUpdatedOnce(IEnumerable<IUpdatable> updatables, int properties = 1) {
+        public static Cruncher OnAllUpdatedOnce(IEnumerable<IUpdatable> updatables, int properties = 1, string name = null) {
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher();
-            c.Options = CrunchingOptions.OnAllUpdatedOnce;
+            var c = new Cruncher() {
+                Name = name ?? "Cruncher",
+                Options = CrunchingOptions.OnAllUpdatedOnce,
+            };
             var obsing = c.observing = updatables.ToArray();
             var crunching = c.crunching = c.observing.ToArray();
             var len = c.length = c.crunching.Length;
-            var props = c.properties = properties;
-            var cntr = c.singelCounter = new bool[len];
+            var props = c.Properties = properties;
+            var cntr = c.signalCounter = new bool[len];
             var workingTarget = new DoubleArray2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = len;
@@ -84,7 +90,7 @@ namespace FinanceSharp.Graphing {
                                 if (!cntr[i_]) {
                                     cntr[i_] = true;
                                     if (--c.counter <= 0) {
-                                        c.OnCrunched(time);
+                                        c.OnUpdated(time);
                                         Array.Clear(cntr, 0, len);
                                         c.counter = len;
                                     }
@@ -108,7 +114,7 @@ namespace FinanceSharp.Graphing {
                                 if (!cntr[i_]) {
                                     cntr[i_] = true;
                                     if (--c.counter <= 0) {
-                                        c.OnCrunched(time);
+                                        c.OnUpdated(time);
                                         Array.Clear(cntr, 0, len);
                                         c.counter = len;
                                     }
@@ -134,23 +140,25 @@ namespace FinanceSharp.Graphing {
         /// <summary>
         ///     Crunches when any of <see cref="IUpdatable"/> are updated for every n <paramref name="interval"/>.
         /// </summary>
+        /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
+        /// <param name="interval">The interval for how many fires must any of <paramref name="updatables"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Cruncher's update event.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnEveryUpdate(IEnumerable<IUpdatable> updatables, int interval = 1, int properties = 1) {
+        public static Cruncher OnEveryUpdate(IEnumerable<IUpdatable> updatables, int interval = 1, int properties = 1, string name = null) {
             if (interval <= 0) throw new ArgumentOutOfRangeException(nameof(interval));
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher();
+            var c = new Cruncher() {Name = name ?? "Cruncher"};
             c.Options = CrunchingOptions.OnEveryUpdate;
             var obsing = c.observing = updatables.ToArray();
             var crunching = c.crunching = c.observing.ToArray();
             var len = c.length = c.crunching.Length;
-            var props = c.properties = properties;
-            var cntr = c.singelCounter = null;
+            var props = c.Properties = properties;
+            var cntr = c.signalCounter = null;
             var workingTarget = new DoubleArray2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
@@ -164,14 +172,14 @@ namespace FinanceSharp.Graphing {
                             if (interval == 1) {
                                 upd.Updated += (time, updated) => {
                                     *addr = updated.Value;
-                                    c.OnCrunched(time);
+                                    c.OnUpdated(time);
                                 };
                                 upd.Resetted += sender => { *addr = 0d; };
                             } else {
                                 upd.Updated += (time, updated) => {
                                     *addr = updated.Value;
                                     if (--c.counter <= 0) {
-                                        c.OnCrunched(time);
+                                        c.OnUpdated(time);
                                         c.counter = interval;
                                     }
                                 };
@@ -189,7 +197,7 @@ namespace FinanceSharp.Graphing {
                                     for (int j = 0; j < propCount; j++)
                                         addr[j] = updated[j];
                                     if (--c.counter <= 0) {
-                                        c.OnCrunched(time);
+                                        c.OnUpdated(time);
                                         c.counter = interval;
                                     }
                                 };
@@ -205,7 +213,7 @@ namespace FinanceSharp.Graphing {
                                     var propCount = props > updated.Properties ? updated.Properties : props;
                                     for (int j = 0; j < propCount; j++)
                                         addr[j] = updated[j];
-                                    c.OnCrunched(time);
+                                    c.OnUpdated(time);
                                 };
                                 upd.Resetted += sender => {
                                     var propCount = props;
@@ -222,25 +230,29 @@ namespace FinanceSharp.Graphing {
         }
 
         /// <summary>
-        ///     Crunches <paramref name="updatables"/>when any of <see cref="IUpdatable"/> are updated for every n <paramref name="interval"/>.
+        ///     Crunches <paramref name="updatables"/> whenever <paramref name="crunchTrigger"/> is updated for n <paramref name="interval"/> times.
         /// </summary>
+        /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
+        /// <param name="crunchTrigger">The <see cref="IUpdatable"/> to observe for fires of <see cref="IUpdatable.Updated"/>.</param>
+        /// <param name="interval">The interval for how many fires must <paramref name="crunchTrigger"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Cruncher's update event.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
+        /// <param name="triggerMustBeReady">Does <paramref name="crunchTrigger"/> must be ready to trigger Cruncher's update event?</param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable crunchTrigger, int interval = 1, int properties = 1) {
+        public static Cruncher OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable crunchTrigger, int interval = 1, int properties = 1, string name = null, bool triggerMustBeReady = true) {
             if (interval <= 0) throw new ArgumentOutOfRangeException(nameof(interval));
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher();
+            var c = new Cruncher() {Name = name ?? "Cruncher"};
             c.Options = CrunchingOptions.OnSpecificUpdated;
             var obsing = c.observing = new IUpdatable[] {crunchTrigger};
             var crunching = c.crunching = updatables.ToArray();
             var len = c.length = c.crunching.Length;
-            var props = c.properties = properties;
-            var cntr = c.singelCounter = null;
+            var props = c.Properties = properties;
+            var cntr = c.signalCounter = null;
             var workingTarget = new DoubleArray2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
@@ -272,38 +284,38 @@ namespace FinanceSharp.Graphing {
             }
 
             if (interval == 1) {
-                crunchTrigger.Updated += (time, updated) => { c.OnCrunched(time); };
-
-                crunchTrigger.Resetted += _ => { c.counter = interval; };
+                if (triggerMustBeReady) {
+                    crunchTrigger.Updated += (time, updated) => {
+                        if (crunchTrigger.IsReady)
+                            c.OnUpdated(time);
+                    };
+                } else {
+                    crunchTrigger.Updated += (time, updated) => c.OnUpdated(time);
+                }
             } else {
-                crunchTrigger.Updated += (time, updated) => {
-                    if (--c.counter <= 0) {
-                        c.OnCrunched(time);
-                        c.counter = interval;
-                    }
-                };
-
-                crunchTrigger.Resetted += _ => { c.counter = interval; };
+                if (triggerMustBeReady) {
+                    crunchTrigger.Updated += (time, updated) => {
+                        if (!crunchTrigger.IsReady)
+                            return;
+                        if (--c.counter <= 0) {
+                            c.OnUpdated(time);
+                            c.counter = interval;
+                        }
+                    };
+                } else {
+                    crunchTrigger.Updated += (time, updated) => {
+                        if (--c.counter <= 0)
+                        {
+                            c.OnUpdated(time);
+                            c.counter = interval;
+                        }
+                    };
+                }
             }
+
+            crunchTrigger.Resetted += _ => c.counter = interval;
 
             return c;
         }
-    }
-
-    public enum CrunchingOptions {
-        /// <summary>
-        ///     All inputs must be updated atleast once.
-        /// </summary>
-        OnAllUpdatedOnce,
-
-        /// <summary>
-        ///     Every update a crunch is sent.
-        /// </summary>
-        OnEveryUpdate,
-
-        /// <summary>
-        ///     After a specific <see cref="IUpdatable"/> update a crunch will be called.
-        /// </summary>
-        OnSpecificUpdated
     }
 }
