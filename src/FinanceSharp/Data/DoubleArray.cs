@@ -21,10 +21,15 @@ using System.Runtime.InteropServices;
 
 namespace FinanceSharp {
     /// <summary>
-    ///     A block of memory represented as two dimensions or a scalar.
+    ///     A block of memory of doubles represented in two dimensions.
     /// </summary>
-    /// <remarks>First dimension of this array is <see cref="Count"/> and 2nd dimension is <see cref="Properties"/>, which for a OHLC trade bar would be (n, 4).</remarks>
+    /// <remarks>
+    ///     First dimension of this array is <see cref="Count"/> and 2nd dimension is <see cref="Properties"/>,
+    ///     which for a OHLC trade bar would be (n, 4) where n is the number of trade bars in the memory block.
+    /// </remarks>
     public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
+        //TODO: add abstract Reshape to allow reshaping and manipulating Count and Properties. rules will be similar to NumSharp.
+
         /// The number of items in this array, each having n <see cref="Properties"/>.
         public int Count;
 
