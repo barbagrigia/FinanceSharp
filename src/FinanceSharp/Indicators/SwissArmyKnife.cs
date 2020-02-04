@@ -15,9 +15,6 @@
 */
 
 using System;
-using FinanceSharp.Data;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators {

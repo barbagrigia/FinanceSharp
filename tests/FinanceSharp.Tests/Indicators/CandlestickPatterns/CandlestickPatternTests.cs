@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 using FinanceSharp.Indicators.CandlestickPatterns;
 
 namespace FinanceSharp.Tests.Indicators.CandlestickPatterns {

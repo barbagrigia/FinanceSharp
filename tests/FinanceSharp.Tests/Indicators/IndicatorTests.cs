@@ -20,7 +20,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 
 namespace FinanceSharp.Tests.Indicators {
     /// <summary>

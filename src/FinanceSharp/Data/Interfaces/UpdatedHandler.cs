@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System.Threading;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Event handler type for the IndicatorBase.Updated event
     /// </summary>

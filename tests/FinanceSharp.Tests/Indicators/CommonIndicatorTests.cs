@@ -16,9 +16,8 @@
 using System;
 using NUnit.Framework;
 using Python.Runtime;
-using FinanceSharp.Data;
+using FinanceSharp;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     public abstract class CommonIndicatorTests<T>

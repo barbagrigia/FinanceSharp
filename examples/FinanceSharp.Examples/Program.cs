@@ -7,8 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CsvHelper;
-using FinanceSharp.Data;
-using FinanceSharp.Data.Consolidators;
+using FinanceSharp;
+using FinanceSharp.Consolidators;
 using FinanceSharp.Examples.Data;
 using FinanceSharp.Indicators;
 using Ionic.Zip;
@@ -29,7 +29,7 @@ namespace FinanceSharp.Examples {
                     ticks = csv.GetRecords<BinanceTick>()
                         .Select(tick => (
                             Time: (long) (tick.time * 1000d), //we add 3 zeros to turn it from seconds to milliseconds.
-                            Value: DoubleArray.FromStruct(new TickValue(tick.Price, tick.Price, 0, tick.Price, tick.Quantity, 0))))
+                            Value: DoubleArray.From(new TickValue(tick.Price, tick.Price, 0, tick.Price, tick.Quantity, 0))))
                         .ToArray();
                 }
             }
@@ -95,7 +95,7 @@ namespace FinanceSharp.Examples {
 
             //bind model
             tickCons.Updated += (time, updated) => bars.Add(updated);
-            ha.Updated += (time, updated) => has.Add(DoubleArray.FromStruct(ha.CurrentBar) + 25d); //note that we append +25 offset so ha will be visible
+            ha.Updated += (time, updated) => has.Add(DoubleArray.From(ha.CurrentBar) + 25d); //note that we append +25 offset so ha will be visible
 
             return (tickCons, new IUpdatable[] {ha}, new List<DoubleArray>[] {bars, has});
         }

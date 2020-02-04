@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System.Runtime.InteropServices;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     Represents a CHLOV candle struct.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TradeBarValue : DataStruct {
+        public const int Properties = 5;
         public double Close;
         public double High;
         public double Low;
@@ -36,9 +38,6 @@ namespace FinanceSharp.Data {
             Volume = volume;
         }
 
-        int DataStruct.Properties => Properties;
-        public const int Properties = 5;
-
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone() {
@@ -50,5 +49,16 @@ namespace FinanceSharp.Data {
         public override string ToString() {
             return $"{nameof(Close)}: {Close}, {nameof(High)}: {High}, {nameof(Low)}: {Low}, {nameof(Open)}: {Open}, {nameof(Volume)}: {Volume}, {nameof(Properties)}: {Properties}";
         }
+
+        #region Explicit Interfaces
+
+        int DataStruct.Properties => Properties;
+
+        double DataStruct.Value {
+            get => Close;
+            set => Close = value;
+        }
+
+        #endregion
     }
 }

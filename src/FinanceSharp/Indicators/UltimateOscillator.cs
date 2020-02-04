@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
-using FinanceSharp.Data;
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators {
@@ -88,7 +87,7 @@ namespace FinanceSharp.Indicators {
                 return 50.0d;
             }
 
-            var buyingPressure = new DoubleArray(1, IndicatorValue.Properties) {Value = input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close)};
+            var buyingPressure = new DoubleArrayScalar(input[CloseIdx] - Math.Min(input[LowIdx], _previousInput.Close));
 
             _sumBuyingPressure1.Update(time, buyingPressure);
             _sumBuyingPressure2.Update(time, buyingPressure);

@@ -16,10 +16,9 @@
 using System;
 using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 using System.Linq;
 using Python.Runtime;
-using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]

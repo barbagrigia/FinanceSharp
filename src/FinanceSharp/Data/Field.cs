@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     /// 	 Provides static properties to be used as selectors with the indicator system
     /// </summary>

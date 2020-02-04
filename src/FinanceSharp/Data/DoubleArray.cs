@@ -13,43 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     A block of memory represented as two dimensions or a scalar.
     /// </summary>
     /// <remarks>First dimension of this array is <see cref="Count"/> and 2nd dimension is <see cref="Properties"/>, which for a OHLC trade bar would be (n, 4).</remarks>
-    public unsafe partial class DoubleArray : ICloneable, IDisposable {
-        /// The address for the memory block.
-        public double* Address;
-
+    public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
         /// The number of items in this array, each having n <see cref="Properties"/>.
         public int Count;
 
         /// The count of properties for every 
         public int Properties;
 
-        /// <summary>
-        ///     
-        /// </summary>
         /// <param name="count">The number of items in this array.</param>
         /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
-        public DoubleArray(int count, int properties) {
+        protected DoubleArray(int count, int properties) {
             Count = count;
             Properties = properties;
-            Address = (double*) Marshal.AllocHGlobal(count * properties * sizeof(double));
-            AsDoubleSpan.Fill(0);
         }
 
-        /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
-        public DoubleArray(double value) : this(1, 1) {
-            *Address = value;
+        /// <param name="values"></param>
+        /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
+        protected DoubleArray(double[] values, int properties = 1) : this(values.Length / properties, properties) {
+            AssertTrue(values.Length % properties == 0, "It has to be evenly divided by the properties count.");
         }
 
         protected DoubleArray() { }
@@ -57,45 +49,108 @@ namespace FinanceSharp.Data {
         /// <summary>
         ///     The bytes size of this array.
         /// </summary>
-        public int SizeOf => sizeof(double) * Count * Properties;
+        public int SizeOf => sizeof(double) * LinearLength;
 
-        public Span<double> AsDoubleSpan => new Span<double>(Address, Count * Properties);
+        /// <summary>
+        ///     The total number of double values in the array.
+        /// </summary>
+        public int LinearLength => Count * Properties;
 
-        public bool IsScalar => Count == 1;
+        /// <summary>
+        ///     Wraps this DoubleArray with <see cref="Span{T}"/>.
+        /// </summary>
+        public abstract Span<double> AsDoubleSpan { get; }
 
-        public virtual DoubleArray Clone() {
-            var ret = new DoubleArray(Count, Properties);
-            CopyTo(ret);
-            return ret;
+        public virtual bool IsScalar => Count == 1;
+
+        /// <summary>
+        ///     Clones current DoubleArray.
+        /// </summary>
+        /// <returns>A new copy of this.</returns>
+        public abstract DoubleArray Clone();
+
+        public virtual void CopyTo(DoubleArray target) {
+            AsDoubleSpan
+                .CopyTo(target.AsDoubleSpan);
         }
 
-        public void CopyTo(DoubleArray target) {
-            new Span<double>(Address, Count * Properties)
-                .CopyTo(new Span<double>(target.Address, target.Count * target.Properties));
+        /// <summary>
+        ///     Converts this <see cref="DoubleArray"/> to a linear <see cref="double"/>.
+        /// </summary>
+        /// <returns></returns>
+        public virtual double[] ToArray() {
+            return AsDoubleSpan.ToArray();
         }
 
-        public TStruct[] ToArray<TStruct>() where TStruct : unmanaged, DataStruct {
-            return new Span<TStruct>(Address, Count).ToArray();
+        /// <summary>
+        ///     Converts current array to an Array of type <typeparamref name="TDestStruct"/>.
+        /// </summary>
+        /// <typeparam name="TDestStruct"></typeparam>
+        /// <param name="method">ArrayConversionMethod,</param>
+        /// <param name="propertiesPerItem">Used for ArrayConversionMethod.Cast: describes how many doubles to copy to and per TDestStruct. If -1 is specified then sizeof(TDestStruct)/sizeof(double) will be used.<br></br></param>
+        /// <returns></returns>
+        public virtual unsafe TDestStruct[] ToArray<TDestStruct>(ArrayConversionMethod method, int propertiesPerItem = -1) where TDestStruct : unmanaged, DataStruct {
+            if (typeof(TDestStruct) == typeof(double))
+                return (TDestStruct[]) (object) AsDoubleSpan.ToArray();
+            var totalBytes = this.SizeOf;
+            if (method == ArrayConversionMethod.Reinterpret) {
+                if (totalBytes % sizeof(TDestStruct) != 0)
+                    throw new ArgumentException($"Can't reinterpret to TDestStruct because: totalBytes ({totalBytes}) % sizeof(TDestStruct) ({sizeof(TDestStruct)}) != 0 ({totalBytes % sizeof(TDestStruct)})");
+                return MemoryMarshal.Cast<double, TDestStruct>(AsDoubleSpan).ToArray();
+            } else if (method == ArrayConversionMethod.Cast) {
+                if (propertiesPerItem == -1)
+                    propertiesPerItem = sizeof(TDestStruct) / sizeof(double);
+                if (totalBytes % (propertiesPerItem * sizeof(double)) != 0)
+                    throw new ArgumentException($"Can't reinterpret to TDestStruct because: totalBytes ({totalBytes}) % (propertiesPerItem * sizeof(double)) (({propertiesPerItem} * sizeof(double))) != 0 ({totalBytes % sizeof(TDestStruct)})");
+                var ret = new TDestStruct[(totalBytes) / (propertiesPerItem * sizeof(double))];
+                TDestStruct tmp = new TDestStruct();
+                double* tmpPtr = (double*) Unsafe.AsPointer(ref tmp);
+                var len = Count * (Properties / propertiesPerItem);
+                for (int i = 0, linearI = 0; i < len; i++) {
+                    for (int j = 0; j < propertiesPerItem; j++, linearI++) {
+                        tmpPtr[j] = this.GetLinear(linearI);
+                    }
+
+                    ret[i] = tmp; //copies because tmp is struct.
+                }
+
+                return ret;
+            } else {
+                throw new NotSupportedException(method.ToString());
+            }
         }
 
-        public double[] ToArray() {
-            return new Span<double>(Address, Count * Properties).ToArray();
+        public virtual double[,] To2DArray() {
+            var ret = new double[Count, Properties];
+            var span = AsDoubleSpan;
+            fixed (double* src = span) {
+                fixed (double* dst = ret) {
+                    Unsafe.CopyBlock(src, dst, (uint) (sizeof(double) * ret.Length));
+                    return ret;
+                }
+            }
         }
 
-        object ICloneable.Clone() {
-            return Clone();
-        }
-
-        [Conditional("DEBUG")]
-        protected void Assert(bool condition) {
+        /// <summary>
+        ///     Asserts for DEBUG runs..
+        /// </summary>
+        [Conditional("DEBUG"), DebuggerHidden]
+        protected void AssertTrue(bool condition) {
             if (!condition)
                 throw new Exception();
         }
 
-        [Conditional("DEBUG")]
-        protected void Assert(bool condition, string reason) {
+        /// <summary>
+        ///     Asserts for DEBUG runs..
+        /// </summary>
+        [Conditional("DEBUG"), DebuggerHidden]
+        protected void AssertTrue(bool condition, string reason) {
             if (!condition)
                 throw new Exception(reason);
+        }
+
+        object ICloneable.Clone() {
+            return Clone();
         }
     }
 }

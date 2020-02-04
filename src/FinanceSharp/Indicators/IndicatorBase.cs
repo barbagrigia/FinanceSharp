@@ -16,10 +16,6 @@
 
 using System;
 using System.Diagnostics;
-using FinanceSharp.Data;
-using FinanceSharp;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators {
@@ -89,7 +85,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time, DoubleArray.FromStruct(data));
+            return Update(time, DoubleArray.From(data));
         }
 
         /// <summary>
@@ -97,7 +93,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         internal bool Update<TStruct>(DateTime time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time.ToEpochTime(), DoubleArray.FromStruct(data));
+            return Update(time.ToEpochTime(), DoubleArray.From(data));
         }
 
         /// <summary>
@@ -105,7 +101,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         internal bool Update<TStruct>((DateTime Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            return Update(tuple.Time.ToEpochTime(), DoubleArray.FromStruct(tuple.Value));
+            return Update(tuple.Time.ToEpochTime(), DoubleArray.From(tuple.Value));
         }
 
         /// <summary>
@@ -113,7 +109,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         internal bool Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            return Update(tuple.Time, DoubleArray.FromStruct(tuple.Value));
+            return Update(tuple.Time, DoubleArray.From(tuple.Value));
         }
 
         /// <summary>
@@ -126,7 +122,7 @@ namespace FinanceSharp.Indicators {
         public bool Update(long time, DoubleArray input) {
             // compute a new value and update our previous time
             Samples++;
-            
+
             var nextResult = ValidateAndForward(time, input);
             if (nextResult.Status == IndicatorStatus.Success) {
                 Current = nextResult.Value;

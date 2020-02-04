@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 A data consolidator that can make bigger bars from any base data
     ///
@@ -52,7 +53,7 @@ namespace FinanceSharp.Data.Consolidators {
         public TradeBarValue WorkingBar {
             get {
                 unsafe {
-                    return *(TradeBarValue*) WorkingData.Address;
+                    return WorkingData.Get<TradeBarValue>(0);
                 }
             }
         }

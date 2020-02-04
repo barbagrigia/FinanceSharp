@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 namespace FinanceSharp.RateLimit {
     /// <summary>
     /// 	 Provides a strategy for making tokens available for consumption in the <see cref="ITokenBucket"/>

@@ -15,7 +15,7 @@
 
 using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 using System;
 using System.Collections;
 using System.Linq;

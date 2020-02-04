@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
-using FinanceSharp.Data;
-using FinanceSharp.Indicators.CandlestickPatterns;
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
     /// <summary>

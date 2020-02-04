@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     A thread 
     /// </summary>

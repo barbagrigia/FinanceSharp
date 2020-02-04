@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 
 namespace FinanceSharp.Tests.Indicators {
     [TestFixture]

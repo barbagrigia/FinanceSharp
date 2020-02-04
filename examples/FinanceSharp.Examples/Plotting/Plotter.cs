@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using FinanceSharp.Data;
+using FinanceSharp;
 using ScottPlot;
 
 namespace FinanceSharp.Examples {

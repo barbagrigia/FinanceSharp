@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using FinanceSharp.Data;
-using FinanceSharp.Indicators.CandlestickPatterns;
 
 namespace FinanceSharp.Graphing {
     public class Cruncher {
@@ -69,59 +68,62 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.properties = properties;
             var cntr = c.singelCounter = new bool[len];
-            var workingTarget = c.workingTarget = new DoubleArray(len, props);
+            var workingTarget = new DoubleArray2DManaged(len, props);
+            c.workingTarget = workingTarget;
             c.counter = len;
             for (var i = 0; i < obsing.Length; i++) {
                 unsafe {
                     IUpdatable upd = obsing[i];
-                    double* addr = workingTarget.Address + i * props;
-                    int i_ = i;
-                    //case when values collected are indicator output (single value)
-                    if (properties == 1) {
-                        upd.Updated += (time, updated) => {
-                            *addr = updated.Value;
-                            if (!cntr[i_]) {
-                                cntr[i_] = true;
-                                if (--c.counter <= 0) {
-                                    c.OnCrunched(time);
-                                    Array.Clear(cntr, 0, len);
-                                    c.counter = len;
+                    fixed (double* storageAddr = workingTarget.InternalArray) {
+                        double* addr = storageAddr;
+                        int i_ = i;
+                        //case when values collected are indicator output (single value)
+                        if (properties == 1) {
+                            upd.Updated += (time, updated) => {
+                                *addr = updated.Value;
+                                if (!cntr[i_]) {
+                                    cntr[i_] = true;
+                                    if (--c.counter <= 0) {
+                                        c.OnCrunched(time);
+                                        Array.Clear(cntr, 0, len);
+                                        c.counter = len;
+                                    }
                                 }
-                            }
-                        };
-                        upd.Resetted += sender => {
-                            *addr = 0d;
-                            if (cntr[i_]) {
-                                c.counter++;
-                                cntr[i_] = false;
-                            }
-                        };
-                    } else {
-                        //case when values collected are multi-valued output (tradebar value)
-                        upd.Updated += (time, updated) => {
-                            Debug.Assert(updated.Properties >= props);
-                            var propCount = props > updated.Properties ? updated.Properties : props;
-                            for (int j = 0; j < propCount; j++)
-                                addr[j] = updated[j];
+                            };
+                            upd.Resetted += sender => {
+                                *addr = 0d;
+                                if (cntr[i_]) {
+                                    c.counter++;
+                                    cntr[i_] = false;
+                                }
+                            };
+                        } else {
+                            //case when values collected are multi-valued output (tradebar value)
+                            upd.Updated += (time, updated) => {
+                                Debug.Assert(updated.Properties >= props);
+                                var propCount = props > updated.Properties ? updated.Properties : props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = updated[j];
 
-                            if (!cntr[i_]) {
-                                cntr[i_] = true;
-                                if (--c.counter <= 0) {
-                                    c.OnCrunched(time);
-                                    Array.Clear(cntr, 0, len);
-                                    c.counter = len;
+                                if (!cntr[i_]) {
+                                    cntr[i_] = true;
+                                    if (--c.counter <= 0) {
+                                        c.OnCrunched(time);
+                                        Array.Clear(cntr, 0, len);
+                                        c.counter = len;
+                                    }
                                 }
-                            }
-                        };
-                        upd.Resetted += sender => {
-                            var propCount = props;
-                            for (int j = 0; j < propCount; j++)
-                                addr[j] = 0d;
-                            if (cntr[i_]) {
-                                c.counter++;
-                                cntr[i_] = false;
-                            }
-                        };
+                            };
+                            upd.Resetted += sender => {
+                                var propCount = props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = 0d;
+                                if (cntr[i_]) {
+                                    c.counter++;
+                                    cntr[i_] = false;
+                                }
+                            };
+                        }
                     }
                 }
             }
@@ -149,65 +151,68 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.properties = properties;
             var cntr = c.singelCounter = null;
-            var workingTarget = c.workingTarget = new DoubleArray(len, props);
+            var workingTarget = new DoubleArray2DManaged(len, props);
+            c.workingTarget = workingTarget;
             c.counter = interval;
             for (var i = 0; i < obsing.Length; i++) {
                 unsafe {
                     IUpdatable upd = obsing[i];
-                    double* addr = workingTarget.Address + i * props;
-                    //case when values collected are indicator output (single value)
-                    if (properties == 1) {
-                        if (interval == 1) {
-                            upd.Updated += (time, updated) => {
-                                *addr = updated.Value;
-                                c.OnCrunched(time);
-                            };
-                            upd.Resetted += sender => { *addr = 0d; };
-                        } else {
-                            upd.Updated += (time, updated) => {
-                                *addr = updated.Value;
-                                if (--c.counter <= 0) {
+                    fixed (double* storageAddr = workingTarget.InternalArray) {
+                        double* addr = storageAddr + i * props;
+                        //case when values collected are indicator output (single value)
+                        if (properties == 1) {
+                            if (interval == 1) {
+                                upd.Updated += (time, updated) => {
+                                    *addr = updated.Value;
                                     c.OnCrunched(time);
+                                };
+                                upd.Resetted += sender => { *addr = 0d; };
+                            } else {
+                                upd.Updated += (time, updated) => {
+                                    *addr = updated.Value;
+                                    if (--c.counter <= 0) {
+                                        c.OnCrunched(time);
+                                        c.counter = interval;
+                                    }
+                                };
+                                upd.Resetted += sender => {
+                                    *addr = 0d;
                                     c.counter = interval;
-                                }
-                            };
-                            upd.Resetted += sender => {
-                                *addr = 0d;
-                                c.counter = interval;
-                            };
-                        }
-                    } else {
-                        //case when values collected are multi-valued output (tradebar value)
-                        if (interval == 1) {
-                            upd.Updated += (time, updated) => {
-                                Debug.Assert(updated.Properties >= props);
-                                var propCount = props > updated.Properties ? updated.Properties : props;
-                                for (int j = 0; j < propCount; j++)
-                                    addr[j] = updated[j];
-                                if (--c.counter <= 0) {
-                                    c.OnCrunched(time);
-                                    c.counter = interval;
-                                }
-                            };
-                            upd.Resetted += sender => {
-                                var propCount = props;
-                                for (int j = 0; j < propCount; j++)
-                                    addr[j] = 0d;
-                                c.counter = interval;
-                            };
+                                };
+                            }
                         } else {
-                            upd.Updated += (time, updated) => {
-                                Debug.Assert(updated.Properties >= props);
-                                var propCount = props > updated.Properties ? updated.Properties : props;
-                                for (int j = 0; j < propCount; j++)
-                                    addr[j] = updated[j];
-                                c.OnCrunched(time);
-                            };
-                            upd.Resetted += sender => {
-                                var propCount = props;
-                                for (int j = 0; j < propCount; j++)
-                                    addr[j] = 0d;
-                            };
+                            //case when values collected are multi-valued output (tradebar value)
+                            if (interval == 1) {
+                                upd.Updated += (time, updated) => {
+                                    Debug.Assert(updated.Properties >= props);
+                                    var propCount = props > updated.Properties ? updated.Properties : props;
+                                    for (int j = 0; j < propCount; j++)
+                                        addr[j] = updated[j];
+                                    if (--c.counter <= 0) {
+                                        c.OnCrunched(time);
+                                        c.counter = interval;
+                                    }
+                                };
+                                upd.Resetted += sender => {
+                                    var propCount = props;
+                                    for (int j = 0; j < propCount; j++)
+                                        addr[j] = 0d;
+                                    c.counter = interval;
+                                };
+                            } else {
+                                upd.Updated += (time, updated) => {
+                                    Debug.Assert(updated.Properties >= props);
+                                    var propCount = props > updated.Properties ? updated.Properties : props;
+                                    for (int j = 0; j < propCount; j++)
+                                        addr[j] = updated[j];
+                                    c.OnCrunched(time);
+                                };
+                                upd.Resetted += sender => {
+                                    var propCount = props;
+                                    for (int j = 0; j < propCount; j++)
+                                        addr[j] = 0d;
+                                };
+                            }
                         }
                     }
                 }
@@ -236,29 +241,32 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.properties = properties;
             var cntr = c.singelCounter = null;
-            var workingTarget = c.workingTarget = new DoubleArray(len, props);
+            var workingTarget = new DoubleArray2DManaged(len, props);
+            c.workingTarget = workingTarget;
             c.counter = interval;
             for (var i = 0; i < crunching.Length; i++) {
                 unsafe {
                     IUpdatable upd = crunching[i];
-                    double* addr = workingTarget.Address + i * props;
-                    //case when values collected are indicator output (single value)
-                    if (properties == 1) {
-                        upd.Updated += (time, updated) => { *addr = updated.Value; };
-                        upd.Resetted += _ => { *addr = 0d; };
-                    } else {
-                        //case when values collected are multi-valued output (tradebar value)
-                        upd.Updated += (time, updated) => {
-                            Debug.Assert(updated.Properties >= props);
-                            var propCount = props > updated.Properties ? updated.Properties : props;
-                            for (int j = 0; j < propCount; j++)
-                                addr[j] = updated[j];
-                        };
+                    fixed (double* storageAddr = workingTarget.InternalArray) {
+                        double* addr = storageAddr + i * props;
+                        //case when values collected are indicator output (single value)
+                        if (properties == 1) {
+                            upd.Updated += (time, updated) => { *addr = updated.Value; };
+                            upd.Resetted += _ => { *addr = 0d; };
+                        } else {
+                            //case when values collected are multi-valued output (tradebar value)
+                            upd.Updated += (time, updated) => {
+                                Debug.Assert(updated.Properties >= props);
+                                var propCount = props > updated.Properties ? updated.Properties : props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = updated[j];
+                            };
 
-                        upd.Resetted += _ => {
-                            for (int j = 0; j < props; j++)
-                                addr[j] = 0d;
-                        };
+                            upd.Resetted += _ => {
+                                for (int j = 0; j < props; j++)
+                                    addr[j] = 0d;
+                            };
+                        }
                     }
                 }
             }

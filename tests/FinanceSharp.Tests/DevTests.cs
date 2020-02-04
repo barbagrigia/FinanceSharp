@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 using NUnit.Framework;
 
 namespace FinanceSharp.Tests {

@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using static FinanceSharp.StringExtensions;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     This is a window that allows for list access semantics,
     ///     where this[0] refers to the most recent item in the

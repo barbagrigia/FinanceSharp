@@ -15,9 +15,8 @@
 
 using NUnit.Framework;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
+using FinanceSharp;
 using System;
-using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     /// <summary>

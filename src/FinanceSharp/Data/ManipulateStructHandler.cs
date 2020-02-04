@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-namespace FinanceSharp.Data {
+
+namespace FinanceSharp {
     public unsafe delegate void ManipulateStructHandler<TStruct>(TStruct* input) where TStruct : unmanaged, DataStruct;
 }

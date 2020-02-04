@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 A data consolidator that can make bigger bars from smaller ones over a given
     /// 	 time span or a count of pieces of data.
@@ -65,7 +66,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// <param name="data">The new data</param>
         protected override void AggregateBar(ref long workingTime, ref DoubleArray workingBar, long time, DoubleArray data) {
             if (workingBar == null) {
-                workingBar = new StructArray<TradeBarValue>(new TradeBarValue(data.Close, data.High, data.Low, data.Open, data.Volume));
+                workingBar = new DoubleArrayStructScalar<TradeBarValue>(new TradeBarValue(data.Close, data.High, data.Low, data.Open, data.Volume));
                 workingTime = GetRoundedBarTime(time);
             } else {
                 //Aggregate the working bar

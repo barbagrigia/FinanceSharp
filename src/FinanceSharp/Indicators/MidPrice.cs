@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using FinanceSharp.Data;
+
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators {
@@ -65,8 +64,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input given to the indicator</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
-            _maximum.Update(time, new DoubleArray(1, IndicatorValue.Properties) {Value = input[HighIdx]});
-            _minimum.Update(time, new DoubleArray(1, IndicatorValue.Properties) {Value = input[LowIdx]});
+            _maximum.Update(time, new DoubleArrayScalar(input[HighIdx]));
+            _minimum.Update(time, new DoubleArrayScalar(input[LowIdx]));
 
             return (_maximum + _minimum) / 2;
         }

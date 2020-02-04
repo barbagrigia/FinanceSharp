@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
@@ -41,9 +41,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _farAveragePeriod;
         private readonly int _bodyShortAveragePeriod;
 
-        private DoubleArray _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
-        private DoubleArray _nearPeriodTotal = new DoubleArray(1, 3);
-        private DoubleArray _farPeriodTotal = new DoubleArray(1, 3);
+        private DoubleArray _shadowVeryShortPeriodTotal = new DoubleArray2DManaged(1, 3);
+        private DoubleArray _nearPeriodTotal = new DoubleArray2DManaged(1, 3);
+        private DoubleArray _farPeriodTotal = new DoubleArray2DManaged(1, 3);
         private double _bodyShortPeriodTotal;
 
         /// <summary>
@@ -166,9 +166,9 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
-            _nearPeriodTotal = new DoubleArray(1, 3);
-            _farPeriodTotal = new DoubleArray(1, 3);
+            _shadowVeryShortPeriodTotal = new DoubleArray2DManaged(1, 3);
+            _nearPeriodTotal = new DoubleArray2DManaged(1, 3);
+            _farPeriodTotal = new DoubleArray2DManaged(1, 3);
             _bodyShortPeriodTotal = 0;
             base.Reset();
         }

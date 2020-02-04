@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 This consolidator wires up the events on its First and Second consolidators
     /// 	 such that data flows from the First to Second consolidator. It's output comes

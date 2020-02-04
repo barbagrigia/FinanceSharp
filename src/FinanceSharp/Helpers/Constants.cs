@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
-using FinanceSharp.Data;
-using Numpy;
-using Python.Runtime;
+
 
 // ReSharper disable once CheckNamespace
+
 namespace FinanceSharp {
     public static class Constants {
-        public static readonly DoubleArray Empty = new DoubleArray(0);
+        public static readonly DoubleArray Empty = new DoubleArrayScalar(0);
         public const double Zero = 0;
 
         public const double One = 1;

@@ -13,162 +13,162 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System.Diagnostics;
+
 using System.Runtime.CompilerServices;
 
-namespace FinanceSharp.Data {
-    public unsafe partial class DoubleArray {
+namespace FinanceSharp {
+    public abstract unsafe partial class DoubleArray {
         public virtual double Value {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => *Address;
+            get => this[0];
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set => *Address = value;
+            set => this[0] = value;
         }
 
         public virtual double Close {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Assert(Properties >= Constants.CloseIdx + 1);
-                return Address[Constants.CloseIdx];
+                AssertTrue(Properties >= Constants.CloseIdx + 1);
+                return this[Constants.CloseIdx];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
-                Assert(Properties >= Constants.CloseIdx + 1);
-                Address[Constants.CloseIdx] = value;
+                AssertTrue(Properties >= Constants.CloseIdx + 1);
+                this[Constants.CloseIdx] = value;
             }
         }
 
         public virtual double Open {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Assert(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
-                return Address[Constants.OpenIdx];
+                AssertTrue(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
+                return this[Constants.OpenIdx];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
-                Assert(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
-                Address[Constants.OpenIdx] = value;
+                AssertTrue(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
+                this[Constants.OpenIdx] = value;
             }
         }
 
         public virtual double High {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Assert(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
-                return Address[Constants.HighIdx];
+                AssertTrue(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
+                return this[Constants.HighIdx];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
-                Assert(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
-                Address[Constants.HighIdx] = value;
+                AssertTrue(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
+                this[Constants.HighIdx] = value;
             }
         }
 
         public virtual double Low {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Assert(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
-                return Address[Constants.LowIdx];
+                AssertTrue(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
+                return this[Constants.LowIdx];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
-                Assert(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
-                Address[Constants.LowIdx] = value;
+                AssertTrue(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
+                this[Constants.LowIdx] = value;
             }
         }
 
         public virtual double Volume {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                Assert(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
-                return Address[Constants.VolumeIdx];
+                AssertTrue(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
+                return this[Constants.VolumeIdx];
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
-                Assert(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
-                Address[Constants.VolumeIdx] = value;
+                AssertTrue(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
+                this[Constants.VolumeIdx] = value;
             }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double ValueAt(int index) {
-            return Address[index * Properties];
+            return this[index * Properties];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double CloseAt(int index) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.CloseIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.CloseIdx");
-            return Address[index * Properties + Constants.CloseIdx];
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.CloseIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.CloseIdx");
+            return this[index * Properties + Constants.CloseIdx];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double OpenAt(int index) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
-            return Address[index * Properties + Constants.OpenIdx];
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
+            return this[index * Properties + Constants.OpenIdx];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double HighAt(int index) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
-            return Address[index * Properties + Constants.HighIdx];
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
+            return this[index * Properties + Constants.HighIdx];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double LowAt(int index) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
-            return Address[index * Properties + Constants.LowIdx];
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
+            return this[index * Properties + Constants.LowIdx];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double VolumeAt(int index) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
-            return Address[index * Properties + Constants.VolumeIdx];
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
+            return this[index * Properties + Constants.VolumeIdx];
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetValueAt(int index, double value) {
-            Assert(index < Count);
-            return Address[index * Properties] = value;
+            AssertTrue(index < Count);
+            return this[index * Properties] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetCloseAt(int index, double value) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.CloseIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.CloseIdx");
-            return Address[index * Properties + Constants.CloseIdx] = value;
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.CloseIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.CloseIdx");
+            return this[index * Properties + Constants.CloseIdx] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetOpenAt(int index, double value) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
-            return Address[index * Properties + Constants.OpenIdx] = value;
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.OpenIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.OpenIdx");
+            return this[index * Properties + Constants.OpenIdx] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetHighAt(int index, double value) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
-            return Address[index * Properties + Constants.HighIdx] = value;
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.HighIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.HighIdx");
+            return this[index * Properties + Constants.HighIdx] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetLowAt(int index, double value) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
-            return Address[index * Properties + Constants.LowIdx] = value;
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.LowIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.LowIdx");
+            return this[index * Properties + Constants.LowIdx] = value;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public virtual double SetVolumeAt(int index, double value) {
-            Assert(index < Count);
-            Assert(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
-            return Address[index * Properties + Constants.VolumeIdx] = value;
+            AssertTrue(index < Count);
+            AssertTrue(Properties >= Constants.VolumeIdx + 1, $"Properties count is too small ({Properties}) to be able to contain Constants.VolumeIdx");
+            return this[index * Properties + Constants.VolumeIdx] = value;
         }
 
         /// <summary>
@@ -176,29 +176,43 @@ namespace FinanceSharp.Data {
         /// </summary>
         /// <param name="property"></param>
         /// <returns></returns>
-        public virtual double this[int property] {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get {
-                Assert(IsScalar, "Scalar only overload was called but the array is not scalar.");
-                return Address[property];
+        public abstract double this[int property] { get; set; }
+
+        public abstract double this[int index, int property] { get; set; }
+
+        /// <summary>
+        ///     Casts item at <paramref name="index"/> to <typeparamref name="TDestStruct"/>.
+        /// </summary>
+        /// <typeparam name="TDestStruct">The destination structure.</typeparam>
+        /// <param name="index">The index</param>
+        /// <returns></returns>
+        public virtual TDestStruct Get<TDestStruct>(int index) where TDestStruct : unmanaged, DataStruct {
+            AssertTrue(index >= 0 && index < Count, "Index is out of range.");
+            if (Properties > DataStructInfo<TDestStruct>.Properties) {
+                var ret = new TDestStruct();
+                var dst = (double*) Unsafe.AsPointer(ref ret);
+                var len = DataStructInfo<TDestStruct>.Properties;
+                for (int i = 0; i < len; i++)
+                    dst[i] = this[index, i];
+
+                return ret;
             }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set {
-                Assert(IsScalar, "Scalar only overload was called but the array is not scalar.");
-                Address[property] = value;
-            }
+
+            return *(TDestStruct*) Unsafe.AsPointer(ref AsDoubleSpan[index]);
         }
 
-        public virtual double this[int index, int property] {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get { return Address[index * Properties + property]; }
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            set { Address[index] = value; }
-        }
+        /// <summary>
+        ///     Reads from this DoubleArray linearly regardless to shape.
+        /// </summary>
+        /// <param name="offset">Absolute offset</param>
+        /// <returns>The value at given <paramref name="offset"/>.</returns>
+        public abstract double GetLinear(int offset);
 
-        public virtual TStruct Get<TStruct>(int index) where TStruct : unmanaged, DataStruct {
-            Assert(sizeof(TStruct) == sizeof(double) * Properties);
-            return ((TStruct*) Address)[index];
-        }
+        /// <summary>
+        ///     Writes to this DoubleArray linearly regardless to shape.
+        /// </summary>
+        /// <param name="offset">Absolute offset to set <paramref name="value"/> at.</param>
+        /// <param name="value">The value to write</param>
+        public abstract void SetLinear(int offset, double value);
     }
 }

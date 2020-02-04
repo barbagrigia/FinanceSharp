@@ -13,102 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
-namespace FinanceSharp.Data {
-    public unsafe partial class DoubleArray {
-        private class DoubleArrayManaged : DoubleArray {
-            private readonly double[] _ref;
-            private readonly GCHandle _handle;
-
-            public DoubleArrayManaged(double[] array, int properties = 1) {
-                _ref = array;
-                Count = array.Length;
-                Properties = properties;
-                _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-                Address = (double*) _handle.AddrOfPinnedObject();
-            }
-
-            protected override void Dispose(bool disposing) {
-                DisposerThread.Enqueue(_handle);
-            }
-        }
-
-        private class DoubleArrayScalar : DoubleArray {
-            // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
-            private readonly IndicatorValue _ref;
-            private readonly GCHandle _handle;
-
-            public DoubleArrayScalar(double value) {
-                //TODO: it might be much more performant with a preallocated buffer
-                _ref = new IndicatorValue(value);
-                Count = 1;
-                Properties = 1;
-                _handle = GCHandle.Alloc(_ref, GCHandleType.Pinned);
-                Address = (double*) _handle.AddrOfPinnedObject();
-            }
-
-            protected override void Dispose(bool disposing) {
-                DisposerThread.Enqueue(_handle);
-            }
-        }
-
-        private class DoubleArrayStruct<TStruct> : StructArray<TStruct> where TStruct : unmanaged, DataStruct {
-            private readonly TStruct[] _ref;
-            private readonly GCHandle _handle;
-
-            public DoubleArrayStruct(TStruct[] array) {
-                _ref = array;
-                Count = array.Length;
-                Properties = sizeof(TStruct) / sizeof(double);
-                _handle = GCHandle.Alloc(array, GCHandleType.Pinned);
-                Address = (TStruct*) _handle.AddrOfPinnedObject();
-            }
-
-            protected override void Dispose(bool disposing) {
-                DisposerThread.Enqueue(_handle);
-            }
-        }
-
-        private class DoubleArrayStructScalar<TStruct> : DoubleArray where TStruct : unmanaged, DataStruct {
-            private readonly TStruct _ref;
-            private readonly GCHandle _handle;
-
-            public DoubleArrayStructScalar(TStruct scalar) {
-                _ref = scalar;
-                Count = 1;
-                Properties = scalar.Properties;
-                _handle = GCHandle.Alloc(scalar, GCHandleType.Pinned);
-                Address = (double*) _handle.AddrOfPinnedObject();
-            }
-
-            public DoubleArrayStructScalar(ref TStruct scalar) {
-                _ref = scalar;
-                Count = 1;
-                Properties = scalar.Properties;
-                _handle = GCHandle.Alloc(scalar, GCHandleType.Pinned);
-                Address = (double*) _handle.AddrOfPinnedObject();
-            }
-
-            protected override void Dispose(bool disposing) {
-                DisposerThread.Enqueue(_handle);
-            }
+namespace FinanceSharp {
+    public abstract unsafe partial class DoubleArray {
+        /// <summary>
+        ///     Wraps given <paramref name="value"/> in a scalar DoubleArray.
+        /// </summary>
+        /// <param name="value">The value to wrap.</param>
+        /// <returns>A new DoubleArray holding <paramref name="value"/>.</returns>
+        [DebuggerStepThrough]
+        public static DoubleArray From(double value) {
+            return new DoubleArrayScalar(value);
         }
 
         /// <summary>
-        ///     Copies or pins given <paramref name="array"/> into a <see cref="DoubleArray"/>.
+        ///     Copies or wraps given <paramref name="array"/> into a <see cref="DoubleArray"/>.
         /// </summary>
         /// <param name="array">An array</param>
         /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied to a newly allocated memory block, otherwise pinned and referenced. </param>
-        /// <param name="properties"></param>
-        /// <returns></returns>
+        /// <param name="properties">How many properties are for every item in the array.</param>
         [DebuggerStepThrough]
-        public static DoubleArray FromArray(double[] array, bool copy, int properties = 1) {
+        public static DoubleArray From(double[] array, bool copy, int properties = 1) {
             if (copy) {
-                var ret = new DoubleArray(array.Length / properties, properties);
+                var ret = new DoubleArrayUnmanaged(array.Length / properties, properties);
                 new Span<double>(array).CopyTo(ret.AsDoubleSpan);
                 return ret;
             }
@@ -117,53 +47,88 @@ namespace FinanceSharp.Data {
         }
 
         /// <summary>
-        ///     Copies or pins given <paramref name="array"/> into a <see cref="DoubleArray"/>.
+        ///     Copies or wraps given <paramref name="array"/> into a <see cref="DoubleArray"/>.
+        /// </summary>
+        /// <param name="array">An array</param>
+        /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied via <see cref="DoubleArray.Clone"/>, otherwise pinned and referenced. </param>
+        [DebuggerStepThrough]
+        public static DoubleArray From(double[,] array, bool copy) {
+            return new DoubleArray2DManaged(copy ? (double[,]) array.Clone() : array);
+        }
+
+        /// <summary>
+        ///     Converts <paramref name="array"/> to double[,] (always copies) and wraps in DoubleArray.
+        /// </summary>
+        /// <param name="array">The array to convert and wrap.</param>
+        [DebuggerStepThrough]
+        public static DoubleArray From(double[][] array) {
+            return new DoubleArray2DManaged(array);
+        }
+
+        /// <summary>
+        ///     Copies or wraps given <paramref name="array"/> into a <see cref="DoubleArray"/>.
         /// </summary>
         /// <param name="array">An array</param>
         /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied to a newly allocated memory block, otherwise pinned and referenced. </param>
-        /// <returns></returns>
         [DebuggerStepThrough]
-        public static DoubleArray FromStruct<TStruct>(TStruct[] array, bool copy) where TStruct : unmanaged, DataStruct {
-            if (copy) {
-                var properties = sizeof(TStruct) / sizeof(double);
-                var ret = new DoubleArray(array.Length, properties);
-                MemoryMarshal.AsBytes(new Span<TStruct>(array)).CopyTo(MemoryMarshal.AsBytes(ret.AsDoubleSpan));
-                return ret;
-            }
-
-            return new DoubleArrayStruct<TStruct>(array);
+        public static DoubleArray From<TStruct>(TStruct[] array, bool copy) where TStruct : unmanaged, DataStruct {
+            return copy ? new DoubleArrayStruct<TStruct>((TStruct[]) array.Clone()) : new DoubleArrayStruct<TStruct>(array);
         }
 
         /// <summary>
-        ///     Pins a copy of given <typeparamref name="TStruct"/>.
+        ///     Wraps given <paramref name="array"/> into a <see cref="DoubleArray"/>.
         /// </summary>
-        /// <typeparam name="TStruct"></typeparam>
-        /// <param name="scalar"></param>
-        /// <returns></returns>
+        /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
+        /// <param name="values">An array of values.</param>
         [DebuggerStepThrough]
-        public static DoubleArray FromStruct<TStruct>(TStruct scalar) where TStruct : unmanaged, DataStruct {
-            return new DoubleArrayStructScalar<TStruct>(scalar);
+        public static DoubleArray From<TStruct>(params TStruct[] values) where TStruct : unmanaged, DataStruct {
+            return new DoubleArrayStruct<TStruct>(values);
         }
 
         /// <summary>
-        ///     Pins given <typeparamref name="TStruct"/>.
+        ///     Wraps a copy of given <typeparamref name="TStruct"/>.
         /// </summary>
-        /// <typeparam name="TStruct"></typeparam>
-        /// <param name="scalar"></param>
-        /// <returns></returns>
+        /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
+        /// <param name="scalar">A value to wrap.</param>
         [DebuggerStepThrough]
-        public static DoubleArray FromStruct<TStruct>(ref TStruct scalar) where TStruct : unmanaged, DataStruct {
+        public static DoubleArray From<TStruct>(TStruct scalar) where TStruct : unmanaged, DataStruct {
             return new DoubleArrayStructScalar<TStruct>(ref scalar);
         }
 
         /// <summary>
-        ///     Creates a fast double scalar.
+        ///     Wraps a copy of given <typeparamref name="TStruct"/>.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
+        /// <param name="scalar">A value to wrap.</param>
         [DebuggerStepThrough]
-        public static DoubleArray Scalar(double value) {
-            return new DoubleArrayScalar(value);
+        public static DoubleArray From<TStruct>(ref TStruct scalar) where TStruct : unmanaged, DataStruct {
+            return new DoubleArrayStructScalar<TStruct>(ref scalar);
+        }
+
+        /// <summary>
+        ///     Wraps given <paramref name="pointer"/> with <see cref="DoubleArrayUnmanaged"/>
+        /// </summary>
+        /// <param name="pointer">Address of the memory block storing doubles.</param>
+        /// <param name="count">Number of items in given array</param>
+        /// <param name="properties">Number of properties for every item in given array.</param>
+        /// <param name="zeroValues">Fill the memory block with zeros</param>
+        /// <param name="disposer">Deallocator called when this object is disposed. Can be null.</param>
+        [DebuggerStepThrough]
+        public static DoubleArray From(void* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) {
+            return new DoubleArrayUnmanaged((double*) pointer, count, properties, zeroValues, disposer);
+        }
+
+        /// <summary>
+        ///     Wraps given <paramref name="pointer"/> with <see cref="DoubleArrayUnmanaged"/>
+        /// </summary>
+        /// <param name="pointer">Address of the memory block storing doubles.</param>
+        /// <param name="count">Number of items in given array</param>
+        /// <param name="properties">Number of properties for every item in given array.</param>
+        /// <param name="zeroValues">Fill the memory block with zeros</param>
+        /// <param name="disposer">Deallocator called when this object is disposed. Can be null.</param>
+        [DebuggerStepThrough]
+        public static DoubleArray From(double* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) {
+            return new DoubleArrayUnmanaged(pointer, count, properties, zeroValues, disposer);
         }
     }
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 namespace FinanceSharp.RateLimit {
     /// <summary>
     /// 	 Defines a strategy for sleeping the current thread of execution. This is currently used via the

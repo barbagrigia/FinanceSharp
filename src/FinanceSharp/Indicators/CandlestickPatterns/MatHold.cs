@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
@@ -43,7 +43,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _bodyShortAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private DoubleArray _bodyPeriodTotal = new DoubleArray(1, 5);
+        private DoubleArray _bodyPeriodTotal = new DoubleArray2DManaged(1, 5);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="MatHold"/> class using the specified name.
@@ -150,7 +150,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _bodyPeriodTotal = new DoubleArray(1, 5);
+            _bodyPeriodTotal = new DoubleArray2DManaged(1, 5);
             base.Reset();
         }
     }

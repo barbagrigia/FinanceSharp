@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System.Runtime.InteropServices;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     Represents a simple 1-valued struct.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct IndicatorValue : DataStruct {
+        public const int Properties = 1;
         public double Value;
 
         public IndicatorValue(double value) {
             Value = value;
         }
 
-        int DataStruct.Properties => Properties;
-        public const int Properties = 1;
+        public IndicatorValue(IndicatorValue other) : this(other.Value) { }
 
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
         /// <returns>A new object that is a copy of this instance.</returns>
@@ -41,5 +42,16 @@ namespace FinanceSharp.Data {
         public override string ToString() {
             return $"{nameof(Value)}: {Value}, {nameof(Properties)}: {Properties}";
         }
+
+        #region Explicit Interfaces
+
+        int DataStruct.Properties => Properties;
+
+        double DataStruct.Value {
+            get => Value;
+            set => Value = value;
+        }
+
+        #endregion
     }
 }

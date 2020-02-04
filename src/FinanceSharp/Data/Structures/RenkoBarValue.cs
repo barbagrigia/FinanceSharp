@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System.Runtime.InteropServices;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     Represents a CHLOV candle struct.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct RenkoBarValue : DataStruct {
+        public const int Properties = 6;
         public double Close;
         public double High;
         public double Low;
         public double Open;
         public double Volume;
         public double Size;
-
-        int DataStruct.Properties => Properties;
-        public const int Properties = 6;
 
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
         /// <returns>A new object that is a copy of this instance.</returns>
@@ -42,5 +41,16 @@ namespace FinanceSharp.Data {
         public override string ToString() {
             return $"{nameof(Close)}: {Close}, {nameof(High)}: {High}, {nameof(Low)}: {Low}, {nameof(Open)}: {Open}, {nameof(Volume)}: {Volume}, {nameof(Size)}: {Size}, {nameof(Properties)}: {Properties}";
         }
+
+        #region Explicit Interfaces
+
+        int DataStruct.Properties => Properties;
+
+        double DataStruct.Value {
+            get => Close;
+            set => Close = value;
+        }
+
+        #endregion
     }
 }

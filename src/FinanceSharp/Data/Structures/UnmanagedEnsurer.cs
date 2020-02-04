@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-namespace FinanceSharp.Data {
+
+namespace FinanceSharp {
     /// <summary>
     ///     Ensures that the given T structures are in fact unmanaged during compile time
     /// </summary>

@@ -16,40 +16,62 @@
 
 using System;
 
-namespace FinanceSharp.Data {
-    public unsafe partial class DoubleArray : IEquatable<DoubleArray> {
+namespace FinanceSharp {
+    public abstract unsafe partial class DoubleArray : IEquatable<DoubleArray> {
         /// <summary>Indicates whether the current object is equal to another object of the same type.</summary>
         /// <param name="other">An object to compare with this object.</param>
         /// <returns>true if the current object is equal to the <paramref name="other">other</paramref> parameter; otherwise, false.</returns>
         public bool Equals(DoubleArray other) {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Address == other.Address && Count == other.Count && Properties == other.Properties;
+            return Count == other.Count && Properties == other.Properties && (IsEqualExactlyTo(other) || CompareValues(other));
         }
+
+        /// <summary>
+        ///     A less performant version of <see cref="IsEqualExactlyTo"/> that can handle all types of <see cref="DoubleArray"/>.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        protected virtual bool CompareValues(DoubleArray other) {
+            for (int i = 0; i < Count; i++) {
+                for (int j = 0; j < Properties; j++) {
+                    if (this[i, j] != other[i, j])
+                        return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        ///     A comparison method used when <see cref="Equals(DoubleArray)"/> is called from <see cref="IEquatable{T}"/> to compare same types of <see cref="DoubleArray"/>.
+        /// </summary>
+        /// <param name="other">An DoubleArray to compare to this.</param>
+        /// <returns>Are <see cref="this"/> equals to <see cref="other"/>.</returns>
+        protected abstract bool IsEqualExactlyTo(DoubleArray other);
+
+        /// <summary>
+        ///     Additional hashcode for inherieted classes.
+        /// </summary>
+        /// <returns></returns>
+        protected abstract int ComputeHashCode();
 
         /// <summary>Determines whether the specified object is equal to the current object.</summary>
         /// <param name="obj">The object to compare with the current object.</param>
         /// <returns>true if the specified object  is equal to the current object; otherwise, false.</returns>
         public override bool Equals(object obj) {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj is double d) return Math.Abs(d - this.Value) < Constants.ZeroEpsilon;
-            if (!(obj is DoubleArray)) return false;
-            return Equals((DoubleArray) obj);
+            return ReferenceEquals(this, obj) || obj is DoubleArray other && Equals(other);
         }
 
         /// <summary>Serves as the default hash function.</summary>
         /// <returns>A hash code for the current object.</returns>
         public override int GetHashCode() {
             unchecked {
-                var hashCode = unchecked((int) (long) Address);
-                hashCode = (hashCode * 397) ^ Count;
-                hashCode = (hashCode * 397) ^ Properties;
-                return hashCode;
+                return (Count * 397) ^ (Properties * 396) ^ ComputeHashCode();
             }
         }
 
-        /// <summary>Returns a value that indicates whether the values of two <see cref="T:FinanceSharp.Data.DoubleArray" /> objects are equal.</summary>
+        /// <summary>Returns a value that indicates whether the values of two <see cref="T:FinanceSharp.DoubleArray" /> objects are equal.</summary>
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns>true if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, false.</returns>
@@ -57,7 +79,7 @@ namespace FinanceSharp.Data {
             return Equals(left, right);
         }
 
-        /// <summary>Returns a value that indicates whether two <see cref="T:FinanceSharp.Data.DoubleArray" /> objects have different values.</summary>
+        /// <summary>Returns a value that indicates whether two <see cref="T:FinanceSharp.DoubleArray" /> objects have different values.</summary>
         /// <param name="left">The first value to compare.</param>
         /// <param name="right">The second value to compare.</param>
         /// <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>

@@ -15,195 +15,234 @@
 */
 
 using System;
+using System.Diagnostics.Contracts;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     public delegate double BinaryFunctionHandler(double lhs, double rhs);
 
-    public delegate double UnaryFunctionHandler(double lhs);
+    public delegate double UnaryFunctionHandler(double value);
 
-    public static class DoubleArrayMathExt {
+    public delegate void ForFunctionHandler(double value);
+
+    public delegate void ReferenceForFunctionHandler(ref double value);
+
+    public abstract unsafe partial class DoubleArray {
         /// <summary>
-        ///     Performs a binary function on lhs and rhs with broadcasting support.
+        ///     Performs a binary function on lhs and rhs.
         /// </summary>
-        /// <param name="lhs"></param>
-        /// <param name="rhs"></param>
-        /// <param name="function"></param>
+        /// <param name="rhs">The rhs of the equation, 'this' is lhs.</param>
+        /// <param name="function">The function to call for every value in this array.</param>
         /// <returns></returns>
-        public static unsafe DoubleArray Function(this DoubleArray lhs, DoubleArray rhs, BinaryFunctionHandler function) {
-            if (lhs.IsScalar && rhs.IsScalar)
-                return function(*lhs.Address, *rhs.Address);
+        public virtual DoubleArray Function(DoubleArray rhs, BinaryFunctionHandler function) {
+            var lhs = this;
+            if (lhs.IsScalar && lhs.Properties == 1 && rhs.IsScalar && lhs.Properties == 1)
+                return function(lhs.Value, rhs.Value);
 
-            DoubleArray ret;
-            if (lhs.IsScalar) {
-                ret = rhs.Clone();
+            int offset = 0;
+            if (lhs.IsScalar && lhs.Properties == 1) {
+                var ret = rhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var rhsAddr = rhs.Address;
                 var propsRhs = rhs.Properties;
                 var lhs_val = lhs.Value;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsRhs;
-                    dstAndLhsAddr[offset] = function(lhs_val, rhsAddr[i * propsRhs]);
+                fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
+                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                        for (int i = 0; i < len; i++, offset += propsRhs) {
+                            ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
+                        }
+                    }
                 }
-            } else if (rhs.IsScalar) {
-                ret = lhs.Clone();
+
+                return ret;
+            } else if (rhs.IsScalar && rhs.Properties == 1) {
+                var ret = lhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var lhsAddr = lhs.Address;
                 var propsLhs = lhs.Properties;
                 var rhsVal = rhs.Value;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsLhs;
-                    dstAndLhsAddr[offset] = function(lhsAddr[offset], rhsVal);
+                fixed (double* lhs_ptr = lhs.AsDoubleSpan) {
+                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                        for (int i = 0; i < len; i++, offset += propsLhs) {
+                            ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
+                        }
+                    }
                 }
+
+                return ret;
             } else {
-                ret = lhs.Clone();
+                var ret = lhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var rhsAddr = rhs.Address;
                 var propsLhs = lhs.Properties;
                 var propsRhs = rhs.Properties;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsLhs;
-                    dstAndLhsAddr[offset] = function(dstAndLhsAddr[offset], rhsAddr[i * propsRhs]);
+                var rhsOffset = 0;
+                fixed (double* lhs_ptr = rhs.AsDoubleSpan) {
+                    fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
+                        fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                            for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs) {
+                                ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
+                            }
+                        }
+                    }
                 }
-            }
 
-            return ret;
+                return ret;
+            }
         }
 
-        public static unsafe DoubleArray Function(this DoubleArray lhs, DoubleArray rhs, int property, BinaryFunctionHandler function) {
-            if (lhs.IsScalar && rhs.IsScalar)
+        /// <summary>
+        ///     Performs a binary function on lhs and rhs on a specific property (axis).
+        /// </summary>
+        /// <param name="rhs"></param>
+        /// <param name="function">The function to call for every value in this array.</param>
+        /// <returns></returns>
+        public virtual DoubleArray Function(DoubleArray rhs, int property, BinaryFunctionHandler function) {
+            var lhs = this;
+            if (lhs.IsScalar && lhs.Properties > property && rhs.IsScalar && rhs.Properties > property)
                 return lhs[property] * rhs[property];
 
-            DoubleArray ret;
-            if (lhs.IsScalar) {
-                ret = rhs.Clone();
+            int offset = property;
+            if (lhs.IsScalar && lhs.Properties > property) {
+                var ret = rhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var rhsAddr = rhs.Address;
                 var propsRhs = rhs.Properties;
-                var lhs_val = lhs.Value;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsRhs + property;
-                    dstAndLhsAddr[offset] = function(lhs_val, rhsAddr[i * propsRhs + property]);
+                var lhs_val = lhs[property];
+                fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
+                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                        for (int i = 0; i < len; i++, offset += propsRhs) {
+                            ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
+                        }
+                    }
                 }
-            } else if (rhs.IsScalar) {
-                ret = lhs.Clone();
+
+                return ret;
+            } else if (rhs.IsScalar && rhs.Properties > property) {
+                var ret = lhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var lhsAddr = lhs.Address;
                 var propsLhs = lhs.Properties;
-                var rhsVal = rhs.Value;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsLhs + property;
-                    dstAndLhsAddr[offset] = function(lhsAddr[offset], rhsVal);
+                var rhsVal = rhs[property];
+                fixed (double* lhs_ptr = lhs.AsDoubleSpan) {
+                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                        for (int i = 0; i < len; i++, offset += propsLhs) {
+                            ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
+                        }
+                    }
                 }
+
+                return ret;
             } else {
-                ret = lhs.Clone();
+                var ret = lhs.Clone();
                 var len = ret.Count;
-                var dstAndLhsAddr = ret.Address;
-                var rhsAddr = rhs.Address;
                 var propsLhs = lhs.Properties;
                 var propsRhs = rhs.Properties;
-                for (int i = 0; i < len; i++) {
-                    var offset = i * propsLhs + property;
-                    dstAndLhsAddr[offset] = function(dstAndLhsAddr[offset], rhsAddr[i * propsRhs + property]);
+                var rhsOffset = property;
+                fixed (double* lhs_ptr = rhs.AsDoubleSpan) {
+                    fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
+                        fixed (double* ret_ptr = ret.AsDoubleSpan) {
+                            for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs) {
+                                ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
+                            }
+                        }
+                    }
                 }
+
+                return ret;
             }
-
-            return ret;
         }
-    }
 
-    public unsafe partial class DoubleArray {
-        public DoubleArray Function(int property, UnaryFunctionHandler function, bool copy = false) {
-            var @this = copy ? this.Clone() : this;
-            var len = @this.Count;
-            var ptr = @this.Address;
-            var props = @this.Properties;
-            for (int i = 0; i < len; i++) {
-                var offset = i * props + property;
-                ptr[offset] = function(ptr[offset]);
+        public virtual DoubleArray Function(UnaryFunctionHandler function, bool copy = true) {
+            var @this = (copy ? this.Clone() : this);
+            fixed (double* src = @this.AsDoubleSpan) {
+                var len = @this.Count;
+                var props = @this.Properties;
+                int offset = 0;
+                for (int i = 0; i < len; i++, offset += props) {
+                    src[offset] = function(src[offset]);
+                }
             }
 
             return @this;
         }
 
-        public DoubleArray Function(UnaryFunctionHandler function, bool copy = false) {
-            var @this = copy ? this.Clone() : this;
-            var len = @this.Count * @this.Properties;
-            var ptr = @this.Address;
-            for (int i = 0; i < len; i++, ptr++)
-                *ptr = function(*ptr);
+        public virtual DoubleArray Function(int property, UnaryFunctionHandler function, bool copy = true) {
+            var @this = (copy ? this.Clone() : this);
+
+            fixed (double* src = @this.AsDoubleSpan) {
+                var len = @this.Count;
+                var props = @this.Properties;
+                int offset = property;
+                for (int i = 0; i < len; i++, offset += props) {
+                    src[offset] = function(src[offset]);
+                }
+            }
 
             return @this;
         }
 
         /// <summary>
-        ///     Performs a function on the entire array
+        ///     Iterates this array efficiently.
         /// </summary>
-        /// <typeparam name="TStruct"></typeparam>
-        /// <param name="function"></param>
-        public DoubleArray Function<TStruct>(ManipulateStructHandler<TStruct> function, bool copy = false) where TStruct : unmanaged, DataStruct {
-            var @this = copy ? this.Clone() : this;
-            var len = @this.Count;
-            var ptr = (TStruct*) @this.Address;
-            for (int i = 0; i < len; i++) {
-                function(ptr++);
+        /// <param name="function">The function to call for every value in this array.</param>
+        public virtual void ForEach(ForFunctionHandler function) {
+            fixed (double* src = this.AsDoubleSpan) {
+                var cnt = LinearLength;
+                for (int i = 0; i < cnt; i++) {
+                    function(src[i]);
+                }
             }
-
-            return @this;
         }
 
-        public DoubleArray Sum(int property, UnaryFunctionHandler function, bool copy = false) {
-            var @this = copy ? this.Clone() : this;
-            var len = @this.Count;
-            var ptr = @this.Address;
-            var props = @this.Properties;
-            for (int i = 0; i < len; i++) {
-                var offset = i * props + property;
-                ptr[offset] = function(ptr[offset]);
-            }
+        [Pure]
+        public virtual void ForEach(int property, ForFunctionHandler function) {
+            if (property >= Properties)
+                throw new ArgumentOutOfRangeException(nameof(property));
 
-            return @this;
+            var cnt = Count;
+            if (Properties == 1) {
+                for (int i = 0; i < cnt; i++) {
+                    function(this[i]);
+                }
+            } else {
+                var prps = Properties;
+                for (int i = 0; i < cnt; i++) {
+                    for (int j = 0; j < prps; j++) {
+                        function(this[i, j]);
+                    }
+                }
+            }
         }
 
-        public double Sum(int property) {
-            var len = Count;
-            var ptr = Address + property;
-            var props = Properties;
+        public abstract void ForEach(ReferenceForFunctionHandler function);
+
+        [Pure]
+        public virtual double Sum(int property) {
             double sum = 0;
-            for (int i = 0; i < len; i++, ptr += props)
-                sum += *ptr;
-
+            ForEach(property, value => sum += value);
             return sum;
         }
 
-        public double Sum() {
-            var len = Count * Properties;
-            var ptr = Address;
+        [Pure]
+        public virtual double Sum() {
             double sum = 0;
-            for (int i = 0; i < len; i++, ptr++)
-                sum += *ptr;
-
+            ForEach(value => sum += value);
             return sum;
         }
 
-        public double Mean(int property) {
+        [Pure]
+        public virtual double Mean(int property) {
             return Sum(property) / Count;
         }
 
-        public double Mean() {
+        [Pure]
+        public virtual double Mean() {
             return Sum() / Count;
         }
 
-        public double Median(int property) {
-            return Address[((Count + 1) / 2) * Properties + property];
+        [Pure]
+        public virtual double Median(int property) {
+            return this[((Count + 1) / 2) * Properties + property];
         }
 
-        public double Median() {
-            return Address[(Count + 1) / 2];
+        [Pure]
+        public virtual double Median() {
+            return this[(Count + 1) / 2];
         }
     }
 }

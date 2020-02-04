@@ -20,9 +20,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
-using FinanceSharp.Data;
+using FinanceSharp;
 using FinanceSharp.Indicators;
-using FinanceSharp.Data;
 
 namespace FinanceSharp.Tests.Indicators {
     /// <summary>

@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 Represents the simplest DataConsolidator implementation, one that is defined
     /// 	 by a straight pass through of the data. No projection or aggregation is performed.

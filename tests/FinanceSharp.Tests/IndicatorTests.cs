@@ -1,5 +1,5 @@
 ﻿using System;
-using FinanceSharp.Data.Consolidators;
+using FinanceSharp.Consolidators;
 using NUnit.Framework;
 
 namespace FinanceSharp.Tests {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 The possible states returned by <see cref="IndicatorBase{T}.Forward"/>

@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System.Runtime.InteropServices;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     Represents a trade tick with quotation.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct TickValue : DataStruct {
+        public const int Properties = 6;
         public double Value;
         public double BidPrice;
         public double BidSize;
@@ -38,9 +40,6 @@ namespace FinanceSharp.Data {
             AskSize = askSize;
         }
 
-        int DataStruct.Properties => Properties;
-        public const int Properties = 6;
-
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone() {
@@ -52,5 +51,16 @@ namespace FinanceSharp.Data {
         public override string ToString() {
             return $"{nameof(Value)}: {Value}, {nameof(BidPrice)}: {BidPrice}, {nameof(BidSize)}: {BidSize}, {nameof(AskPrice)}: {AskPrice}, {nameof(Volume)}: {Volume}, {nameof(AskSize)}: {AskSize}, {nameof(Properties)}: {Properties}";
         }
+
+        #region Explicit Interfaces
+
+        int DataStruct.Properties => Properties;
+
+        double DataStruct.Value {
+            get => Value;
+            set => Value = value;
+        }
+
+        #endregion
     }
 }

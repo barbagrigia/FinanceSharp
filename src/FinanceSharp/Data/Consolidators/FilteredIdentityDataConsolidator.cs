@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
-using FinanceSharp;
 
-namespace FinanceSharp.Data.Consolidators {
+using System;
+
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 Provides an implementation of <see cref="IDataConsolidator"/> that preserve the input
     /// 	 data unmodified. The input data is filtering by the specified predicate function
@@ -26,7 +26,7 @@ namespace FinanceSharp.Data.Consolidators {
         private readonly Func<long, DoubleArray, bool> _predicate;
 
         /// <summary>
-        /// 	 Initializes a new instance of the <see cref="FilteredIdentityDataConsolidator{DoubleArray}"/> class
+        /// 	 Initializes a new instance of the <see cref="FilteredIdentityDataConsolidator"/> class
         /// </summary>
         /// <param name="predicate">The predicate function, returning true to accept data and false to reject data</param>
         public FilteredIdentityDataConsolidator(Func<long, DoubleArray, bool> predicate) {

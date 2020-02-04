@@ -13,11 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
-using FinanceSharp.Data;
-using FinanceSharp;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators {

@@ -13,11 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using FinanceSharp.Data;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
-using FinanceSharp.Data;
-
 
 namespace FinanceSharp.Indicators {
     /// <summary>
@@ -63,7 +58,7 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="value">The double value to be converted into an <see cref="IndicatorResult"/></param>
         public static implicit operator IndicatorResult(double[] value) {
-            return new IndicatorResult(DoubleArray.FromArray(value, true));
+            return new IndicatorResult(DoubleArray.From(value, true));
         }
 
         /// <summary>

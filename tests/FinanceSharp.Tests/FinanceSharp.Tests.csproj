@@ -376,8 +376,4 @@
     <ProjectReference Include="..\..\src\FinanceSharp\FinanceSharp.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-  </ItemGroup>
-
 </Project>

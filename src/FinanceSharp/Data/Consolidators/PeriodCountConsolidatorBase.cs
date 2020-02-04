@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
-using FinanceSharp;
 
-namespace FinanceSharp.Data.Consolidators {
+using System;
+
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 Provides a base class for consolidators that emit data based on the passing of a period of time
     /// 	 or after seeing a max count of data points.

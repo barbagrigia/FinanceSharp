@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
-namespace FinanceSharp.Data {
-    public unsafe partial class DoubleArray {
-        private void ReleaseUnmanagedResources() {
-            DisposerThread.Enqueue(Address);
-        }
+namespace FinanceSharp {
+    public abstract unsafe partial class DoubleArray {
+        protected virtual void ReleaseUnmanagedResources() { }
 
         protected virtual void Dispose(bool disposing) {
             ReleaseUnmanagedResources();

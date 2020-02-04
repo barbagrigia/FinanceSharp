@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     public interface DataStruct : ICloneable {
         /// <summary>
         ///     The number of properties this struct has, equivalent to sizeof(this)/sizeof(double).
         /// </summary>
         int Properties { get; }
+
+        /// <summary>
+        ///     Returns the default value of given DataStruct.
+        /// </summary>
+        double Value { get; set; }
     }
 }

@@ -13,12 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
-using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
-
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     ///     Represents an object that can be updated.
     /// </summary>

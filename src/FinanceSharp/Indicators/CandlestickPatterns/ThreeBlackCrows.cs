@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
@@ -35,7 +35,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
     public class ThreeBlackCrows : CandlestickPattern {
         private readonly int _shadowVeryShortAveragePeriod;
 
-        private DoubleArray _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
+        private DoubleArray _shadowVeryShortPeriodTotal = new DoubleArray2DManaged(1, 3);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ThreeBlackCrows"/> class using the specified name.
@@ -124,7 +124,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _shadowVeryShortPeriodTotal = new DoubleArray(1, 3);
+            _shadowVeryShortPeriodTotal = new DoubleArray2DManaged(1, 3);
             base.Reset();
         }
     }

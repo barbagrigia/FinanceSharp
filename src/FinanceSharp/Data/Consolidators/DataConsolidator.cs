@@ -13,9 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-using System;
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 Represents a type that consumes BaseData instances and fires an event with consolidated
     /// 	 and/or aggregated data.
@@ -94,7 +93,7 @@ namespace FinanceSharp.Data.Consolidators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time, DoubleArray.FromStruct(data));
+            return Update(time, DoubleArray.From(data));
         }
 
         /// <summary>

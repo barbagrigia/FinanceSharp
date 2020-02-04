@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
-namespace FinanceSharp.Data {
+namespace FinanceSharp {
     /// <summary>
     /// Provides an implementation of <see cref="ITimeProvider"/> that
     /// uses <see cref="DateTime.UtcNow"/> to provide the current time

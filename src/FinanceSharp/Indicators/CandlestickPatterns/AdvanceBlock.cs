@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
-using FinanceSharp;
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
@@ -42,10 +41,10 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         private readonly int _farAveragePeriod;
         private readonly int _bodyLongAveragePeriod;
 
-        private DoubleArray _shadowShortPeriodTotal = new DoubleArray(1, 3);
-        private DoubleArray _shadowLongPeriodTotal = new DoubleArray(1, 2);
-        private DoubleArray _nearPeriodTotal = new DoubleArray(1, 3);
-        private DoubleArray _farPeriodTotal = new DoubleArray(1, 3);
+        private DoubleArray _shadowShortPeriodTotal = new DoubleArray2DManaged(1, 3);
+        private DoubleArray _shadowLongPeriodTotal = new DoubleArray2DManaged(1, 2);
+        private DoubleArray _nearPeriodTotal = new DoubleArray2DManaged(1, 3);
+        private DoubleArray _farPeriodTotal = new DoubleArray2DManaged(1, 3);
         private double _bodyLongPeriodTotal;
 
         /// <summary>
@@ -198,10 +197,10 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _shadowShortPeriodTotal = new DoubleArray(1, 3);
-            _shadowLongPeriodTotal = new DoubleArray(1, 2);
-            _nearPeriodTotal = new DoubleArray(1, 3);
-            _farPeriodTotal = new DoubleArray(1, 3);
+            _shadowShortPeriodTotal = new DoubleArray2DManaged(1, 3);
+            _shadowLongPeriodTotal = new DoubleArray2DManaged(1, 2);
+            _nearPeriodTotal = new DoubleArray2DManaged(1, 3);
+            _farPeriodTotal = new DoubleArray2DManaged(1, 3);
             _bodyLongPeriodTotal = 0;
             base.Reset();
         }

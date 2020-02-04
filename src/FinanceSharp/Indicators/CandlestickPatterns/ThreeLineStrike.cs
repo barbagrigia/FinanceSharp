@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 using static FinanceSharp.Constants;
-using FinanceSharp.Data;
 
 
 namespace FinanceSharp.Indicators.CandlestickPatterns {
@@ -36,7 +36,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
     public class ThreeLineStrike : CandlestickPattern {
         private readonly int _nearAveragePeriod;
 
-        private DoubleArray _nearPeriodTotal = new DoubleArray(1, 4);
+        private DoubleArray _nearPeriodTotal = new DoubleArray2DManaged(1, 4);
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ThreeLineStrike"/> class using the specified name.
@@ -133,7 +133,7 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public override void Reset() {
-            _nearPeriodTotal = new DoubleArray(1, 4);
+            _nearPeriodTotal = new DoubleArray2DManaged(1, 4);
             base.Reset();
         }
     }

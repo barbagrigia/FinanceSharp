@@ -13,9 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
+
 using System;
 
-namespace FinanceSharp.Data.Consolidators {
+namespace FinanceSharp.Consolidators {
     /// <summary>
     /// 	 Represents a type capable of taking BaseData updates and firing events containing new
     /// 'consolidated' data. These types can be used to produce larger bars, or even be used to
