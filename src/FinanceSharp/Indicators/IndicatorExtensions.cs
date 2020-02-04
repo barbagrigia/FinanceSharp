@@ -33,12 +33,17 @@ namespace FinanceSharp.Indicators {
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
         public static T Of<T>(this T second, IIndicator first, bool waitForFirstToReady = true)
             where T : IIndicator {
-            first.Updated += (time, consolidated) => {
-                // only send the data along if we're ready
-                if (!waitForFirstToReady || first.IsReady) {
-                    second.Update(time, consolidated);
-                }
-            };
+            if (waitForFirstToReady) {
+                first.Updated += (time, consolidated) => {
+                    // only send the data along if we're ready
+                    if (first.IsReady) {
+                        second.Update(time, consolidated);
+                    }
+                };
+            } else {
+                first.Updated += (time, consolidated)
+                    => second.Update(time, consolidated);
+            }
 
             return second;
         }
