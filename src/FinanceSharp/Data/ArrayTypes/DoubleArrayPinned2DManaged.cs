@@ -53,7 +53,7 @@ namespace FinanceSharp {
         /// <summary>
         ///     Returns a reference to the unmanaged array stored internally.
         /// </summary>
-        public ref double[,] InternalArray => ref values;
+        public double[,] InternalArray => values;
 
         protected override bool IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArray2DManaged o) {
