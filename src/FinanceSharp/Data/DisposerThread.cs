@@ -76,7 +76,12 @@ namespace FinanceSharp {
         }
 
         public static void Enqueue(GCHandle ptr) {
-            InstanceQueue.Add(ptr);
+            try {
+                if (ptr.IsAllocated)
+                    InstanceQueue.Add(ptr);
+            } catch (InvalidOperationException) {
+                //swallow
+            }
         }
 
         public static void Enqueue(Action work) {

@@ -58,6 +58,15 @@ namespace FinanceSharp {
             }
         }
 
+        /// <summary>
+        ///     Pins this current <see cref="InternalArray"/> with <see cref="DoubleArrayPinned2DManaged"/>.
+        /// </summary>
+        /// <param name="copy">Should clone <see cref="InternalArray"/> passed to with <see cref="DoubleArrayPinned2DManaged"/>?</param>
+        /// <returns></returns>
+        public DoubleArrayPinned2DManaged ToPinned(bool copy) {
+            return new DoubleArrayPinned2DManaged(copy ? (double[,]) values.Clone() : values);
+        }
+
         //TODO overload the rest iteration classes to optimize performance to max.
 
         public override double this[int property] {

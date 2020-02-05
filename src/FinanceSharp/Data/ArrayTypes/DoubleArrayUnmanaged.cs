@@ -56,6 +56,7 @@ namespace FinanceSharp {
 
         protected override void ReleaseUnmanagedResources() {
             disposer?.Invoke();
+            disposer = null;
         }
 
         public TStruct[] ToArray<TStruct>() {
