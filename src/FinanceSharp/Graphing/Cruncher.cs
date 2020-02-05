@@ -74,7 +74,7 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.Properties = properties;
             var cntr = c.signalCounter = new bool[len];
-            var workingTarget = new DoubleArray2DManaged(len, props);
+            var workingTarget = new DoubleArrayPinned2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = len;
             for (var i = 0; i < obsing.Length; i++) {
@@ -159,7 +159,7 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.Properties = properties;
             var cntr = c.signalCounter = null;
-            var workingTarget = new DoubleArray2DManaged(len, props);
+            var workingTarget = new DoubleArrayPinned2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
             for (var i = 0; i < obsing.Length; i++) {
@@ -253,7 +253,7 @@ namespace FinanceSharp.Graphing {
             var len = c.length = c.crunching.Length;
             var props = c.Properties = properties;
             var cntr = c.signalCounter = null;
-            var workingTarget = new DoubleArray2DManaged(len, props);
+            var workingTarget = new DoubleArrayPinned2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
             for (var i = 0; i < crunching.Length; i++) {
