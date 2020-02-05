@@ -14,7 +14,6 @@
  * limitations under the License.
 */
 
-
 // ReSharper disable once CheckNamespace
 
 namespace FinanceSharp {
