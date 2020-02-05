@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
@@ -135,6 +134,10 @@ namespace FinanceSharp {
 
         public override ref double GetPinnableReference() {
             return ref values[0, 0];
+        }
+
+        public override ref double GetPinnableReference(int index) {
+            return ref values[index, 0];
         }
 
         public override double[,] To2DArray() {

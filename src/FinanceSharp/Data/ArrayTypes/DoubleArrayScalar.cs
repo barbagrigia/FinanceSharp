@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Runtime.CompilerServices;
 
@@ -40,6 +39,11 @@ namespace FinanceSharp {
             return ref value;
         }
 
+        public override ref double GetPinnableReference(int index) {
+            AssertTrue(index == 0, "Index out of range.");
+            return ref value;
+        }
+
         public override DoubleArray Clone() {
             return new DoubleArrayScalar(value);
         }
@@ -47,7 +51,6 @@ namespace FinanceSharp {
         protected override bool IsEqualExactlyTo(DoubleArray other) {
             return other[0, 0] == value;
         }
-
 
         protected override int ComputeHashCode() {
             return value.GetHashCode();

@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -29,7 +28,6 @@ namespace FinanceSharp {
     /// </remarks>
     public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
         //TODO: add abstract Reshape to allow reshaping and manipulating Count and Properties. rules will be similar to NumSharp.
-        //TODO: change all fixing that uses AsDoubleSpan to fixing the DoubleArray itself.
 
         /// The number of items in this array, each having n <see cref="Properties"/>.
         public int Count;
@@ -65,8 +63,26 @@ namespace FinanceSharp {
         /// <summary>
         ///     Wraps this DoubleArray with <see cref="Span{T}"/>.
         /// </summary>
-        public abstract Span<double> AsDoubleSpan { get; }
+        public virtual Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref GetPinnableReference()), LinearLength);
 
+        /// <summary>
+        ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/>.
+        /// </summary>
+        public abstract ref double GetPinnableReference();
+
+        /// <summary>
+        ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/> at a specific index (of <see cref="Count"/> dimension).
+        /// </summary>
+        /// <example>
+        ///     fixed (double* pointer = &amp;arr.GetPinnableReference(0)) {
+        ///         //use pointer to your needs
+        ///     }
+        /// </example>
+        public abstract ref double GetPinnableReference(int index);
+
+        /// <summary>
+        ///     Is this array a scalar by checking if <see cref="Count"/> is 1. (regardless to how many properties there are).
+        /// </summary>
         public virtual bool IsScalar => Count == 1;
 
         /// <summary>
@@ -75,6 +91,10 @@ namespace FinanceSharp {
         /// <returns>A new copy of this.</returns>
         public abstract DoubleArray Clone();
 
+        /// <summary>
+        ///     Copies content of this array to <paramref name="target"/>.
+        /// </summary>
+        /// <param name="target">The target array, must be matching <see cref="LinearLength"/> with this.</param>
         public virtual void CopyTo(DoubleArray target) {
             AsDoubleSpan
                 .CopyTo(target.AsDoubleSpan);
@@ -94,7 +114,6 @@ namespace FinanceSharp {
         /// <typeparam name="TDestStruct"></typeparam>
         /// <param name="method">ArrayConversionMethod,</param>
         /// <param name="propertiesPerItem">Used for ArrayConversionMethod.Cast: describes how many doubles to copy to and per TDestStruct. If -1 is specified then sizeof(TDestStruct)/sizeof(double) will be used.<br></br></param>
-        /// <returns></returns>
         public virtual unsafe TDestStruct[] ToArray<TDestStruct>(ArrayConversionMethod method, int propertiesPerItem = -1) where TDestStruct : unmanaged, DataStruct {
             if (typeof(TDestStruct) == typeof(double))
                 return (TDestStruct[]) (object) AsDoubleSpan.ToArray();

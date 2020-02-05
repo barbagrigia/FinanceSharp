@@ -13,17 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System.Runtime.CompilerServices;
 
 namespace FinanceSharp {
     public abstract unsafe partial class DoubleArray {
-
-        /// <summary>
-        ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/>.
-        /// </summary>
-        public abstract ref double GetPinnableReference();
-
         public virtual double Value {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[0];
@@ -204,7 +197,8 @@ namespace FinanceSharp {
                 return ret;
             }
 
-            return *(TDestStruct*) Unsafe.AsPointer(ref AsDoubleSpan[index]);
+            fixed (double* ptr = this)
+                return *(TDestStruct*) (ptr + index * Properties);
         }
 
         /// <summary>
@@ -212,13 +206,21 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="offset">Absolute offset</param>
         /// <returns>The value at given <paramref name="offset"/>.</returns>
-        public abstract double GetLinear(int offset);
+        public virtual double GetLinear(int offset) {
+            AssertTrue(offset >= 0 && offset < LinearLength, "Offset is out of range.");
+            fixed (double* ptr = this)
+                return ptr[offset];
+        }
 
         /// <summary>
         ///     Writes to this DoubleArray linearly regardless to shape.
         /// </summary>
         /// <param name="offset">Absolute offset to set <paramref name="value"/> at.</param>
         /// <param name="value">The value to write</param>
-        public abstract void SetLinear(int offset, double value);
+        public virtual void SetLinear(int offset, double value) {
+            AssertTrue(offset >= 0 && offset < LinearLength, "Offset is out of range.");
+            fixed (double* ptr = this)
+                ptr[offset] = value;
+        }
     }
 }

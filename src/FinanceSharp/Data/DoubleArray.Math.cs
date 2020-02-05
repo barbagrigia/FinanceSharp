@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 */
-
 using System;
 using System.Diagnostics.Contracts;
 
@@ -145,6 +144,24 @@ namespace FinanceSharp {
 
                 return ret;
             }
+        }
+
+        /// <summary>
+        ///     Performs a function on the entire array
+        /// </summary>
+        /// <typeparam name="TStruct"></typeparam>
+        /// <param name="function"></param>
+        public virtual DoubleArray Function<TStruct>(ManipulateStructHandler<TStruct> function, bool copy = false) where TStruct : unmanaged, DataStruct {
+            //TODO: unit test this.
+            //TODO: this should use casting options instead of linearly digesting this.
+            var @this = (DoubleArrayUnmanaged) (copy ? this.Clone() : this);
+            var len = @this.LinearLength;
+            var ptr = (TStruct*) @this.Address;
+            for (int i = 0; i < len; i++) {
+                function(ptr++);
+            }
+
+            return @this;
         }
 
         public virtual DoubleArray Function(UnaryFunctionHandler function, bool copy = true) {
