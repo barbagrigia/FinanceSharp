@@ -133,12 +133,16 @@ namespace FinanceSharp {
 
         public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref values[0, 0]), Count * Properties);
 
-        public override DoubleArray Clone() {
-            return new DoubleArray2DManaged((double[,]) values.Clone());
+        public override ref double GetPinnableReference() {
+            return ref values[0, 0];
         }
 
         public override double[,] To2DArray() {
             return (double[,]) values.Clone();
+        }
+
+        public override DoubleArray Clone() {
+            return new DoubleArray2DManaged((double[,]) values.Clone());
         }
 
         [SuppressMessage("ReSharper", "SuggestVarOrType_SimpleTypes")]

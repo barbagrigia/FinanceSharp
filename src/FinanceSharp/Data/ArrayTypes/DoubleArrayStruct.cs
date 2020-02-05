@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
@@ -102,6 +103,10 @@ namespace FinanceSharp {
         }
 
         public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref values[0]), LinearLength);
+
+        public override ref double GetPinnableReference() {
+            return ref Unsafe.As<TStruct, double>(ref values[0]);
+        }
 
         public override DoubleArray Clone() {
             return new DoubleArrayStruct<TStruct>((TStruct[]) values.Clone());

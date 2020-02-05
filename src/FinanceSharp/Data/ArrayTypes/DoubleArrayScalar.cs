@@ -36,6 +36,10 @@ namespace FinanceSharp {
 
         public override unsafe Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref value), 1);
 
+        public override ref double GetPinnableReference() {
+            return ref value;
+        }
+
         public override DoubleArray Clone() {
             return new DoubleArrayScalar(value);
         }

@@ -41,6 +41,10 @@ namespace FinanceSharp {
 
         public override Span<double> AsDoubleSpan => new Span<double>(Address, Count * Properties);
 
+        public override ref double GetPinnableReference() {
+            return ref Unsafe.AsRef<double>(Address);
+        }
+
         /// <summary>
         ///     Nullifies disposer making this class no longer be responsible for the Address it contains.
         /// </summary>

@@ -34,6 +34,10 @@ namespace FinanceSharp {
 
         public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref values[0]), Count * Properties);
 
+        public override ref double GetPinnableReference() {
+            return ref values[0];
+        }
+
         public override double this[int property] {
             get {
                 AssertTrue(IsScalar, "Scalar only overload was called but the array is not scalar.");

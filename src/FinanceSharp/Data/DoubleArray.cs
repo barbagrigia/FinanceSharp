@@ -29,6 +29,7 @@ namespace FinanceSharp {
     /// </remarks>
     public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
         //TODO: add abstract Reshape to allow reshaping and manipulating Count and Properties. rules will be similar to NumSharp.
+        //TODO: change all fixing that uses AsDoubleSpan to fixing the DoubleArray itself.
 
         /// The number of items in this array, each having n <see cref="Properties"/>.
         public int Count;

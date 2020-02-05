@@ -108,6 +108,10 @@ namespace FinanceSharp {
         /// </summary>
         public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref this.value), Count * Properties);
 
+        public override ref double GetPinnableReference() {
+            return ref Unsafe.As<TStruct, double>(ref value);
+        }
+
         /// <summary>
         ///     Clones current DoubleArray.
         /// </summary>

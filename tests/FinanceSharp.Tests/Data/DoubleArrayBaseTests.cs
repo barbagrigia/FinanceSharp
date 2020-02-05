@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using FinanceSharp.Tests.Helpers;
 using FluentAssertions;
 using NUnit.Framework;
@@ -9,6 +10,7 @@ using NUnit.Framework;
 namespace FinanceSharp.Tests.Data {
     [SuppressMessage("ReSharper", "JoinDeclarationAndInitializer")]
     public abstract partial class DoubleArrayBaseTests {
+        //TODO: test property specific Function.
         public abstract DoubleArray Create();
         public abstract DoubleArray CreateScalar1_1(double value1);
         public abstract DoubleArray CreateScalar1_2(double value1, double value2);
@@ -274,7 +276,17 @@ namespace FinanceSharp.Tests.Data {
             subject[0].Should().BeApproximately(value1);
         }
 
-        //TODO: add tests for struct classes
-        //TODO: test property specific Function.
+
+        [Test]
+        [TestCaseSource(nameof(ScalarDataSet))]
+        public unsafe void Fixing(double expected) {
+            var arr = CreateScalar1_1(expected);
+            fixed (double* ptr = arr) {
+                ptr[0].Should().Be(expected);
+                ptr[0] = 1d;
+            }
+
+            arr[0].Should().BeApproximately(1d);
+        }
     }
 }

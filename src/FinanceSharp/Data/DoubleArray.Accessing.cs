@@ -18,6 +18,12 @@ using System.Runtime.CompilerServices;
 
 namespace FinanceSharp {
     public abstract unsafe partial class DoubleArray {
+
+        /// <summary>
+        ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/>.
+        /// </summary>
+        public abstract ref double GetPinnableReference();
+
         public virtual double Value {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get => this[0];
