@@ -75,8 +75,6 @@ namespace FinanceSharp {
     /// 	 the indicator has changed.
     /// </summary>
     public interface IIndicator : IUpdatable {
-        //TODO: add WarmUpPeriod
-
         /// <summary>
         /// 	 Gets a name for this indicator
         /// </summary>
@@ -86,5 +84,10 @@ namespace FinanceSharp {
         /// 	 Gets the number of samples processed by this indicator
         /// </summary>
         long Samples { get; }
+
+        /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        int WarmUpPeriod { get; }
     }
 }

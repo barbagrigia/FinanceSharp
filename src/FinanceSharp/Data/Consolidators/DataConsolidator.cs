@@ -79,6 +79,11 @@ namespace FinanceSharp.Consolidators {
         public long Samples { get; protected set; }
 
         /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public abstract int WarmUpPeriod { get; }
+
+        /// <summary>
         /// 	 Resets this indicator to its initial state
         /// </summary>
         public void Reset() {

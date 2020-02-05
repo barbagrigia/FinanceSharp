@@ -81,6 +81,11 @@ namespace FinanceSharp.Indicators {
         public long Samples { get; protected set; }
 
         /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public virtual int WarmUpPeriod { get; }
+
+        /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>

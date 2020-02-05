@@ -33,7 +33,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => _weightVector.Length;
+        public override int WarmUpPeriod => _weightVector.Length;
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="ArnaudLegouxMovingAverage" /> class.

@@ -319,5 +319,11 @@ namespace FinanceSharp {
 
             Resetted?.Invoke(this);
         }
+
+        /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
+        int IIndicator.WarmUpPeriod { get; }
     }
 }

@@ -43,6 +43,11 @@ namespace FinanceSharp.Consolidators {
         public long Samples { get; protected set; }
 
         /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public int WarmUpPeriod => First.WarmUpPeriod + Second.WarmUpPeriod;
+
+        /// <summary>
         /// 	 Gets the most recently consolidated piece of data. This will be null if this consolidator
         /// 	 has not produced any data yet.
         ///

@@ -141,5 +141,10 @@ namespace FinanceSharp.Indicators.CandlestickPatterns {
                    (defaultSetting.AveragePeriod != 0 ? sum / defaultSetting.AveragePeriod : GetCandleRange(type, tradeBar)) /
                    (defaultSetting.RangeType == CandleRangeType.Shadows ? 2.0d : 1.0d);
         }
+
+        /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public override int WarmUpPeriod { get; } = 0;
     }
 }

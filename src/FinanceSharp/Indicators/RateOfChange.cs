@@ -23,7 +23,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => Period;
+        public override int WarmUpPeriod => Period;
 
         /// <summary>
         /// 	 Creates a new RateOfChange indicator with the specified period

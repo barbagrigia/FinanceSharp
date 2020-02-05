@@ -44,7 +44,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod { get; }
+        public override int WarmUpPeriod { get; }
 
         /// <summary>
         /// 	 Creates a new Williams %R.

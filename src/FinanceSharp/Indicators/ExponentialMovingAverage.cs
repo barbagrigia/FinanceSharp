@@ -25,7 +25,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => _period;
+        public override int WarmUpPeriod => _period;
 
         /// <summary>
         /// 	 Initializes a new instance of the ExponentialMovingAverage class with the specified name and period

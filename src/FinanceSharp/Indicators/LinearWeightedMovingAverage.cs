@@ -36,7 +36,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => Period;
+        public override int WarmUpPeriod => Period;
 
         /// <summary>
         /// 	 Initializes a new instance of the LinearWeightedMovingAverage class with the specified name and period

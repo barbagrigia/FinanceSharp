@@ -60,7 +60,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod { get; }
+        public override int WarmUpPeriod { get; }
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="RegressionChannel"/> class.

@@ -66,7 +66,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => 2;
+        public override int WarmUpPeriod => 2;
 
         /// <summary>
         /// 	 Resets this indicator to its initial state

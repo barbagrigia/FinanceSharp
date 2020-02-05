@@ -62,7 +62,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points, for the indicator to be ready and fully initialized.
         /// </summary>
-        public int WarmUpPeriod => _period * 2;
+        public override int WarmUpPeriod => _period * 2;
 
         /// <summary>
         /// 	 Initializes a new instance of the <see cref="AverageDirectionalIndex"/> class.

@@ -182,6 +182,11 @@ namespace FinanceSharp.Consolidators {
         protected TimeSpan? Period => _period;
 
         /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public override int WarmUpPeriod => _maxCount ?? 1;
+
+        /// <summary>
         /// 	 Aggregates the new 'data' into the 'workingBar'. The 'workingBar' will be
         /// 	 null following the event firing
         /// </summary>

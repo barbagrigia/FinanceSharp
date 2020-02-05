@@ -51,6 +51,11 @@ namespace FinanceSharp.Consolidators {
         }
 
         /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public override int WarmUpPeriod { get; } = 0;
+
+        /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="time"></param>
