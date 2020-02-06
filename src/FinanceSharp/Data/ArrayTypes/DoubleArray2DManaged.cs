@@ -110,13 +110,13 @@ namespace FinanceSharp {
             }
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArray2DManaged o) {
                 if (o.values.Equals(values)) {
                     var othervals = o.values;
                     for (int i = 0; i < Count; i++) {
                         for (int j = 0; j < Properties; j++) {
-                            if (othervals[i, j] != values[i, j])
+                            if (othervals[i, j] != values[i, j] && double.IsNaN(othervals[i, j]) != double.IsNaN(values[i, j]))
                                 return false;
                         }
                     }
@@ -125,7 +125,7 @@ namespace FinanceSharp {
                 }
             }
 
-            return false;
+            return null;
         }
 
         protected override int ComputeHashCode() {

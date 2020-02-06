@@ -10,7 +10,78 @@ namespace FinanceSharp.Tests.Graphing {
         //TODO: test cruncher when properties > 1.
 
         [Test]
+        public void UseCase1() {
+            var input = new Identity("Source");
+            var ema = new ExponentialMovingAverage(12).Of(input);
+            var max1 = new Maximum(6).Of(ema);
+            var max2 = new Maximum(12).Of(ema);
+            var max3 = new Maximum(24).Of(ema);
+
+            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+            var b = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max2, max3, max3});
+            var finalCruncher = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {a, b});
+            
+            input.FeedTradeBar(200, 1, 0.1);
+            Console.WriteLine(finalCruncher.Samples);
+        }
+        [Test]
+        public void OnAllUpdatedOnce_Count2_Properties1() {
+            var input = new Identity("Source");
+            var max1 = new Maximum(3).Of(input);
+            var max2 = new Maximum(3).Of(input);
+
+            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+
+            
+
+            input.Feed(10, 1, 0.1);
+
+            a.Current.Count.Should().Be(2);
+            a.Current.Properties.Should().Be(1);
+        }        
+        
+        [Test]
+        public void OnAllUpdatedOnce_Count2_Properties5() {
+            var input = new Identity("Source");
+            var max1 = new Maximum(3).Of(input);
+            var max2 = new Maximum(3).Of(input);
+
+            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+            var ba = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, a}, name: "Target");
+
+            input.FeedTradeBar(10, 1, 0.1);
+            input.Update(ba.CurrentTime + 1000, 100d);
+            ba.Current.Count.Should().Be(4);
+            ba.Current.Properties.Should().Be(1);
+            ba.Current.AsDoubleSpan.ToArray().Should().AllBeEquivalentTo(100d);
+        }
+
+        [Test]
         public void OnAllUpdatedOnce() {
+            var input = new Identity("Source");
+            var ema = new ExponentialMovingAverage(12).Of(input);
+            var max1 = new Maximum(6).Of(ema);
+            var max2 = new Maximum(12).Of(ema);
+            var max3 = new Maximum(24).Of(ema);
+
+            var cruncher = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, max3});
+            cruncher.Samples.Should().Be(0);
+            max1.Feed(6, 1d, 0.1);
+            cruncher.Samples.Should().Be(0);
+            max2.Feed(12, 1d, 0.1);
+            cruncher.Samples.Should().Be(0);
+            max3.Feed(24, 1d, 0.1);
+            cruncher.Samples.Should().Be(1);
+            max1.Feed(1, 1d, 0.1);
+            cruncher.Samples.Should().Be(1);
+            max3.Feed(1, 1d, 0.1);
+            cruncher.Samples.Should().Be(1);
+            max2.Feed(1, 1d, 0.1);
+            cruncher.Samples.Should().Be(2);
+        }
+
+        [Test]
+        public void OnAllUpdatedOnce_TradeBars() {
             var input = new Identity("Source");
             var ema = new ExponentialMovingAverage(12).Of(input);
             var max1 = new Maximum(6).Of(ema);

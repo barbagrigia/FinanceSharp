@@ -30,8 +30,6 @@ namespace FinanceSharp {
     ///     which for a OHLC trade bar would be (n, 4) where n is the number of trade bars in the memory block.
     /// </remarks>
     public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
-        //TODO: add abstract Reshape to allow reshaping and manipulating Count and Properties. rules will be similar to NumSharp.
-
         /// The number of items in this array, each having n <see cref="Properties"/>.
         public int Count;
 
@@ -165,6 +163,10 @@ namespace FinanceSharp {
             }
         }
 
+        /// <summary>
+        ///     Copies this array into a multi-dimensional array, double[,].
+        /// </summary>
+        /// <returns></returns>
         public virtual double[,] To2DArray() {
             var ret = new double[Count, Properties];
             fixed (double* src = this, dst = ret) {

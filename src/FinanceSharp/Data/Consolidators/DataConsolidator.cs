@@ -48,6 +48,11 @@ namespace FinanceSharp.Consolidators {
         public long CurrentTime { get; protected set; }
 
         /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public int OutputCount => 1;
+
+        /// <summary>
         ///     The number of properties <see cref="Current"/> will have.
         /// </summary>
         public abstract int Properties { get; }
@@ -71,7 +76,6 @@ namespace FinanceSharp.Consolidators {
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
         /// </summary>
         public virtual bool IsReady => Samples > 0;
-
 
         /// <summary>
         /// 	 Gets the number of samples processed by this indicator

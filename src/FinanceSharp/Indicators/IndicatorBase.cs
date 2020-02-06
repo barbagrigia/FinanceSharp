@@ -66,6 +66,11 @@ namespace FinanceSharp.Indicators {
         public long CurrentTime { get; protected set; }
 
         /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public int OutputCount => 1;
+
+        /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
         /// </summary>
         public virtual int Properties => IndicatorValue.Properties;

@@ -28,6 +28,8 @@ namespace FinanceSharp {
     /// </summary>
     /// <typeparam name="T">The type of data in the window</typeparam>
     public class DataRollingWindow<T> : IReadOnlyWindow<T>, IIndicator where T : unmanaged {
+        //TODO: this should behave like a rolling window by quickly shifting the data 1 index forward and discarding last item on every update.
+        //    : This should be more of a IIndicator than IList.
         private readonly int _properties;
 
         // the backing list object used to hold the data
@@ -63,12 +65,12 @@ namespace FinanceSharp {
         }
 
         /// <summary>
-        ///     Gets the size of this window
+        ///     Gets the size of this window.
         /// </summary>
         public int Size { get; }
 
         /// <summary>
-        ///     Gets the current number of elements in this window
+        ///     Gets the current number of elements in this window.
         /// </summary>
         public int Count {
             get {
@@ -189,6 +191,11 @@ namespace FinanceSharp {
         /// 	 Gets the current time of <see cref="IUpdatable.Current"/>.
         /// </summary>
         public long CurrentTime { get; protected set; }
+
+        /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public int OutputCount => Size;
 
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.

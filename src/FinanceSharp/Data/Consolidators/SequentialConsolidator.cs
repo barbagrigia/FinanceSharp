@@ -61,6 +61,11 @@ namespace FinanceSharp.Consolidators {
         public long CurrentTime => Second.CurrentTime;
 
         /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public int OutputCount => 1;
+
+        /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
         /// </summary>
         public int Properties => Second.Properties;

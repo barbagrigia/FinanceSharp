@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace FinanceSharp {
     public abstract unsafe partial class DoubleArray {
@@ -24,7 +25,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="value">The value to wrap.</param>
         /// <returns>A new DoubleArray holding <paramref name="value"/>.</returns>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double value) {
             return new DoubleArrayScalar(value);
         }
@@ -35,7 +36,7 @@ namespace FinanceSharp {
         /// <param name="array">An array</param>
         /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied to a newly allocated memory block, otherwise pinned and referenced. </param>
         /// <param name="properties">How many properties are for every item in the array.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double[] array, bool copy, int properties = 1) {
             return new DoubleArrayManaged(copy ? (double[]) array.Clone() : array, properties);
         }
@@ -45,7 +46,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="array">An array</param>
         /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied via <see cref="DoubleArray.Clone"/>, otherwise pinned and referenced. </param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double[,] array, bool copy) {
             return new DoubleArray2DManaged(copy ? (double[,]) array.Clone() : array);
         }
@@ -54,7 +55,7 @@ namespace FinanceSharp {
         ///     Converts <paramref name="array"/> to double[,] (always copies) and wraps in DoubleArray.
         /// </summary>
         /// <param name="array">The array to convert and wrap.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double[][] array) {
             return new DoubleArray2DManaged(array);
         }
@@ -64,7 +65,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="array">An array</param>
         /// <param name="copy">If true, <paramref name="array"/>'s contents will be copied to a newly allocated memory block, otherwise pinned and referenced. </param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From<TStruct>(TStruct[] array, bool copy) where TStruct : unmanaged, DataStruct {
             return copy ? new DoubleArrayStruct<TStruct>((TStruct[]) array.Clone()) : new DoubleArrayStruct<TStruct>(array);
         }
@@ -74,7 +75,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
         /// <param name="values">An array of values.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From<TStruct>(params TStruct[] values) where TStruct : unmanaged, DataStruct {
             return new DoubleArrayStruct<TStruct>(values);
         }
@@ -84,7 +85,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
         /// <param name="scalar">A value to wrap.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From<TStruct>(TStruct scalar) where TStruct : unmanaged, DataStruct {
             return new DoubleArrayStructScalar<TStruct>(ref scalar);
         }
@@ -94,7 +95,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
         /// <param name="scalar">A value to wrap.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From<TStruct>(ref TStruct scalar) where TStruct : unmanaged, DataStruct {
             return new DoubleArrayStructScalar<TStruct>(ref scalar);
         }
@@ -107,7 +108,7 @@ namespace FinanceSharp {
         /// <param name="properties">Number of properties for every item in given array.</param>
         /// <param name="zeroValues">Fill the memory block with zeros</param>
         /// <param name="disposer">Deallocator called when this object is disposed. Can be null.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(void* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) {
             return new DoubleArrayUnmanaged((double*) pointer, count, properties, zeroValues, disposer);
         }
@@ -120,7 +121,7 @@ namespace FinanceSharp {
         /// <param name="properties">Number of properties for every item in given array.</param>
         /// <param name="zeroValues">Fill the memory block with zeros</param>
         /// <param name="disposer">Deallocator called when this object is disposed. Can be null.</param>
-        [DebuggerStepThrough]
+        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) {
             return new DoubleArrayUnmanaged(pointer, count, properties, zeroValues, disposer);
         }

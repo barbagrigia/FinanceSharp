@@ -58,7 +58,7 @@ namespace FinanceSharp.Indicators {
                 // our first sample or if we're bigger than our previous indicator value
                 // reset the periods since minimum (it's this period) and return the value
                 PeriodsSinceMinimum = 0;
-                return input.Value;
+                return input;
             }
 
             if (PeriodsSinceMinimum >= Period - 1) {

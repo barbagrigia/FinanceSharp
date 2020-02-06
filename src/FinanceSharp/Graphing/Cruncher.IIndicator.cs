@@ -79,6 +79,11 @@ namespace FinanceSharp.Graphing {
         int IUpdatable.InputProperties => -1;
 
         /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public int OutputCount => outputCount;
+
+        /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
         /// </summary>
         public int Properties { get; set; }

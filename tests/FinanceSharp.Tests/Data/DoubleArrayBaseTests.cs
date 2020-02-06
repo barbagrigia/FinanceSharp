@@ -10,7 +10,6 @@ using NUnit.Framework;
 namespace FinanceSharp.Tests.Data {
     [SuppressMessage("ReSharper", "JoinDeclarationAndInitializer")]
     public abstract partial class DoubleArrayBaseTests {
-        //TODO: test property specific Function.
         public abstract DoubleArray CreateDefault();
         public abstract DoubleArray CreateScalar1_1(double value1);
         public abstract DoubleArray CreateScalar1_2(double value1, double value2);
@@ -160,6 +159,39 @@ namespace FinanceSharp.Tests.Data {
             var arr = CreateMatrix2_2(value1, value2, value3, value4);
 
             var subject = arr.Function(value => value);
+            ReferenceEquals(arr, subject).Should().BeFalse();
+            values.ToArray().Should().BeEquivalentTo(subject.ToArray());
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Function_Binary_Property(double value1, double value2, double value3, double value4) {
+            var values = new double[] {value1, value2, value3, value4};
+            var arr = CreateMatrix2_2(value1, value2, value3, value4);
+
+            var subject = arr.Function(0, value => value);
+            ReferenceEquals(arr, subject).Should().BeFalse();
+            values.ToArray().Should().BeEquivalentTo(subject.ToArray());
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Function_Binary_Property1(double value1, double value2, double value3, double value4) {
+            var values = new double[] {value1, value2, value3, value4};
+            var arr = CreateMatrix2_2(value1, value2, value3, value4);
+
+            var subject = arr.Function(1, value => value);
+            ReferenceEquals(arr, subject).Should().BeFalse();
+            values.ToArray().Should().BeEquivalentTo(subject.ToArray());
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Function_Binary_Property2(double value1, double value2, double value3, double value4) {
+            var values = new double[] {value1, value2, value3, value4};
+            var arr = CreateMatrix2_2(value1, value2, value3, value4);
+
+            var subject = arr.Function(2, value => value);
             ReferenceEquals(arr, subject).Should().BeFalse();
             values.ToArray().Should().BeEquivalentTo(subject.ToArray());
         }
@@ -333,7 +365,6 @@ namespace FinanceSharp.Tests.Data {
             (arr == ret).Should().BeFalse();
         }
 
-
         [Test]
         [TestCaseSource(nameof(ScalarDataSet))]
         public unsafe void ReshapeScalar(double value) {
@@ -345,6 +376,30 @@ namespace FinanceSharp.Tests.Data {
             ret.Properties.Should().Be(1);
             ret.LinearLength.Should().Be(1);
             (arr == ret).Should().BeTrue();
+        }
+
+        [Test]
+        [TestCaseSource(nameof(ScalarDataSet))]
+        public void SameAreEquals(double value) {
+            var val1 = CreateScalar1_1(value);
+            var val2 = CreateScalar1_1(value);
+
+            (val1 == val2).Should().BeTrue();
+            (val2 == val1).Should().BeTrue();
+            (val1 == value).Should().BeTrue();
+            (val2 == value).Should().BeTrue();
+            (value == val1).Should().BeTrue();
+            (value == val2).Should().BeTrue();
+            (val1 == (DoubleArray) value).Should().BeTrue();
+            ((DoubleArray) value == val1).Should().BeTrue();
+
+            //force other doublearray.
+            var sclr = new DoubleArrayScalar(value);
+            (sclr == val2).Should().BeTrue();
+            (sclr == val1).Should().BeTrue();
+            (val1 == sclr).Should().BeTrue();
+            (val2 == sclr).Should().BeTrue();
+
         }
     }
 }

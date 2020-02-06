@@ -51,7 +51,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="input">The input value to this indicator on this time step</param>
         /// <returns>A new value for this indicator</returns>
         protected override DoubleArray Forward(IReadOnlyWindow<long> timeWindow, IReadOnlyWindow<DoubleArray> window, long time, DoubleArray input) {
-            return input.Value;
+            return input;
         }
     }
 }

@@ -106,12 +106,20 @@ namespace FinanceSharp {
             return values[index];
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayStruct<TStruct> o) {
-                return o.values.Equals(values);
+                fixed (TStruct* lhs = this.values, rhs = o.values) {
+                    double* lhs_d = (double*) lhs, rhs_d = (double*) rhs;
+                    var cnt = LinearLength;
+                    for (int i = 0; i < cnt; i++)
+                        if (lhs_d[i] != rhs_d[i] && double.IsNaN(lhs_d[i]) != double.IsNaN(rhs_d[i]))
+                            return false;
+
+                    return true;
+                }
             }
 
-            return false;
+            return null;
         }
 
         protected override int ComputeHashCode() {

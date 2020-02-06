@@ -101,12 +101,12 @@ namespace FinanceSharp {
             return value;
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayStructScalar<TStruct> o) {
                 return o.value.Equals(value);
             }
 
-            return false;
+            return null;
         }
 
         protected override int ComputeHashCode() {

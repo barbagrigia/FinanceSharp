@@ -90,12 +90,12 @@ namespace FinanceSharp {
             values[offset] = value;
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayManaged o) {
                 return o.values.Equals(values) || o.values.SequenceEqual(values);
             }
 
-            return false;
+            return null;
         }
 
         protected override int ComputeHashCode() {

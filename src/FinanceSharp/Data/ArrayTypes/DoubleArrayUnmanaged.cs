@@ -110,12 +110,13 @@ namespace FinanceSharp {
             set => Address[index * Properties + property] = value;
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayUnmanaged uarr) {
-                return uarr.Address == Address;
+                if (uarr.Address == Address)
+                    return true;
             }
 
-            return false;
+            return null;
         }
 
         protected override int ComputeHashCode() {

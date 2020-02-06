@@ -24,7 +24,7 @@ namespace FinanceSharp {
         public bool Equals(DoubleArray other) {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Count == other.Count && Properties == other.Properties && (IsEqualExactlyTo(other) || CompareValues(other));
+            return Count == other.Count && Properties == other.Properties && (IsEqualExactlyTo(other) ?? CompareValues(other));
         }
 
         /// <summary>
@@ -33,9 +33,8 @@ namespace FinanceSharp {
         /// <param name="other"></param>
         /// <returns></returns>
         protected virtual bool CompareValues(DoubleArray other) {
-            bool AreNotEqual(double lhs, double rhs) {
-                return lhs != rhs && double.IsNaN(lhs) != double.IsNaN(rhs);
-            }
+            bool AreNotEqual(double lhs, double rhs) => lhs != rhs && double.IsNaN(lhs) != double.IsNaN(rhs);
+
             for (int i = 0; i < Count; i++) {
                 for (int j = 0; j < Properties; j++) {
                     if (AreNotEqual(this[i, j], other[i, j]))
@@ -50,8 +49,8 @@ namespace FinanceSharp {
         ///     A comparison method used when <see cref="Equals(DoubleArray)"/> is called from <see cref="IEquatable{T}"/> to compare same types of <see cref="DoubleArray"/>.
         /// </summary>
         /// <param name="other">An DoubleArray to compare to this.</param>
-        /// <returns>Are <see cref="this"/> equals to <see cref="other"/>.</returns>
-        protected abstract bool IsEqualExactlyTo(DoubleArray other);
+        /// <returns>Are <see cref="this"/> equals to <see cref="other"/>. Null returned when test was not performed.</returns>
+        protected abstract bool? IsEqualExactlyTo(DoubleArray other);
 
         /// <summary>
         ///     Additional hashcode for inherieted classes.
@@ -88,6 +87,39 @@ namespace FinanceSharp {
         /// <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
         public static bool operator !=(DoubleArray left, DoubleArray right) {
             return !Equals(left, right);
+        }
+
+
+        /// <summary>Returns a value that indicates whether the values of two <see cref="T:FinanceSharp.DoubleArray" /> objects are equal.</summary>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns>true if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, false.</returns>
+        public static bool operator ==(DoubleArray left, double right) {
+            return left != null && left.Properties == 1 && left.Count == 1 && Equals(left.Value, right);
+        }
+
+        /// <summary>Returns a value that indicates whether two <see cref="T:FinanceSharp.DoubleArray" /> objects have different values.</summary>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+        public static bool operator !=(DoubleArray left, double right) {
+            return !(left == right);
+        }
+
+        /// <summary>Returns a value that indicates whether the values of two <see cref="T:FinanceSharp.DoubleArray" /> objects are equal.</summary>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns>true if the <paramref name="left" /> and <paramref name="right" /> parameters have the same value; otherwise, false.</returns>
+        public static bool operator ==(double left, DoubleArray right) {
+            return right != null && right.Properties == 1 && right.Count == 1 && Equals(left, right.Value);
+        }
+
+        /// <summary>Returns a value that indicates whether two <see cref="T:FinanceSharp.DoubleArray" /> objects have different values.</summary>
+        /// <param name="left">The first value to compare.</param>
+        /// <param name="right">The second value to compare.</param>
+        /// <returns>true if <paramref name="left" /> and <paramref name="right" /> are not equal; otherwise, false.</returns>
+        public static bool operator !=(double left, DoubleArray right) {
+            return !(left == right);
         }
     }
 }

@@ -65,6 +65,11 @@ namespace FinanceSharp {
         int InputProperties { get; }
 
         /// <summary>
+        ///     The number of items <see cref="Current"/> will have.
+        /// </summary>
+        int OutputCount { get; }
+
+        /// <summary>
         ///     The number of properties <see cref="Current"/> will have.
         /// </summary>
         int Properties { get; }

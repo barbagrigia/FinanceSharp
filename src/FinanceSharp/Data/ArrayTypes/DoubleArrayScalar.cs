@@ -46,8 +46,9 @@ namespace FinanceSharp {
             return ref value;
         }
 
-        protected override bool IsEqualExactlyTo(DoubleArray other) {
-            return other[0, 0] == value;
+        protected override bool? IsEqualExactlyTo(DoubleArray other) {
+            var o = other[0, 0];
+            return o == value || double.IsNaN(o) == double.IsNaN(value);
         }
 
         protected override int ComputeHashCode() {
