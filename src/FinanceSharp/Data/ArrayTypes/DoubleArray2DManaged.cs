@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
     public unsafe class DoubleArray2DManaged : DoubleArray {
@@ -131,7 +132,7 @@ namespace FinanceSharp {
             return values.GetHashCode();
         }
 
-        public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref values[0, 0]), Count * Properties);
+        public override Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref values[0, 0]), LinearLength);
 
         public override ref double GetPinnableReference() {
             return ref values[0, 0];
@@ -143,6 +144,24 @@ namespace FinanceSharp {
 
         public override double[,] To2DArray() {
             return (double[,]) values.Clone();
+        }
+
+        public override DoubleArray Reshape(int count, int properties, bool copy = true) {
+            if (LinearLength != (count * properties))
+                throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
+
+            var data = new double[count, properties];
+            fixed (double* src = values, dst = data) 
+                Unsafe.CopyBlock(dst, src, (uint) (sizeof(double) * LinearLength));
+
+            if (copy) {
+                return new DoubleArray2DManaged(data);
+            } else {
+                values = data;
+                Count = count;
+                Properties = properties;
+                return this;
+            }
         }
 
         public override DoubleArray Clone() {

@@ -3,7 +3,7 @@ using NUnit.Framework;
 
 namespace FinanceSharp.Tests.Data {
     public class DoubleArrayStructTests : DoubleArrayBaseTests {
-        public override DoubleArray Create() {
+        public override DoubleArray CreateDefault() {
             return new DoubleArrayStruct<TestStructX1>();
         }
 

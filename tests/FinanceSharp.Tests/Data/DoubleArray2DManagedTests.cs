@@ -14,7 +14,7 @@ namespace FinanceSharp.Tests.Data {
             arr.ToArray().Should().BeEquivalentTo(value1, value2, value3, value4);
         }
 
-        public override DoubleArray Create() {
+        public override DoubleArray CreateDefault() {
             return new DoubleArray2DManaged();
         }
 

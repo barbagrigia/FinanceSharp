@@ -3,7 +3,7 @@
 namespace FinanceSharp.Tests.Data {
     // ReSharper disable once UnusedMember.Global
     public class DoubleArrayScalarTests : DoubleArrayBaseTests {
-        public override DoubleArray Create() {
+        public override DoubleArray CreateDefault() {
             return new DoubleArrayScalar();
         }
 

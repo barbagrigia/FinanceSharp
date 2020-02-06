@@ -32,7 +32,7 @@ namespace FinanceSharp.Tests.Data {
             offset = 0;
         }
 
-        public override DoubleArray Create() {
+        public override DoubleArray CreateDefault() {
             return new DoubleArrayUnmanaged();
         }
 

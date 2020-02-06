@@ -124,11 +124,28 @@ namespace FinanceSharp {
             return ref Unsafe.As<TStruct, double>(ref values[0]);
         }
 
-        /// <summary>
-        ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/> at a certain index (Count based).
-        /// </summary>
         public override ref double GetPinnableReference(int index) {
             return ref Unsafe.As<TStruct, double>(ref values[index]);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ReshapeException">When copy is False. because TStruct is a representation of Properties dimension. call with copy: true</exception>
+        /// <returns>A <see cref="DoubleArray2DManaged"/> reshaped.</returns>
+        public override DoubleArray Reshape(int count, int properties, bool copy = true) {
+            if (!copy)
+                throw new ReshapeException("DoubleArrayStruct<TStruct> can't be reshaped without copying because TStruct is a representation of Properties dimension. call with copy: true");
+
+            if (LinearLength != (count * properties))
+                throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
+
+            var data = new double[count, properties];
+            fixed (TStruct* src = values) {
+                fixed (double* dst = data) {
+                    Unsafe.CopyBlock(dst, src, (uint) (sizeof(double) * LinearLength));
+                }
+            }
+
+            return new DoubleArray2DManaged(data);
         }
 
         public override DoubleArray Clone() {

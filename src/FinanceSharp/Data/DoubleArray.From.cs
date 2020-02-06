@@ -37,13 +37,7 @@ namespace FinanceSharp {
         /// <param name="properties">How many properties are for every item in the array.</param>
         [DebuggerStepThrough]
         public static DoubleArray From(double[] array, bool copy, int properties = 1) {
-            if (copy) {
-                var ret = new DoubleArrayUnmanaged(array.Length / properties, properties);
-                new Span<double>(array).CopyTo(ret.AsDoubleSpan);
-                return ret;
-            }
-
-            return new DoubleArrayManaged(array, properties);
+            return new DoubleArrayManaged(copy ? (double[]) array.Clone() : array, properties);
         }
 
         /// <summary>

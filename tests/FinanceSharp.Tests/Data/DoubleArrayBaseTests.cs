@@ -11,7 +11,7 @@ namespace FinanceSharp.Tests.Data {
     [SuppressMessage("ReSharper", "JoinDeclarationAndInitializer")]
     public abstract partial class DoubleArrayBaseTests {
         //TODO: test property specific Function.
-        public abstract DoubleArray Create();
+        public abstract DoubleArray CreateDefault();
         public abstract DoubleArray CreateScalar1_1(double value1);
         public abstract DoubleArray CreateScalar1_2(double value1, double value2);
         public abstract DoubleArray CreateArray2_1(double value1, double value2);
@@ -19,21 +19,21 @@ namespace FinanceSharp.Tests.Data {
         public abstract DoubleArray CreateArray4_1(double value1, double value2, double value3, double value4);
         public abstract DoubleArray CreateMatrix2_2(double value1, double value2, double value3, double value4);
 
-        public virtual DoubleArray CreateScalar((double value, double value2, double value3, double value4) data) {
+        public virtual DoubleArray CreateScalar1_4((double value, double value2, double value3, double value4) data) {
             return CreateScalar1_4(data.value, data.value2, data.value3, data.value4);
         }
 
-        public virtual DoubleArray CreateArray((double value, double value2, double value3, double value4) data) {
+        public virtual DoubleArray CreateArray4_1((double value, double value2, double value3, double value4) data) {
             return CreateArray4_1(data.value, data.value2, data.value3, data.value4);
         }
 
-        public virtual DoubleArray CreateMatrix((double value, double value2, double value3, double value4) data) {
+        public virtual DoubleArray CreateMatrix2_2((double value, double value2, double value3, double value4) data) {
             return CreateMatrix2_2(data.value, data.value2, data.value3, data.value4);
         }
 
         [Test]
         public void DefaultConstructor() {
-            Create()[0].Should().Be(0d);
+            CreateDefault()[0].Should().Be(0d);
         }
 
         [Test]
@@ -287,6 +287,64 @@ namespace FinanceSharp.Tests.Data {
             }
 
             arr[0].Should().BeApproximately(1d);
+        }
+
+
+        [Test]
+        [TestCaseSource(nameof(DuoDataSet))]
+        public void ReshapeArray2_1(double value1, double value2) {
+            DoubleArray arr;
+
+            arr = CreateArray2_1(value1, value2);
+            var ret = arr.Reshape(1, 2, copy: true);
+
+            ret.Count.Should().Be(1);
+            ret.Properties.Should().Be(2);
+            ret.LinearLength.Should().Be(2);
+            (arr == ret).Should().BeFalse();
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void ReshapeMatrix2_2(double value1, double value2, double value3, double value4) {
+            DoubleArray arr, ret;
+
+            arr = CreateMatrix2_2(value1, value2, value3, value4);
+            ret = arr.Reshape(2, 2, copy: true);
+
+            ret.Count.Should().Be(2);
+            ret.Properties.Should().Be(2);
+            ret.LinearLength.Should().Be(4);
+            (arr == ret).Should().BeTrue();
+
+            ret = arr.Reshape(1, 4, copy: true);
+
+            ret.Count.Should().Be(1);
+            ret.Properties.Should().Be(4);
+            ret.LinearLength.Should().Be(4);
+            (arr == ret).Should().BeFalse();
+
+
+            ret = arr.Reshape(4, 1, copy: true);
+
+            ret.Count.Should().Be(4);
+            ret.Properties.Should().Be(1);
+            ret.LinearLength.Should().Be(4);
+            (arr == ret).Should().BeFalse();
+        }
+
+
+        [Test]
+        [TestCaseSource(nameof(ScalarDataSet))]
+        public unsafe void ReshapeScalar(double value) {
+            var arr = CreateScalar1_1(value);
+
+            var ret = arr.Reshape(1, 1, copy: true);
+
+            ret.Count.Should().Be(1);
+            ret.Properties.Should().Be(1);
+            ret.LinearLength.Should().Be(1);
+            (arr == ret).Should().BeTrue();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace FinanceSharp.Graphing {
         protected int length;
         protected IUpdatable[] observing;
         protected IUpdatable[] crunching;
-        protected DoubleArray workingTarget;
+        protected DoubleArrayPinned2DManaged workingTarget;
 
         /// <summary>
         ///     Should the cruncher clone <see cref="Current"/> when <see cref="Updated"/> is fired.
@@ -49,7 +49,7 @@ namespace FinanceSharp.Graphing {
         protected void OnUpdated(long time) {
             Samples++;
             CurrentTime = time;
-            Updated?.Invoke(time, CloneCrunched ? workingTarget.Clone() : workingTarget);
+            Updated?.Invoke(time, CloneCrunched ? (DoubleArray) new DoubleArray2DManaged((double[,]) workingTarget.InternalArray.Clone()) : workingTarget);
         }
 
         /// <summary>
@@ -165,62 +165,60 @@ namespace FinanceSharp.Graphing {
             for (var i = 0; i < obsing.Length; i++) {
                 unsafe {
                     IUpdatable upd = obsing[i];
-                    fixed (double* storageAddr = workingTarget.InternalArray) {
-                        double* addr = storageAddr + i * props;
-                        //case when values collected are indicator output (single value)
-                        if (properties == 1) {
-                            if (interval == 1) {
-                                upd.Updated += (time, updated) => {
-                                    *addr = updated.Value;
-                                    c.OnUpdated(time);
-                                };
-                                upd.Resetted += sender => { *addr = 0d; };
-                            } else {
-                                upd.Updated += (time, updated) => {
-                                    *addr = updated.Value;
-                                    if (--c.counter <= 0) {
-                                        c.OnUpdated(time);
-                                        c.counter = interval;
-                                    }
-                                };
-                                upd.Resetted += sender => {
-                                    *addr = 0d;
-                                    c.counter = interval;
-                                };
-                            }
+                    double* addr = workingTarget.Address + i * props;
+                    //case when values collected are indicator output (single value)
+                    if (properties == 1) {
+                        if (interval == 1) {
+                            upd.Updated += (time, updated) => {
+                                *addr = updated.Value;
+                                c.OnUpdated(time);
+                            };
+                            upd.Resetted += sender => { *addr = 0d; };
                         } else {
-                            //case when values collected are multi-valued output (tradebar value)
-                            if (interval == 1) {
-                                upd.Updated += (time, updated) => {
-                                    Debug.Assert(updated.Properties >= props);
-                                    var propCount = props > updated.Properties ? updated.Properties : props;
-                                    for (int j = 0; j < propCount; j++)
-                                        addr[j] = updated[j];
-                                    if (--c.counter <= 0) {
-                                        c.OnUpdated(time);
-                                        c.counter = interval;
-                                    }
-                                };
-                                upd.Resetted += sender => {
-                                    var propCount = props;
-                                    for (int j = 0; j < propCount; j++)
-                                        addr[j] = 0d;
-                                    c.counter = interval;
-                                };
-                            } else {
-                                upd.Updated += (time, updated) => {
-                                    Debug.Assert(updated.Properties >= props);
-                                    var propCount = props > updated.Properties ? updated.Properties : props;
-                                    for (int j = 0; j < propCount; j++)
-                                        addr[j] = updated[j];
+                            upd.Updated += (time, updated) => {
+                                *addr = updated.Value;
+                                if (--c.counter <= 0) {
                                     c.OnUpdated(time);
-                                };
-                                upd.Resetted += sender => {
-                                    var propCount = props;
-                                    for (int j = 0; j < propCount; j++)
-                                        addr[j] = 0d;
-                                };
-                            }
+                                    c.counter = interval;
+                                }
+                            };
+                            upd.Resetted += sender => {
+                                *addr = 0d;
+                                c.counter = interval;
+                            };
+                        }
+                    } else {
+                        //case when values collected are multi-valued output (tradebar value)
+                        if (interval == 1) {
+                            upd.Updated += (time, updated) => {
+                                Debug.Assert(updated.Properties >= props);
+                                var propCount = props > updated.Properties ? updated.Properties : props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = updated[j];
+                                if (--c.counter <= 0) {
+                                    c.OnUpdated(time);
+                                    c.counter = interval;
+                                }
+                            };
+                            upd.Resetted += sender => {
+                                var propCount = props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = 0d;
+                                c.counter = interval;
+                            };
+                        } else {
+                            upd.Updated += (time, updated) => {
+                                Debug.Assert(updated.Properties >= props);
+                                var propCount = props > updated.Properties ? updated.Properties : props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = updated[j];
+                                c.OnUpdated(time);
+                            };
+                            upd.Resetted += sender => {
+                                var propCount = props;
+                                for (int j = 0; j < propCount; j++)
+                                    addr[j] = 0d;
+                            };
                         }
                     }
                 }
@@ -259,26 +257,24 @@ namespace FinanceSharp.Graphing {
             for (var i = 0; i < crunching.Length; i++) {
                 unsafe {
                     IUpdatable upd = crunching[i];
-                    fixed (double* storageAddr = workingTarget.InternalArray) {
-                        double* addr = storageAddr + i * props;
-                        //case when values collected are indicator output (single value)
-                        if (properties == 1) {
-                            upd.Updated += (time, updated) => { *addr = updated.Value; };
-                            upd.Resetted += _ => { *addr = 0d; };
-                        } else {
-                            //case when values collected are multi-valued output (tradebar value)
-                            upd.Updated += (time, updated) => {
-                                Debug.Assert(updated.Properties >= props);
-                                var propCount = props > updated.Properties ? updated.Properties : props;
-                                for (int j = 0; j < propCount; j++)
-                                    addr[j] = updated[j];
-                            };
+                    double* addr = workingTarget.Address + i * props;
+                    //case when values collected are indicator output (single value)
+                    if (properties == 1) {
+                        upd.Updated += (time, updated) => { *addr = updated.Value; };
+                        upd.Resetted += _ => { *addr = 0d; };
+                    } else {
+                        //case when values collected are multi-valued output (tradebar value)
+                        upd.Updated += (time, updated) => {
+                            Debug.Assert(updated.Properties >= props);
+                            var propCount = props > updated.Properties ? updated.Properties : props;
+                            for (int j = 0; j < propCount; j++)
+                                addr[j] = updated[j];
+                        };
 
-                            upd.Resetted += _ => {
-                                for (int j = 0; j < props; j++)
-                                    addr[j] = 0d;
-                            };
-                        }
+                        upd.Resetted += _ => {
+                            for (int j = 0; j < props; j++)
+                                addr[j] = 0d;
+                        };
                     }
                 }
             }
@@ -304,8 +300,7 @@ namespace FinanceSharp.Graphing {
                     };
                 } else {
                     crunchTrigger.Updated += (time, updated) => {
-                        if (--c.counter <= 0)
-                        {
+                        if (--c.counter <= 0) {
                             c.OnUpdated(time);
                             c.counter = interval;
                         }

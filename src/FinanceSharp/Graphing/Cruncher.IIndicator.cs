@@ -49,7 +49,11 @@ namespace FinanceSharp.Graphing {
             if (signalCounter != null)
                 Array.Clear(signalCounter, 0, signalCounter.Length);
             counter = length;
-            workingTarget.AsDoubleSpan.Fill(0d);
+            unsafe {
+                fixed (double* _ = workingTarget)
+                    workingTarget.AsDoubleSpan.Fill(0d);
+            }
+
             Resetted?.Invoke(this);
         }
 

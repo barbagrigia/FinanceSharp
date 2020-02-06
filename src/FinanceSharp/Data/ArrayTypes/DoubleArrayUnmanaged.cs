@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
     public unsafe class DoubleArrayUnmanaged : DoubleArray {
@@ -31,7 +32,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="count">The number of items in this array.</param>
         /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
-        public DoubleArrayUnmanaged(int count, int properties, bool zeroValues = true) : base(count, properties) {
+        public DoubleArrayUnmanaged(int count, int properties, bool zeroValues = false) : base(count, properties) {
             var addr = Address = (double*) Marshal.AllocHGlobal(count * properties * sizeof(double));
             disposer = () => DisposerThread.Enqueue(addr);
             if (zeroValues)
@@ -46,7 +47,7 @@ namespace FinanceSharp {
         /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
         /// <param name="zeroValues">Should all the values in given <paramref name="pointer"/> </param>
         /// <param name="disposer">the disposing action for deallocating given <paramref name="pointer"/></param>
-        public DoubleArrayUnmanaged(double* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) : base(count, properties) {
+        public DoubleArrayUnmanaged(double* pointer, int count, int properties, bool zeroValues = false, Action disposer = null) : base(count, properties) {
             Address = pointer;
             this.disposer = disposer;
             if (zeroValues)
@@ -71,12 +72,6 @@ namespace FinanceSharp {
         /// </summary>
         public void DiscardDisposer() {
             disposer = null;
-        }
-
-        public override DoubleArray Clone() {
-            var ret = new DoubleArrayUnmanaged(Count, Properties);
-            CopyTo(ret);
-            return ret;
         }
 
         protected override void ReleaseUnmanagedResources() {
@@ -145,6 +140,31 @@ namespace FinanceSharp {
         public override void SetLinear(int offset, double value) {
             AssertTrue(offset >= 0 && offset < LinearLength, "Offset is out of range.");
             Address[offset] = value;
+        }
+
+
+        public override DoubleArray Clone() {
+            var ret = new DoubleArrayUnmanaged(Count, Properties);
+            CopyTo(ret);
+            return ret;
+        }
+
+
+        public override DoubleArray Reshape(int count, int properties, bool copy = true) {
+            if (LinearLength != (count * properties))
+                throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
+
+            if (copy) {
+                var data = new double[count, properties];
+                fixed (double* dst = data)
+                    Unsafe.CopyBlock(dst, Address, (uint) (sizeof(double) * LinearLength));
+
+                return new DoubleArray2DManaged(data);
+            } else {
+                Count = count;
+                Properties = properties;
+                return this;
+            }
         }
     }
 }

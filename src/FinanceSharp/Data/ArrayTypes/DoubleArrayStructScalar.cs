@@ -23,8 +23,9 @@ namespace FinanceSharp {
         protected internal TStruct value;
 
         static DoubleArrayStructScalar() {
-            //verify staticly that this struct indeed has only made from doubles
-            if (DataStructInfo<TStruct>.DoubleFieldsCount != DataStructInfo<TStruct>.FieldsCount)
+            //verify staticly that this struct indeed has only made from doubles fields.
+            if (DataStructInfo<TStruct>.DoubleFieldsCount != DataStructInfo<TStruct>.Properties
+                || DataStructInfo<TStruct>.DoubleFieldsCount != DataStructInfo<TStruct>.FieldsCount)
                 throw new InvalidDoubleArrayStructException();
         }
 
@@ -121,6 +122,26 @@ namespace FinanceSharp {
         public override ref double GetPinnableReference(int index) {
             AssertTrue(index == 0, "Index is out of range.");
             return ref Unsafe.As<TStruct, double>(ref value);
+        }
+
+        /// <inheritdoc />
+        /// <exception cref="ReshapeException">When copy is False. because TStruct is a representation of Properties dimension. call with copy: true</exception>
+        /// <returns>A <see cref="DoubleArray2DManaged"/> reshaped.</returns>
+        public override DoubleArray Reshape(int count, int properties, bool copy = true) {
+            if (!copy)
+                throw new ReshapeException("DoubleArrayStruct<TStruct> can't be reshaped without copying because TStruct is a representation of Properties dimension. call with copy: true");
+
+            if (LinearLength != (count * properties))
+                throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
+
+            var data = new double[count, properties];
+            fixed (TStruct* src = &value) {
+                fixed (double* dst = data) {
+                    Unsafe.CopyBlock(dst, src, (uint) (sizeof(double) * LinearLength));
+                }
+            }
+
+            return new DoubleArray2DManaged(data);
         }
 
         public override DoubleArray Clone() {

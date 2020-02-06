@@ -16,6 +16,7 @@
 
 using System;
 using System.Runtime.CompilerServices;
+using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
     public class DoubleArrayScalar : DoubleArray {
@@ -43,10 +44,6 @@ namespace FinanceSharp {
         public override ref double GetPinnableReference(int index) {
             AssertTrue(index == 0, "Index out of range.");
             return ref value;
-        }
-
-        public override DoubleArray Clone() {
-            return new DoubleArrayScalar(value);
         }
 
         protected override bool IsEqualExactlyTo(DoubleArray other) {
@@ -98,6 +95,22 @@ namespace FinanceSharp {
         public override void SetLinear(int offset, double value) {
             AssertTrue(offset == 0);
             this.value = value;
+        }
+
+
+        public override DoubleArray Reshape(int count, int properties, bool copy = true) {
+            if (count == 1 && properties == 1) {
+                if (copy)
+                    return Clone();
+                else
+                    return this;
+            }
+
+            throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
+        }
+
+        public override DoubleArray Clone() {
+            return new DoubleArrayScalar(value);
         }
 
         #region Blunt Overloads

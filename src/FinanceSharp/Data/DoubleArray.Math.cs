@@ -44,13 +44,9 @@ namespace FinanceSharp {
                 var len = ret.Count;
                 var propsRhs = rhs.Properties;
                 var lhs_val = lhs.Value;
-                fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
-                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                        for (int i = 0; i < len; i++, offset += propsRhs) {
-                            ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
-                        }
-                    }
-                }
+                fixed (double* rhs_ptr = rhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsRhs)
+                        ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
 
                 return ret;
             } else if (rhs.IsScalar && rhs.Properties == 1) {
@@ -58,13 +54,9 @@ namespace FinanceSharp {
                 var len = ret.Count;
                 var propsLhs = lhs.Properties;
                 var rhsVal = rhs.Value;
-                fixed (double* lhs_ptr = lhs.AsDoubleSpan) {
-                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                        for (int i = 0; i < len; i++, offset += propsLhs) {
-                            ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
-                        }
-                    }
-                }
+                fixed (double* lhs_ptr = lhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsLhs)
+                        ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
 
                 return ret;
             } else {
@@ -73,15 +65,10 @@ namespace FinanceSharp {
                 var propsLhs = lhs.Properties;
                 var propsRhs = rhs.Properties;
                 var rhsOffset = 0;
-                fixed (double* lhs_ptr = rhs.AsDoubleSpan) {
-                    fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
-                        fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                            for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs) {
-                                ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
-                            }
-                        }
-                    }
-                }
+                fixed (double* lhs_ptr = rhs, rhs_ptr = rhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs)
+                        ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
+
 
                 return ret;
             }
@@ -104,13 +91,9 @@ namespace FinanceSharp {
                 var len = ret.Count;
                 var propsRhs = rhs.Properties;
                 var lhs_val = lhs[property];
-                fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
-                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                        for (int i = 0; i < len; i++, offset += propsRhs) {
-                            ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
-                        }
-                    }
-                }
+                fixed (double* rhs_ptr = rhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsRhs)
+                        ret_ptr[offset] = function(lhs_val, rhs_ptr[offset]);
 
                 return ret;
             } else if (rhs.IsScalar && rhs.Properties > property) {
@@ -118,13 +101,9 @@ namespace FinanceSharp {
                 var len = ret.Count;
                 var propsLhs = lhs.Properties;
                 var rhsVal = rhs[property];
-                fixed (double* lhs_ptr = lhs.AsDoubleSpan) {
-                    fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                        for (int i = 0; i < len; i++, offset += propsLhs) {
-                            ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
-                        }
-                    }
-                }
+                fixed (double* lhs_ptr = lhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsLhs)
+                        ret_ptr[offset] = function(lhs_ptr[offset], rhsVal);
 
                 return ret;
             } else {
@@ -133,41 +112,18 @@ namespace FinanceSharp {
                 var propsLhs = lhs.Properties;
                 var propsRhs = rhs.Properties;
                 var rhsOffset = property;
-                fixed (double* lhs_ptr = rhs.AsDoubleSpan) {
-                    fixed (double* rhs_ptr = rhs.AsDoubleSpan) {
-                        fixed (double* ret_ptr = ret.AsDoubleSpan) {
-                            for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs) {
-                                ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
-                            }
-                        }
-                    }
-                }
+                fixed (double* lhs_ptr = rhs, rhs_ptr = rhs, ret_ptr = ret)
+                    for (int i = 0; i < len; i++, offset += propsLhs, rhsOffset += propsRhs)
+                        ret_ptr[offset] = function(lhs_ptr[offset], rhs_ptr[rhsOffset]);
+
 
                 return ret;
             }
         }
 
-        /// <summary>
-        ///     Performs a function on the entire array
-        /// </summary>
-        /// <typeparam name="TStruct"></typeparam>
-        /// <param name="function"></param>
-        public virtual DoubleArray Function<TStruct>(ManipulateStructHandler<TStruct> function, bool copy = false) where TStruct : unmanaged, DataStruct {
-            //TODO: unit test this.
-            //TODO: this should use casting options instead of linearly digesting this.
-            var @this = (DoubleArrayUnmanaged) (copy ? this.Clone() : this);
-            var len = @this.LinearLength;
-            var ptr = (TStruct*) @this.Address;
-            for (int i = 0; i < len; i++) {
-                function(ptr++);
-            }
-
-            return @this;
-        }
-
         public virtual DoubleArray Function(UnaryFunctionHandler function, bool copy = true) {
             var @this = (copy ? this.Clone() : this);
-            fixed (double* src = @this.AsDoubleSpan) {
+            fixed (double* src = @this) {
                 var len = @this.Count;
                 var props = @this.Properties;
                 int offset = 0;
@@ -182,7 +138,7 @@ namespace FinanceSharp {
         public virtual DoubleArray Function(int property, UnaryFunctionHandler function, bool copy = true) {
             var @this = (copy ? this.Clone() : this);
 
-            fixed (double* src = @this.AsDoubleSpan) {
+            fixed (double* src = @this) {
                 var len = @this.Count;
                 var props = @this.Properties;
                 int offset = property;
@@ -199,7 +155,7 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="function">The function to call for every value in this array.</param>
         public virtual void ForEach(ForFunctionHandler function) {
-            fixed (double* src = this.AsDoubleSpan) {
+            fixed (double* src = this) {
                 var cnt = LinearLength;
                 for (int i = 0; i < cnt; i++) {
                     function(src[i]);
@@ -207,7 +163,6 @@ namespace FinanceSharp {
             }
         }
 
-        [Pure]
         public virtual void ForEach(int property, ForFunctionHandler function) {
             if (property >= Properties)
                 throw new ArgumentOutOfRangeException(nameof(property));

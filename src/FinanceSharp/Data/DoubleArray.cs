@@ -18,6 +18,8 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
+using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
     /// <summary>
@@ -64,6 +66,15 @@ namespace FinanceSharp {
         /// <summary>
         ///     Wraps this DoubleArray with <see cref="Span{T}"/>.
         /// </summary>
+        /// <remarks>Best practice to use AsDoubleSpan safely is first using fixed operator on the array and then access <see cref="AsDoubleSpan"/>. See examples.</remarks>
+        /// <example>
+        /// <code>
+        ///     fixed (double* _ = doublearray) {
+        ///         doublearray.AsDoubleSpan.Fill(10d);
+        ///         double[] ret = doublearray.AsDoubleSpan.ToArray();
+        ///     }
+        /// </code>
+        /// </example>
         public virtual Span<double> AsDoubleSpan => new Span<double>(Unsafe.AsPointer(ref GetPinnableReference()), LinearLength);
 
         /// <summary>
@@ -75,9 +86,11 @@ namespace FinanceSharp {
         ///     Provides a pinnable reference for fixing a <see cref="DoubleArray"/> at a specific index (of <see cref="Count"/> dimension).
         /// </summary>
         /// <example>
+        /// <code>
         ///     fixed (double* pointer = &amp;arr.GetPinnableReference(0)) {
         ///         //use pointer to your needs
         ///     }
+        /// </code>
         /// </example>
         public abstract ref double GetPinnableReference(int index);
 
@@ -97,8 +110,11 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="target">The target array, must be matching <see cref="LinearLength"/> with this.</param>
         public virtual void CopyTo(DoubleArray target) {
-            AsDoubleSpan
-                .CopyTo(target.AsDoubleSpan);
+            fixed (double* _ = this, __ = target) {
+                //fix to prevent gc from moving them during the operation.
+                AsDoubleSpan
+                    .CopyTo(target.AsDoubleSpan);
+            }
         }
 
         /// <summary>
@@ -106,7 +122,8 @@ namespace FinanceSharp {
         /// </summary>
         /// <returns></returns>
         public virtual double[] ToArray() {
-            return AsDoubleSpan.ToArray();
+            fixed (double* _ = this) //fix to prevent gc from moving them during the operation.
+                return AsDoubleSpan.ToArray();
         }
 
         /// <summary>
@@ -117,12 +134,14 @@ namespace FinanceSharp {
         /// <param name="propertiesPerItem">Used for ArrayConversionMethod.Cast: describes how many doubles to copy to and per TDestStruct. If -1 is specified then sizeof(TDestStruct)/sizeof(double) will be used.<br></br></param>
         public virtual unsafe TDestStruct[] ToArray<TDestStruct>(ArrayConversionMethod method, int propertiesPerItem = -1) where TDestStruct : unmanaged, DataStruct {
             if (typeof(TDestStruct) == typeof(double))
-                return (TDestStruct[]) (object) AsDoubleSpan.ToArray();
+                fixed (double* _ = this)
+                    return (TDestStruct[]) (object) AsDoubleSpan.ToArray();
             var totalBytes = this.SizeOf;
             if (method == ArrayConversionMethod.Reinterpret) {
                 if (totalBytes % sizeof(TDestStruct) != 0)
                     throw new ArgumentException($"Can't reinterpret to TDestStruct because: totalBytes ({totalBytes}) % sizeof(TDestStruct) ({sizeof(TDestStruct)}) != 0 ({totalBytes % sizeof(TDestStruct)})");
-                return MemoryMarshal.Cast<double, TDestStruct>(AsDoubleSpan).ToArray();
+                fixed (double* _ = this)
+                    return MemoryMarshal.Cast<double, TDestStruct>(AsDoubleSpan).ToArray();
             } else if (method == ArrayConversionMethod.Cast) {
                 if (propertiesPerItem == -1)
                     propertiesPerItem = sizeof(TDestStruct) / sizeof(double);
@@ -130,7 +149,7 @@ namespace FinanceSharp {
                     throw new ArgumentException($"Can't reinterpret to TDestStruct because: totalBytes ({totalBytes}) % (propertiesPerItem * sizeof(double)) (({propertiesPerItem} * sizeof(double))) != 0 ({totalBytes % sizeof(TDestStruct)})");
                 var ret = new TDestStruct[(totalBytes) / (propertiesPerItem * sizeof(double))];
                 TDestStruct tmp = new TDestStruct();
-                double* tmpPtr = (double*) Unsafe.AsPointer(ref tmp);
+                double* tmpPtr = (double*) &tmp;
                 var len = Count * (Properties / propertiesPerItem);
                 for (int i = 0, linearI = 0; i < len; i++) {
                     for (int j = 0; j < propertiesPerItem; j++, linearI++) {
@@ -148,14 +167,20 @@ namespace FinanceSharp {
 
         public virtual double[,] To2DArray() {
             var ret = new double[Count, Properties];
-            var span = AsDoubleSpan;
-            fixed (double* src = span) {
-                fixed (double* dst = ret) {
-                    Unsafe.CopyBlock(src, dst, (uint) (sizeof(double) * ret.Length));
-                    return ret;
-                }
+            fixed (double* src = this, dst = ret) {
+                Unsafe.CopyBlock(src, dst, (uint) (sizeof(double) * ret.Length));
+                return ret;
             }
         }
+
+        /// <summary>
+        ///     Reshapes this <see cref="DoubleArray"/> to a shape of your choice, the shape must be 
+        /// </summary>
+        /// <param name="count">The count of items in this array.</param>
+        /// <param name="properties">Number of properties for every item in this array.</param>
+        /// <param name="copy">Should a copy be reshaped?</param>
+        /// <exception cref="ReshapeException">When unable to reshape to reshape: <see cref="LinearLength"/> != (<paramref name="count"/> * <paramref name="properties"/>) then throws </exception>
+        public abstract DoubleArray Reshape(int count, int properties, bool copy = true);
 
         /// <summary>
         ///     Asserts for DEBUG runs..

@@ -33,9 +33,12 @@ namespace FinanceSharp {
         /// <param name="other"></param>
         /// <returns></returns>
         protected virtual bool CompareValues(DoubleArray other) {
+            bool AreNotEqual(double lhs, double rhs) {
+                return lhs != rhs && double.IsNaN(lhs) != double.IsNaN(rhs);
+            }
             for (int i = 0; i < Count; i++) {
                 for (int j = 0; j < Properties; j++) {
-                    if (this[i, j] != other[i, j])
+                    if (AreNotEqual(this[i, j], other[i, j]))
                         return false;
                 }
             }
