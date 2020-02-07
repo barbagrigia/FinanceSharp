@@ -399,7 +399,32 @@ namespace FinanceSharp.Tests.Data {
             (sclr == val1).Should().BeTrue();
             (val1 == sclr).Should().BeTrue();
             (val2 == sclr).Should().BeTrue();
+        }
 
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Slice(double value1, double value2, double value3, double value4) {
+            var arr = CreateArray4_1(value1, value2, value3, value4);
+            var ret = arr.Slice(1, 3);
+            ret.Count.Should().Be(2);
+            ret.Properties.Should().Be(1);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public unsafe void SliceNested(double value1, double value2, double value3, double value4) {
+            var arr = CreateArray4_1(value1, value2, value3, value4);
+            var ret = arr.Slice(1, 3);
+            ret.Count.Should().Be(2);
+            ret.Properties.Should().Be(1);
+            fixed (double* tmpPin = ret)
+                ret.AsDoubleSpan.ToArray().Should().BeEquivalentTo(value2, value3);
+
+            var nested = ret.Slice(1, 2);
+            nested.Count.Should().Be(1);
+            nested.Properties.Should().Be(1);
+            fixed (double* tmpPin = nested)
+                nested.AsDoubleSpan.ToArray().Should().BeEquivalentTo(value3);
         }
     }
 }

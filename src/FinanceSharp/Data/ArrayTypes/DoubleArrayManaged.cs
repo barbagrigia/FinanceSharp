@@ -90,7 +90,7 @@ namespace FinanceSharp {
             values[offset] = value;
         }
 
-        protected override bool? IsEqualExactlyTo(DoubleArray other) {
+        protected internal override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayManaged o) {
                 return o.values.Equals(values) || o.values.SequenceEqual(values);
             }
@@ -98,7 +98,7 @@ namespace FinanceSharp {
             return null;
         }
 
-        protected override int ComputeHashCode() {
+        protected internal override int ComputeHashCode() {
             return values.GetHashCode();
         }
 

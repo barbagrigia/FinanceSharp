@@ -50,13 +50,13 @@ namespace FinanceSharp {
         /// </summary>
         /// <param name="other">An DoubleArray to compare to this.</param>
         /// <returns>Are <see cref="this"/> equals to <see cref="other"/>. Null returned when test was not performed.</returns>
-        protected abstract bool? IsEqualExactlyTo(DoubleArray other);
+        protected internal abstract bool? IsEqualExactlyTo(DoubleArray other);
 
         /// <summary>
         ///     Additional hashcode for inherieted classes.
         /// </summary>
         /// <returns></returns>
-        protected abstract int ComputeHashCode();
+        protected internal abstract int ComputeHashCode();
 
         /// <summary>Determines whether the specified object is equal to the current object.</summary>
         /// <param name="obj">The object to compare with the current object.</param>

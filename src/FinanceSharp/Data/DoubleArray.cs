@@ -185,6 +185,29 @@ namespace FinanceSharp {
         public abstract DoubleArray Reshape(int count, int properties, bool copy = true);
 
         /// <summary>
+        ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
+        /// </summary>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
+        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
+        public virtual DoubleArray Slice(int start, int stop) {
+            AssertTrue(start < Count, "Start index is out of range.");
+            AssertTrue(stop <= Count, "Stop index is out of range.");
+            return new SlicedDoubleArray(this, start, stop);
+        }
+
+        /// <summary>
+        ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
+        /// </summary>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
+        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
+        public DoubleArray Slice(int stop) {
+            return Slice(0, stop);
+        }
+
+        /// <summary>
         ///     Asserts for DEBUG runs..
         /// </summary>
         [Conditional("DEBUG"), DebuggerHidden]

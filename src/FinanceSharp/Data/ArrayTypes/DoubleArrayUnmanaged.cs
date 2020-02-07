@@ -20,6 +20,9 @@ using System.Runtime.InteropServices;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
+    /// <summary>
+    ///     Provides a <see cref="DoubleArray"/> implementation for <see cref="Address"/>, a double*.
+    /// </summary>
     public unsafe class DoubleArrayUnmanaged : DoubleArray {
         /// The address for the memory block.
         public double* Address;
@@ -110,7 +113,7 @@ namespace FinanceSharp {
             set => Address[index * Properties + property] = value;
         }
 
-        protected override bool? IsEqualExactlyTo(DoubleArray other) {
+        protected internal override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayUnmanaged uarr) {
                 if (uarr.Address == Address)
                     return true;
@@ -119,7 +122,7 @@ namespace FinanceSharp {
             return null;
         }
 
-        protected override int ComputeHashCode() {
+        protected internal override int ComputeHashCode() {
             return ((int) Address * 397) % int.MaxValue;
         }
 
@@ -143,6 +146,18 @@ namespace FinanceSharp {
             Address[offset] = value;
         }
 
+        /// <summary>
+        ///     Slices (or wraps with a slice wrapper) the <see cref="DoubleArray.Count"/> dimension.
+        /// </summary>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <returns>Returns a sliced array shaped (newCount, <see cref="DoubleArray.Properties"/>)</returns>
+        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
+        public override DoubleArray Slice(int start, int stop) {
+            AssertTrue(start < Count, "Start index is out of range.");
+            AssertTrue(stop <= Count, "Stop index is out of range.");
+            return new SlicedDoubleArrayUnmanaged(this, start, stop);
+        }
 
         public override DoubleArray Clone() {
             var ret = new DoubleArrayUnmanaged(Count, Properties);

@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace FinanceSharp.Tests.Data {
     [SuppressMessage("ReSharper", "LocalVariableHidesMember")]
-    public unsafe class DoubleArray2DUnmanagedTests : DoubleArrayBaseTests {
+    public unsafe class DoubleArrayUnmanagedTests : DoubleArrayBaseTests {
         public double* block;
         public int offset;
         public static readonly object _lock = new object();

@@ -55,7 +55,7 @@ namespace FinanceSharp {
         /// </summary>
         public double[,] InternalArray => values;
 
-        protected override bool? IsEqualExactlyTo(DoubleArray other) {
+        protected internal override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArray2DManaged o) {
                 if (o.values.Equals(values)) {
                     var othervals = o.values;
@@ -73,7 +73,7 @@ namespace FinanceSharp {
             return null;
         }
 
-        protected override int ComputeHashCode() {
+        protected internal override int ComputeHashCode() {
             return values.GetHashCode();
         }
 

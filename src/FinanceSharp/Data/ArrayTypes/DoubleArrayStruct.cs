@@ -106,7 +106,7 @@ namespace FinanceSharp {
             return values[index];
         }
 
-        protected override bool? IsEqualExactlyTo(DoubleArray other) {
+        protected internal override bool? IsEqualExactlyTo(DoubleArray other) {
             if (other is DoubleArrayStruct<TStruct> o) {
                 fixed (TStruct* lhs = this.values, rhs = o.values) {
                     double* lhs_d = (double*) lhs, rhs_d = (double*) rhs;
@@ -122,7 +122,7 @@ namespace FinanceSharp {
             return null;
         }
 
-        protected override int ComputeHashCode() {
+        protected internal override int ComputeHashCode() {
             return values.GetHashCode();
         }
 
