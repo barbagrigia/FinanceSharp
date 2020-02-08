@@ -24,6 +24,8 @@ namespace FinanceSharp {
 
     public delegate void ForFunctionHandler(double value);
 
+    public delegate void ForIndexedFunctionHandler(int index, double value);
+
     public delegate void ReferenceForFunctionHandler(ref double value);
 
     public abstract unsafe partial class DoubleArray {
@@ -163,6 +165,19 @@ namespace FinanceSharp {
             }
         }
 
+        /// <summary>
+        ///     Iterates this array efficiently.
+        /// </summary>
+        /// <param name="function">The function to call for every value in this array.</param>
+        public virtual void ForEach(ForIndexedFunctionHandler function) {
+            fixed (double* src = this) {
+                var cnt = LinearLength;
+                for (int i = 0; i < cnt; i++) {
+                    function(i / Properties, src[i]);
+                }
+            }
+        }
+
         public virtual void ForEach(int property, ForFunctionHandler function) {
             if (property >= Properties)
                 throw new ArgumentOutOfRangeException(nameof(property));
@@ -174,6 +189,22 @@ namespace FinanceSharp {
                     var prps = Properties;
                     for (int i = property; i < cnt; i += prps) {
                         function(src[i]);
+                    }
+                }
+            }
+        }
+
+        public virtual void ForEach(int property, ForIndexedFunctionHandler function) {
+            if (property >= Properties)
+                throw new ArgumentOutOfRangeException(nameof(property));
+            if (Properties == 1) {
+                ForEach(function);
+            } else {
+                fixed (double* src = this) {
+                    var cnt = Count;
+                    var prps = Properties;
+                    for (int i = property; i < cnt; i += prps) {
+                        function(i / Properties, src[i]);
                     }
                 }
             }

@@ -3,6 +3,25 @@
   <img align="center" src="https://i.imgur.com/6601cb9.png" height=200  />
 </p> 
 High performance financial computation for technical analysis with a versatile and productive piping and consolidation techniques.
+The library designed towards performance and complitability with running machine-learning algorithms in Python (via Pythonnet).
+
+With FinanceSharp you can easily design a model within minutes to manipulate, normalize, consolidate the 
+most complex technical indicator combinations models by hand with over 100 fully-tested indicators available.
+
+## Notice!
+The library is an on-going development and is before alpha. Classes and architecture might be changed and differ from docs.
+
+## Key points
+Our indicators follow a similar model to Pytorch, having a `Forward` method and an output shape (2 dimensional).
+Our data architecture is:
+- always pinnable and ready to be passed to Python as a [numpy](https://github.com/numpy/numpy) without cloning.
+- Is always made of two dimensions, `(Count, Properties)`
+    - Count represents number of items in the array with `N` Properties.
+- Supports `unmanaged structs`, `double[]`, `double[,]`, `double[][]`, fast scalar double, fast scalar struct and more.
+Our graphing techniques are pretty straight forward with C#'s built in `event` system. Although IL builder is planned.
+
+With all the abilities mentioned above, this makes FinanceSharp performance-ready for all the tasks required
+to execute a model and pass observation data to Python for machine-learning algorithm to work with or process.
 
 ## Getting Started
 Have a look at [/examples](https://github.com/Nucs/FinanceSharp/blob/master/examples/FinanceSharp.Examples/Program.cs) directory for plotted examples.
@@ -39,7 +58,7 @@ to pass `CHLO` values to a indicators that accept `IndicatorValue` that has only
 Every indicator implements both IIndicator and IUpdatable. 
 //TODO: elaborate
 
-#### I Come From QuantConnect/Lean
+## I Come From QuantConnect/Lean
 We support all indicators and consolidators from QuantConnect/Lean. <br>
 Key differences are:
   - IndicatorBase and DataConsolidator are non generic.

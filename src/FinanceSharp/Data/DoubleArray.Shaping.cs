@@ -32,6 +32,17 @@ namespace FinanceSharp {
         /// <summary>
         ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
         /// </summary>
+        /// <param name="index">The index to slice from this <see cref="DoubleArray"/>.</param>
+        /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
+        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
+        public virtual DoubleArray SliceIndex(int index) {
+            AssertTrue(index >= 0 && index < Count, "Index is out of range.");
+            return new SlicedDoubleArray(this, index, index + 1);
+        }
+
+        /// <summary>
+        ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
+        /// </summary>
         /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
         /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
         /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>

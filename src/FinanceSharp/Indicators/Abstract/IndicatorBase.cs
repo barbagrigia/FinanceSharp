@@ -68,7 +68,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         ///     The number of items <see cref="IUpdatable.Current"/> will have.
         /// </summary>
-        public int OutputCount => 1;
+        public int OutputCount { get; protected set; } = 1;
 
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
@@ -265,6 +265,25 @@ namespace FinanceSharp.Indicators {
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
         protected virtual void OnUpdated(long time, DoubleArray consolidated) {
             Updated?.Invoke(time, consolidated);
+        }
+
+
+        /// <summary>
+        ///     Asserts for DEBUG runs..
+        /// </summary>
+        [Conditional("DEBUG"), DebuggerHidden]
+        protected void AssertTrue(bool condition) {
+            if (!condition)
+                throw new Exception();
+        }
+
+        /// <summary>
+        ///     Asserts for DEBUG runs..
+        /// </summary>
+        [Conditional("DEBUG"), DebuggerHidden]
+        protected void AssertTrue(bool condition, string reason) {
+            if (!condition)
+                throw new Exception(reason);
         }
     }
 }
