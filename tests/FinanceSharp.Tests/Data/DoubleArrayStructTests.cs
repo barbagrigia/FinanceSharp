@@ -30,5 +30,9 @@ namespace FinanceSharp.Tests.Data {
         public override DoubleArray CreateMatrix2_2(double value1, double value2, double value3, double value4) {
             return new DoubleArrayStruct<TestStructX2>(new TestStructX2(value1, value2), new TestStructX2(value3, value4));
         }
+
+        public override DoubleArray CreateTensor4_4(double value1, double value2, double value3, double value4) {
+            return new DoubleArrayStruct<BarValue>(new BarValue(value1, value2, value3, value4), new BarValue(value1, value2, value3, value4), new BarValue(value1, value2, value3, value4), new BarValue(value1, value2, value3, value4));
+        }
     }
 }

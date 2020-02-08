@@ -39,7 +39,7 @@ namespace FinanceSharp {
             var addr = Address = (double*) Marshal.AllocHGlobal(count * properties * sizeof(double));
             disposer = () => DisposerThread.Enqueue(addr);
             if (zeroValues)
-                AsDoubleSpan.Fill(0);
+                Fill(0);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace FinanceSharp {
             Address = pointer;
             this.disposer = disposer;
             if (zeroValues)
-                AsDoubleSpan.Fill(0);
+                Fill(0);
         }
 
         public DoubleArrayUnmanaged() : this(1, 1, true) { }

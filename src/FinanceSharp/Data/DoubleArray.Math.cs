@@ -166,17 +166,14 @@ namespace FinanceSharp {
         public virtual void ForEach(int property, ForFunctionHandler function) {
             if (property >= Properties)
                 throw new ArgumentOutOfRangeException(nameof(property));
-
-            var cnt = Count;
             if (Properties == 1) {
-                for (int i = 0; i < cnt; i++) {
-                    function(this[i]);
-                }
+                ForEach(function);
             } else {
-                var prps = Properties;
-                for (int i = 0; i < cnt; i++) {
-                    for (int j = 0; j < prps; j++) {
-                        function(this[i, j]);
+                fixed (double* src = this) {
+                    var cnt = Count;
+                    var prps = Properties;
+                    for (int i = property; i < cnt; i += prps) {
+                        function(src[i]);
                     }
                 }
             }

@@ -25,6 +25,7 @@ namespace FinanceSharp.Graphing {
     ///     Provides various methods to join <see cref="IUpdatable"/>'s output into a single <see cref="DoubleArray"/>.
     /// </summary>
     public partial class Cruncher {
+        //TODO: rename to Concatenator
         protected int counter;
         protected bool[] signalCounter;
         protected int length;

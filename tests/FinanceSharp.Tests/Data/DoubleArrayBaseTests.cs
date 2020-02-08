@@ -17,6 +17,7 @@ namespace FinanceSharp.Tests.Data {
         public abstract DoubleArray CreateScalar1_4(double value1, double value2, double value3, double value4);
         public abstract DoubleArray CreateArray4_1(double value1, double value2, double value3, double value4);
         public abstract DoubleArray CreateMatrix2_2(double value1, double value2, double value3, double value4);
+        public abstract DoubleArray CreateTensor4_4(double value1, double value2, double value3, double value4);
 
         public virtual DoubleArray CreateScalar1_4((double value, double value2, double value3, double value4) data) {
             return CreateScalar1_4(data.value, data.value2, data.value3, data.value4);
@@ -425,6 +426,58 @@ namespace FinanceSharp.Tests.Data {
             nested.Properties.Should().Be(1);
             fixed (double* tmpPin = nested)
                 nested.AsDoubleSpan.ToArray().Should().BeEquivalentTo(value3);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Fill_Case1(double value1, double value2, double value3, double value4) {
+            var arr = CreateScalar1_4(value1, value2, value3, value4);
+            arr.Fill(value1);
+            arr.ToArray().Should().AllBeEquivalentTo(value1);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Fill_Case2(double value1, double value2, double value3, double value4) {
+            var arr = CreateArray4_1(value1, value2, value3, value4);
+            arr.Fill(value1);
+            arr.ToArray().Should().AllBeEquivalentTo(value1);
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Fill_Property_Case1(double value1, double value2, double value3, double value4) {
+            var arr = CreateMatrix2_2(value1, value2, value1, value4);
+            arr.Fill(1, value4);
+            arr.ForEach(0, value => value.Should().BeApproximately(value1));
+            arr.ForEach(1, value => value.Should().BeApproximately(value4));
+
+            arr = CreateMatrix2_2(value3, value1, value3, value1);
+            arr.Fill(0, value4);
+            arr.ForEach(0, value => value.Should().BeApproximately(value4));
+            arr.ForEach(1, value => value.Should().BeApproximately(value1));
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Fill_Property_Case2(double value1, double value2, double value3, double value4) {
+            var arr = CreateTensor4_4(value1, value2, value3, value4);
+            arr.Fill(1, value4);
+            arr.ForEach(0, value => value.Should().BeApproximately(value1));
+            arr.ForEach(1, value => value.Should().BeApproximately(value4));
+            arr.ForEach(2, value => value.Should().BeApproximately(value3));
+            arr.ForEach(3, value => value.Should().BeApproximately(value4));
+        }
+
+        [Test]
+        [TestCaseSource(nameof(QuadDataSet))]
+        public void Fill_Property_Case3(double value1, double value2, double value3, double value4) {
+            var arr = CreateTensor4_4(value1, value2, value3, value4);
+            arr.Fill(2, value4);
+            arr.ForEach(0, value => value.Should().BeApproximately(value1));
+            arr.ForEach(1, value => value.Should().BeApproximately(value2));
+            arr.ForEach(2, value => value.Should().BeApproximately(value4));
+            arr.ForEach(3, value => value.Should().BeApproximately(value4));
         }
     }
 }

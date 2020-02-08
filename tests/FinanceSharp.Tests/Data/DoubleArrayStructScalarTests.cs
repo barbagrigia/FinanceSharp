@@ -33,5 +33,10 @@ namespace FinanceSharp.Tests.Data {
             Assert.Inconclusive("This DoubleArray is scalar only.");
             return null;
         }
+
+        public override DoubleArray CreateTensor4_4(double value1, double value2, double value3, double value4) {
+            Assert.Inconclusive("This DoubleArray is scalar only.");
+            return null;
+        }
     }
 }

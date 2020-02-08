@@ -66,7 +66,6 @@ namespace FinanceSharp {
             }
         }
 
-
         public override double this[int index, int property] {
             get {
                 AssertTrue(index < Count, "Index is out of range.");

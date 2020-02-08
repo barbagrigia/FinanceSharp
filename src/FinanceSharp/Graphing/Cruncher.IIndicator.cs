@@ -51,7 +51,7 @@ namespace FinanceSharp.Graphing {
             counter = length;
             unsafe {
                 fixed (double* _ = workingTarget)
-                    workingTarget.AsDoubleSpan.Fill(0d);
+                    workingTarget.Fill(0d);
             }
 
             Resetted?.Invoke(this);

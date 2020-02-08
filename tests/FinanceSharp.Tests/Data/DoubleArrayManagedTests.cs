@@ -61,5 +61,17 @@ namespace FinanceSharp.Tests.Data {
 
             return new DoubleArrayManaged(d, 2);
         }
+
+        public override DoubleArray CreateTensor4_4(double value1, double value2, double value3, double value4) {
+            var d = new double[4 * 4];
+            for (int i = 0; i < 4; i++) {
+                d[i * 4 + 0] = value1;
+                d[i * 4 + 1] = value2;
+                d[i * 4 + 2] = value3;
+                d[i * 4 + 3] = value4;
+            }
+
+            return new DoubleArrayManaged(d, 4);
+        }
     }
 }
