@@ -15,18 +15,11 @@
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using FinanceSharp.Delegates;
-using static FinanceSharp.StringExtensions;
 
 namespace FinanceSharp {
     /// <summary>
-    ///     This is a window that allows for list access semantics,
-    ///     where this[0] refers to the most recent item in the
-    ///     window and this[Count-1] refers to the last item in the window
+    ///     Serves a similar purpose to <see cref="RollingWindow{T}"/> but the data is rolled inside <see cref="Current"/> (a <see cref="DoubleArray"/>).
     /// </summary>
     public class ArrayRollingWindow : IIndicator {
         protected DoubleArray _mostRecentlyRemoved;
@@ -102,7 +95,6 @@ namespace FinanceSharp {
                     *current = *input_ptr;
                 }
             }
-
 
             Samples++;
             OnUpdated(time, Current);

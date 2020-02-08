@@ -67,7 +67,6 @@ namespace FinanceSharp {
         public DoubleArrayPinned2DManaged ToPinned(bool copy) {
             return new DoubleArrayPinned2DManaged(copy ? (double[,]) values.Clone() : values);
         }
-
         //TODO overload the rest iteration classes to optimize performance to max.
 
         public override double this[int property] {
