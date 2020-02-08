@@ -8,6 +8,7 @@ namespace FinanceSharp {
     ///     Provides a wrapping <see cref="DoubleArray"/> to contiguously slice.
     /// </summary>
     public class SlicedDoubleArray : DoubleArray {
+        //TODO: Add this class as a unit test inherieting base test class for double arrays.
         protected DoubleArray internalArray;
         protected int start;
         protected int stop;

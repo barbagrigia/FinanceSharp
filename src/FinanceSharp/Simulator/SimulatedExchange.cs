@@ -18,6 +18,7 @@ using System;
 
 namespace FinanceSharp.Simulator {
     public interface ISimulatedExchange {
+        //TODO: this is incomplete, Discard or implement.
         TimeSpan TimeStep { get; }
 
         /// <summary>
