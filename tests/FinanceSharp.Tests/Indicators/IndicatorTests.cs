@@ -114,7 +114,7 @@ namespace FinanceSharp.Tests.Indicators {
 
                 Assert.IsTrue(instantiatedIndicator.Equals(instantiatedIndicator));
                 var anotherInstantiatedIndicator = Activator.CreateInstance(indicator, new object[] {10});
-                Assert.IsFalse(instantiatedIndicator.Equals(anotherInstantiatedIndicator));
+                Assert.IsTrue(instantiatedIndicator.Equals(anotherInstantiatedIndicator), "Because they hold the same Current.");
             }
 
             Log.Trace($"{counter} indicators out of {indicators.Count} were tested.");

@@ -89,6 +89,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
         /// </summary>
+        // ReSharper disable once UnassignedGetOnlyAutoProperty
         public virtual int WarmUpPeriod { get; }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         internal bool Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            return Update(tuple.Time, DoubleArray.From(tuple.Value));
+            return Update(tuple.Time, new DoubleArrayStructScalar<TStruct>(tuple.Value));
         }
 
         /// <summary>
@@ -131,7 +132,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
         public bool Update(long time, double value) {
-            return Update((long) time, (DoubleArray) value);
+            return Update((long) time, new DoubleArrayScalar(value));
         }
 
         /// <summary>
@@ -142,7 +143,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
         internal bool Update(DateTime time, double value) {
-            return Update(time.ToEpochTime(), (DoubleArray) value);
+            return Update(time.ToEpochTime(), new DoubleArrayScalar(value));
         }
 
         /// <summary>
@@ -191,6 +192,16 @@ namespace FinanceSharp.Indicators {
         /// </returns>
         /// <param name="obj">The object to compare with the current object. </param>
         public override bool Equals(object obj) {
+            switch (obj) {
+                case IndicatorBase ind:
+                    return Equals(Current, ind.Current);
+                case ValueType v:
+                    return Equals(Current, obj);
+                case null:
+                default:
+                    return false;
+            }
+
             // this implementation acts as a liason to prevent inconsistency between the operators
             // == and != against primitive types. the core impl for equals between two indicators
             // is still reference equality, however, when comparing value types (floats/int, ect..)
