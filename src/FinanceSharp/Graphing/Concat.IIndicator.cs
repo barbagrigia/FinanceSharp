@@ -18,7 +18,7 @@ using System;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp.Graphing {
-    public partial class Concat : IUpdatable {
+    public partial class Concat {
         /// <summary>
         /// 	 Event handler that fires after this updatable is updated.
         /// </summary>
@@ -36,8 +36,10 @@ namespace FinanceSharp.Graphing {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this updatable</param>
         /// <returns>True if this updatable is ready, false otherwise</returns>
-        bool IUpdatable.Update(long time, DoubleArray input) {
-            throw new IndicatorNotUpdatableDirectlyException("Concat can't be updated directy. It rather binds to IUpdatables during construction.");
+        public bool Update(long time, DoubleArray input) {
+            if (UpdateHandler == null)
+                throw new IndicatorNotUpdatableDirectlyException("Concat can't be updated directy. It rather binds to IUpdatables during construction.");
+            return UpdateHandler(time, input);
         }
 
         /// <summary>
@@ -97,5 +99,10 @@ namespace FinanceSharp.Graphing {
         /// 	 Gets the number of samples processed by this indicator
         /// </summary>
         public long Samples { get; protected set; }
+
+        /// <summary>
+        /// 	 Required period, in data points (number of updates), for the indicator to be ready and fully initialized.
+        /// </summary>
+        public int WarmUpPeriod => 0;
     }
 }

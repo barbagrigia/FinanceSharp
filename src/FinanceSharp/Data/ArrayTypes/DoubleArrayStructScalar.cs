@@ -46,9 +46,8 @@ namespace FinanceSharp {
         public override void ForEach(ReferenceForFunctionHandler function) {
             var cnt = DataStructInfo<TStruct>.Properties;
             fixed (double* ptr = this)
-                for (int i = 0; i < cnt; i++) {
+                for (int i = 0; i < cnt; i++)
                     function(ref ptr[i]);
-                }
         }
 
         public override double this[int property] {

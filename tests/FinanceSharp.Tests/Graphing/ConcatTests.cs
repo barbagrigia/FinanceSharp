@@ -6,9 +6,7 @@ using NUnit.Framework;
 using static FinanceSharp.Tests.Helpers.IndicatorTestingHelper;
 
 namespace FinanceSharp.Tests.Graphing {
-    public class CruncherTests {
-        //TODO: test cruncher when properties > 1.
-
+    public class ConcatTests {
         [Test]
         public void UseCase1() {
             var input = new Identity("Source");
@@ -20,10 +18,11 @@ namespace FinanceSharp.Tests.Graphing {
             var a = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
             var b = Concat.OnAllUpdatedOnce(new IUpdatable[] {max2, max3, max3});
             var finalCruncher = Concat.OnAllUpdatedOnce(new IUpdatable[] {a, b});
-            
+
             input.FeedTradeBar(200, 1, 0.1);
             Console.WriteLine(finalCruncher.Samples);
         }
+
         [Test]
         public void OnAllUpdatedOnce_Count2_Properties1() {
             var input = new Identity("Source");
@@ -32,14 +31,13 @@ namespace FinanceSharp.Tests.Graphing {
 
             var a = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
 
-            
 
             input.Feed(10, 1, 0.1);
 
             a.Current.Count.Should().Be(2);
             a.Current.Properties.Should().Be(1);
-        }        
-        
+        }
+
         [Test]
         public void OnAllUpdatedOnce_Count2_Properties5() {
             var input = new Identity("Source");

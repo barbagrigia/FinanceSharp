@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using FinanceSharp.Exceptions;
 
@@ -137,6 +138,42 @@ namespace FinanceSharp {
 
         object ICloneable.Clone() {
             return Clone();
+        }
+
+        public override string ToString() {
+            var sb = new StringBuilder();
+            if (this.Properties == 1) {
+                sb.Append($"[");
+                for (int i = 0; i < this.Count; i++) {
+                    sb.Append($"{this[i, 0]:#.#####}");
+                    if (i != this.Count - 1) {
+                        sb.Append($", ");
+                    }
+                }
+
+                sb.Append($"]");
+            } else {
+                sb.Append($"[");
+                for (int i = 0; i < this.Count; i++) {
+                    sb.Append($"[");
+                    for (int j = 0; j < this.Properties; j++) {
+                        sb.Append($"{this[i, j]:#.#####}");
+                        if (i != this.Count - 1) {
+                            sb.Append($", ");
+                        }
+                    }
+
+                    sb.Append($"]");
+
+                    if (i != this.Count - 1) {
+                        sb.Append($", ");
+                    }
+                }
+
+                sb.Append($"]");
+            }
+
+            return sb.ToString();
         }
     }
 }

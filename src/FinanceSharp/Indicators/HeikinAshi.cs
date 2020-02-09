@@ -88,7 +88,7 @@ namespace FinanceSharp.Indicators {
         /// <returns> A new value for this indicator </returns>
         protected override DoubleArray Forward(long time, DoubleArray input) {
             if (!IsReady) {
-                Current = new DoubleArray2DManaged(1, TradeBarValue.Properties);
+                Current = new DoubleArrayStructScalar<TradeBarValue>();
                 Current.Open = (input.Open + input.Close) / 2d;
                 Current.Close = (input.Open + input.High + input.Low + input.Close) / 4d;
                 Current.High = input.High;
@@ -100,7 +100,7 @@ namespace FinanceSharp.Indicators {
                 Current.Low = Math.Min(input.Low, Math.Min(Current.Open, Current.Close));
             }
 
-            return Current;
+            return Current.Clone();
         }
     }
 }

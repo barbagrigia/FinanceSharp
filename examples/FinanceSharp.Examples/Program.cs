@@ -56,32 +56,23 @@ namespace FinanceSharp.Examples {
             var tickCons = new TickConsolidator(TimeSpan.FromMinutes(1d));
             var ema = new ExponentialMovingAverage(12).Of(tickCons);
 
-            var bars = new List<DoubleArray>();
-            var emas = new List<DoubleArray>();
-
-            //bind model
-            tickCons.Updated += (time, updated) => bars.Add(updated);
-            ema.Updated += (time, updated) => emas.Add(updated);
+            var bars = tickCons.ThenToList();
+            var emas = ema.ThenToList(); 
 
             return (tickCons, new IUpdatable[] {ema}, new List<DoubleArray>[] {bars, emas});
         }
 
+
         public static (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) EMAx3() {
             var tickCons = new TickConsolidator(TimeSpan.FromMinutes(1d));
-            var ema6 = new ExponentialMovingAverage(6).Of(tickCons);
-            var ema12 = new ExponentialMovingAverage(12).Of(tickCons);
-            var ema24 = new ExponentialMovingAverage(24).Of(tickCons);
+            var ema6 = tickCons.Then(new ExponentialMovingAverage(6));
+            var ema12 = tickCons.Then(new ExponentialMovingAverage(12));
+            var ema24 = tickCons.Then(new ExponentialMovingAverage(24));
 
-            var bars = new List<DoubleArray>();
-            var emas6 = new List<DoubleArray>();
-            var emas12 = new List<DoubleArray>();
-            var emas24 = new List<DoubleArray>();
-
-            //bind model
-            tickCons.Updated += (time, updated) => bars.Add(updated);
-            ema6.Updated += (time, updated) => emas6.Add(updated);
-            ema12.Updated += (time, updated) => emas12.Add(updated);
-            ema24.Updated += (time, updated) => emas24.Add(updated);
+            var bars = tickCons.ThenToList();
+            var emas6 = ema6.ThenToList();
+            var emas12 = ema12.ThenToList();
+            var emas24 = ema24.ThenToList();
 
             return (tickCons, new IUpdatable[] {ema6, ema12, ema24}, new List<DoubleArray>[] {bars, emas6, emas12, emas24});
         }
@@ -90,11 +81,10 @@ namespace FinanceSharp.Examples {
             var tickCons = new TickConsolidator(TimeSpan.FromMinutes(1d));
             var ha = new HeikinAshi().Of(tickCons);
 
-            var bars = new List<DoubleArray>();
+            var bars = tickCons.ThenToList();
             var has = new List<DoubleArray>();
 
-            //bind model
-            tickCons.Updated += (time, updated) => bars.Add(updated);
+            //bind model manually
             ha.Updated += (time, updated) => has.Add(DoubleArray.From(ha.CurrentBar) + 25d); //note that we append +25 offset so ha will be visible
 
             return (tickCons, new IUpdatable[] {ha}, new List<DoubleArray>[] {bars, has});

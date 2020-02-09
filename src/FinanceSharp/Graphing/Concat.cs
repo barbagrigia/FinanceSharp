@@ -19,17 +19,19 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FinanceSharp.Delegates;
+using FinanceSharp.Exceptions;
 
 namespace FinanceSharp.Graphing {
     /// <summary>
     ///     Provides various methods to join <see cref="IUpdatable"/>'s output into a single <see cref="DoubleArray"/>.
     /// </summary>
-    public partial class Concat {
+    public partial class Concat : IIndicator {
         protected int counter;
         protected bool[] signalCounter;
         protected int length;
         protected IUpdatable[] observing;
-        protected IUpdatable[] crunching;
+        protected IUpdatable[] concatenating;
         protected DoubleArrayPinned2DManaged workingTarget;
         protected int outputCount;
 
@@ -48,6 +50,16 @@ namespace FinanceSharp.Graphing {
         /// </summary>
         public DoubleArray WorkingTarget => workingTarget;
 
+        /// <summary>
+        ///     Handler, when not null, will be called inside <see cref="Update"/> instead of throwing <see cref="IndicatorNotUpdatableDirectlyException"/>.
+        /// </summary>
+        public DoubleArrayUpdateHandler UpdateHandler { get; set; }
+
+        /// <summary>
+        ///     The list of the <see cref="IUpdatable"/> that are used to update <see cref="WorkingTarget"/> and (maybe) trigger <see cref="Updated"/>.
+        /// </summary>
+        public IUpdatable[] Concatenating => concatenating;
+
         protected Concat() { }
 
         /// <summary>
@@ -61,8 +73,9 @@ namespace FinanceSharp.Graphing {
             Updated?.Invoke(time, CloneCrunched ? (DoubleArray) new DoubleArray2DManaged((double[,]) workingTarget.InternalArray.Clone()) : workingTarget);
         }
 
-        protected static Concat BindValues(Concat c) {
-            var crunching = c.crunching;
+        protected virtual Concat BindValues() {
+            var c = this;
+            var crunching = c.concatenating;
             var props = c.Properties;
             var workingTarget = c.workingTarget;
             var properties = c.Properties;
@@ -116,9 +129,9 @@ namespace FinanceSharp.Graphing {
             c.Name = name ?? "Concat";
             c.Options = ConcatOptions.OnAllUpdatedOnce;
             var obsing = c.observing = updatables.ToArray();
-            c.crunching = c.observing.ToArray();
-            var len = c.length = c.crunching.Length;
-            var outputCount = c.outputCount = c.crunching.Sum(upd => upd.OutputCount);
+            c.concatenating = c.observing.ToArray();
+            var len = c.length = c.concatenating.Length;
+            var outputCount = c.outputCount = c.concatenating.Sum(upd => upd.OutputCount);
             var props = c.Properties = properties;
             var cntr = c.signalCounter = new bool[len];
             var workingTarget = new DoubleArrayPinned2DManaged(outputCount, props);
@@ -126,7 +139,7 @@ namespace FinanceSharp.Graphing {
             c.counter = len;
 
             //bind the values to their repsective memory address.
-            BindValues(c);
+            c.BindValues();
 
             for (var i = 0; i < obsing.Length; i++) {
                 IUpdatable srcUpdatable = obsing[i];
@@ -192,15 +205,15 @@ namespace FinanceSharp.Graphing {
             c.Name = name ?? "Concat";
             c.Options = ConcatOptions.OnEveryUpdate;
             var obsing = c.observing = updatables.ToArray();
-            c.crunching = c.observing.ToArray();
-            var len = c.length = c.crunching.Length;
+            c.concatenating = c.observing.ToArray();
+            var len = c.length = c.concatenating.Length;
             var props = c.Properties = properties;
             c.signalCounter = null;
             var workingTarget = new DoubleArrayPinned2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
 
-            BindValues(c);
+            c.BindValues();
 
             for (var i = 0; i < obsing.Length; i++) {
                 IUpdatable srcUpdatable = obsing[i];
@@ -273,15 +286,16 @@ namespace FinanceSharp.Graphing {
             var c = new Concat {Name = name ?? "Concat"};
             c.Options = ConcatOptions.OnSpecificUpdated;
             c.observing = crunchTriggers;
-            c.crunching = updatables.ToArray();
-            var len = c.length = c.crunching.Length;
+            c.concatenating = updatables.ToArray();
+            var len = c.length = c.concatenating.Length;
             var props = c.Properties = properties;
             c.signalCounter = null;
             var workingTarget = new DoubleArrayPinned2DManaged(len, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
 
-            BindValues(c);
+            c.BindValues();
+
             for (var i = 0; i < crunchTriggers.Length; i++) {
                 var onlyWhenReady = triggerMustBeReady[i];
                 var crunchTrigger = crunchTriggers[i];
@@ -319,5 +333,6 @@ namespace FinanceSharp.Graphing {
 
             return c;
         }
+
     }
 }

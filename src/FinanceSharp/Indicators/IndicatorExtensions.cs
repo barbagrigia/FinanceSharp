@@ -14,6 +14,7 @@
  * limitations under the License.
 */
 
+using System.Collections.Generic;
 using System.Globalization;
 using static FinanceSharp.Constants;
 
@@ -25,10 +26,10 @@ namespace FinanceSharp.Indicators {
     public static class IndicatorExtensions {
         /// <summary>
         /// 	 Configures the second indicator to receive automatic updates from the first by attaching an event handler
-        /// 	 to first.DataConsolidated
+        /// 	 to first.Updated
         /// </summary>
         /// <param name="second">The indicator that receives data from the first</param>
-        /// <param name="first">The indicator that sends data via DataConsolidated even to the second</param>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
         public static T Of<T>(this T second, IIndicator first, bool waitForFirstToReady = true)
@@ -45,7 +46,62 @@ namespace FinanceSharp.Indicators {
                     => second.Update(time, consolidated);
             }
 
+            first.Resetted += sender => second.Reset();
+
             return second;
+        }
+
+        /// <summary>
+        /// 	 Configures the second indicator to receive automatic updates from the first by attaching an event handler
+        /// 	 to first.Updated
+        /// </summary>
+        /// <param name="second">The indicator that receives data from the first</param>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>The reference to the second indicator to allow for method chaining</returns>
+        public static T Then<T>(this IIndicator first, T second, bool waitForFirstToReady = true)
+            where T : IIndicator {
+            if (waitForFirstToReady) {
+                first.Updated += (time, consolidated) => {
+                    // only send the data along if we're ready
+                    if (first.IsReady) {
+                        second.Update(time, consolidated);
+                    }
+                };
+            } else {
+                first.Updated += (time, consolidated)
+                    => second.Update(time, consolidated);
+            }
+
+            first.Resetted += sender => second.Reset();
+
+            return second;
+        }
+
+        /// <summary>
+        /// 	 Will collect updates from <paramref name="first"/> into the returned <see cref="List{T}"/>.
+        /// </summary>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
+        /// <param name="resetListOnIndicatorReset">Should the returned <see cref="List{T}"/> be cleared when <paramref name="first"/> is Resetted.</param>
+        public static List<DoubleArray> ThenToList(this IIndicator first, bool waitForFirstToReady = true, bool resetListOnIndicatorReset = false) {
+            var ret = new List<DoubleArray>();
+            if (waitForFirstToReady) {
+                first.Updated += (time, consolidated) => {
+                    // only send the data along if we're ready
+                    if (first.IsReady) {
+                        ret.Add(consolidated);
+                    }
+                };
+            } else {
+                first.Updated += (time, consolidated)
+                    => ret.Add(consolidated);
+            }
+
+            if (resetListOnIndicatorReset)
+                first.Resetted += sender => ret.Clear();
+
+            return ret;
         }
 
         /// <summary>
@@ -77,6 +133,8 @@ namespace FinanceSharp.Indicators {
 
                 denominator.Update((long) time, (DoubleArray) consolidated);
             };
+
+            value.Resetted += sender => weight.Reset();
 
             return numerator.Over(denominator);
         }

@@ -18,6 +18,7 @@ namespace FinanceSharp {
     /// <summary>
     ///     Represents an object that can be updated.
     /// </summary>
+    /// <remarks>Serves as a graphing component.</remarks>
     public interface IUpdatable {
         /// <summary>
         /// 	 Event handler that fires after this updatable is updated.
