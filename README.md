@@ -12,7 +12,7 @@ most complex technical indicator combinations models by hand with over 100 fully
 The library is an on-going development and is before alpha. Classes and architecture might be changed and differ from docs.
 
 ## Key points
-Our indicators follow a similar model to Pytorch, having a `Forward` method and an output shape (2 dimensional).<br>
+Our indicators follow a similar model to Pytorch, having a `Forward` method, input shape and output shape (2 dimensional).<br>
 Our data architecture is:
 - always pinnable and ready to be passed to Python as a [numpy](https://github.com/numpy/numpy) without cloning.
 - Is always made of two dimensions, `(Count, Properties)`
