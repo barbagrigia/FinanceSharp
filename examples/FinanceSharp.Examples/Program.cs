@@ -35,8 +35,8 @@ namespace FinanceSharp.Examples {
             }
 
             //build model
-            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = HeikinAshi();
-            //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
+            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
+            //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = HeikinAshi();
             //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMA();
 
 
@@ -46,9 +46,10 @@ namespace FinanceSharp.Examples {
             }
 
             //plot
+            var x = Enumerable.Range(0, model.Datas.Min(l => l.Count)).Select(i => (double) i).ToArray();
+            var y = model.Datas.Select(m => m.Take(x.Length).ToArray()).ToArray();
             Plotter.Show(
-                Enumerable.Range(0, model.Datas[0].Count).Select(i => (double) i).ToArray(),
-                model.Datas.Select(m => m.ToArray()).ToArray()
+                x, y
             );
         }
 
@@ -57,7 +58,7 @@ namespace FinanceSharp.Examples {
             var ema = new ExponentialMovingAverage(12).Of(tickCons);
 
             var bars = tickCons.ThenToList();
-            var emas = ema.ThenToList(); 
+            var emas = ema.ThenToList();
 
             return (tickCons, new IUpdatable[] {ema}, new List<DoubleArray>[] {bars, emas});
         }
