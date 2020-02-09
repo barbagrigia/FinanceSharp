@@ -16,6 +16,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 
 namespace FinanceSharp.Indicators {
@@ -58,17 +59,17 @@ namespace FinanceSharp.Indicators {
         /// 	 Gets the current state of this indicator. If the state has not been updated
         /// 	 then the time on the value will equal DateTime.MinValue.
         /// </summary>
-        public DoubleArray Current { get; protected set; }
+        public virtual DoubleArray Current { get; protected set; }
 
         /// <summary>
         ///     The time of the currently stored data in milliseconds-epoch.
         /// </summary>
-        public long CurrentTime { get; protected set; }
+        public virtual long CurrentTime { get; protected set; }
 
         /// <summary>
         ///     The number of items <see cref="IUpdatable.Current"/> will have.
         /// </summary>
-        public int OutputCount { get; protected set; } = 1;
+        public virtual int OutputCount { get; protected set; } = 1;
 
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
@@ -126,29 +127,6 @@ namespace FinanceSharp.Indicators {
         /// 	 Updates the state of this indicator with the given value and returns true
         /// 	 if this indicator is ready, false otherwise
         /// </summary>
-        /// <param name="time"></param>
-        /// <param name="input">The value to use to update this indicator</param>
-        /// <returns>True if this indicator is ready, false otherwise</returns>
-        public bool Update(long time, DoubleArray input) {
-            // compute a new value and update our previous time
-            Samples++;
-
-            var nextResult = ValidateAndForward(time, input);
-            if (nextResult.Status == IndicatorStatus.Success) {
-                Current = nextResult.Value;
-                CurrentTime = time;
-
-                // let others know we've produced a new data point
-                OnUpdated(time, Current);
-            }
-
-            return IsReady;
-        }
-
-        /// <summary>
-        /// 	 Updates the state of this indicator with the given value and returns true
-        /// 	 if this indicator is ready, false otherwise
-        /// </summary>
         /// <param name="time">The time associated with the value</param>
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
@@ -165,6 +143,26 @@ namespace FinanceSharp.Indicators {
         /// <returns>True if this indicator is ready, false otherwise</returns>
         internal bool Update(DateTime time, double value) {
             return Update(time.ToEpochTime(), (DoubleArray) value);
+        }
+
+        /// <summary>
+        /// 	 Updates the state of this indicator with the given value and returns true
+        /// 	 if this indicator is ready, false otherwise
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="input">The value to use to update this indicator</param>
+        /// <returns>True if this indicator is ready, false otherwise</returns>
+        public virtual bool Update(long time, DoubleArray input) {
+            // compute a new value and update our previous time
+            Samples++;
+
+            Current = Forward(time, input);
+            CurrentTime = time;
+
+            // let others know we've produced a new data point
+            OnUpdated(time, Current);
+
+            return IsReady;
         }
 
         /// <summary>
@@ -245,25 +243,11 @@ namespace FinanceSharp.Indicators {
         protected abstract DoubleArray Forward(long time, DoubleArray input);
 
         /// <summary>
-        /// 	 Computes the next value of this indicator from the given state
-        /// 	 and returns an instance of the <see cref="IndicatorResult"/> class
-        /// </summary>
-        /// <param name="input">The input given to the indicator</param>
-        /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected virtual IndicatorResult ValidateAndForward(long time, DoubleArray input) {
-            // default implementation always returns IndicatorStatus.Success
-#if DEBUG
-            if (this.InputProperties > input.Properties)
-                throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
-#endif
-            return new IndicatorResult(Forward(time, input));
-        }
-
-        /// <summary>
         /// 	 Event invocator for the Updated event
         /// </summary>
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
-        protected virtual void OnUpdated(long time, DoubleArray consolidated) {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected void OnUpdated(long time, DoubleArray consolidated) {
             Updated?.Invoke(time, consolidated);
         }
 

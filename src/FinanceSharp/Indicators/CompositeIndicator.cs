@@ -97,14 +97,29 @@ namespace FinanceSharp.Indicators {
             : this($"COMPOSE({left.Name},{right.Name})", left, right, composer) { }
 
         /// <summary>
-        /// 	 Computes the next value of this indicator from the given state
-        /// 	 and returns an instance of the <see cref="IndicatorResult"/> class
+        /// 	 Updates the state of this indicator with the given value and returns true
+        /// 	 if this indicator is ready, false otherwise
         /// </summary>
-        /// <param name="input">The input given to the indicator</param>
-        /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
-            return _composer.Invoke(Left, Right);
+        /// <param name="time"></param>
+        /// <param name="input">The value to use to update this indicator</param>
+        /// <returns>True if this indicator is ready, false otherwise</returns>
+        public override bool Update(long time, DoubleArray input) {
+            // compute a new value and update our previous time
+            Samples++;
+
+            var result = _composer.Invoke(Left, Right);
+            if (result.Status != IndicatorStatus.Success)
+                return IsReady;
+
+            Current = result.Value;
+            CurrentTime = time;
+
+            // let others know we've produced a new data point
+            OnUpdated(time, Current);
+
+            return IsReady;
         }
+
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state

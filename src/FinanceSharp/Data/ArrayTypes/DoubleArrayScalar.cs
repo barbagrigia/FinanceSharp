@@ -23,12 +23,16 @@ namespace FinanceSharp {
         protected double value;
 
         /// <param name="value">A scalar value.</param>
-        public DoubleArrayScalar(double value) : base(1, 1) {
+        public DoubleArrayScalar(double value)  {
             this.value = value;
+            Count = 1;
+            Properties = 1;
         }
 
-        public DoubleArrayScalar() : base(1, 1) {
+        public DoubleArrayScalar() {
             this.value = 0d;
+            Count = 1;
+            Properties = 1;
         }
 
         public override void ForEach(ReferenceForFunctionHandler function) {

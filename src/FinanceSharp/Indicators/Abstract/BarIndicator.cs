@@ -44,20 +44,5 @@ namespace FinanceSharp.Indicators {
             : base(name) {
             _properties = properties;
         }
-
-        /// <summary>
-        /// 	 Computes the next value of this indicator from the given state
-        /// 	 and returns an instance of the <see cref="IndicatorResult"/> class
-        /// </summary>
-        /// <param name="input">The input given to the indicator</param>
-        /// <returns>An IndicatorResult object including the status of the indicator</returns>
-        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
-#if DEBUG
-            if (this.InputProperties > input.Properties)
-                throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
-#endif
-            // default implementation always returns IndicatorStatus.Success
-            return new IndicatorResult(Forward(time, input));
-        }
     }
 }

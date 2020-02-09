@@ -39,16 +39,20 @@ namespace FinanceSharp.Indicators {
             : base(name) { }
 
         /// <summary>
-        /// 	 Computes the new VWAP
+        /// 	 Updates the state of this indicator with the given value and returns true
+        /// 	 if this indicator is ready, false otherwise
         /// </summary>
-        protected override IndicatorResult ValidateAndForward(long time, DoubleArray input) {
+        /// <param name="time"></param>
+        /// <param name="input">The value to use to update this indicator</param>
+        /// <returns>True if this indicator is ready, false otherwise</returns>
+        public override bool Update(long time, DoubleArray input) {
 #if DEBUG
             if (this.InputProperties > input.Properties)
                 throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
 #endif
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
-                return new IndicatorResult(0, IndicatorStatus.InvalidInput);
+                return IsReady;
             }
 
             // reset vwap on daily boundaries
@@ -62,13 +66,19 @@ namespace FinanceSharp.Indicators {
             // running totals for Σ PiVi / Σ Vi
             _sumOfVolume += volume;
             _sumOfPriceTimesVolume += averagePrice * volume;
-
+            CurrentTime = time;
+            Samples++;
             if (_sumOfVolume == Constants.Zero) {
                 // if we have no trade volume then use the current price as VWAP
-                return input.Value;
+                Current = input.Clone();
+                OnUpdated(time, Current);
+                return IsReady;
             }
 
-            return _sumOfPriceTimesVolume / _sumOfVolume;
+            Current = _sumOfPriceTimesVolume / _sumOfVolume;
+            
+            OnUpdated(time, Current);
+            return IsReady;
         }
 
         /// <summary>

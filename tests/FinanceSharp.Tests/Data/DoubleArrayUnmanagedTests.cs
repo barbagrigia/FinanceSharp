@@ -11,18 +11,22 @@ namespace FinanceSharp.Tests.Data {
         public double* block;
         public int offset;
         public static readonly object _lock = new object();
+        private const int maxSize = 10_000;
 
         public double* Offset(int doubles) {
             lock (_lock) {
                 var offsetStart = this.offset;
-                offset += doubles;
+                if (offset + doubles * sizeof(double) > maxSize)
+                    throw new Exception();
+                offset += doubles * sizeof(double);
+
                 return block + offsetStart;
             }
         }
 
         [TestFixtureSetUp]
         public void SetUp() {
-            block = (double*) Marshal.AllocHGlobal(sizeof(double) * 1000);
+            block = (double*) Marshal.AllocHGlobal(sizeof(double) * maxSize);
             offset = 0;
         }
 
