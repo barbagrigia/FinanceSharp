@@ -12,12 +12,13 @@ most complex technical indicator combinations models by hand with over 100 fully
 The library is an on-going development and is before alpha. Classes and architecture might be changed and differ from docs.
 
 ## Key points
-Our indicators follow a similar model to Pytorch, having a `Forward` method and an output shape (2 dimensional).
+Our indicators follow a similar model to Pytorch, having a `Forward` method and an output shape (2 dimensional).<br>
 Our data architecture is:
 - always pinnable and ready to be passed to Python as a [numpy](https://github.com/numpy/numpy) without cloning.
 - Is always made of two dimensions, `(Count, Properties)`
     - Count represents number of items in the array with `N` Properties.
-- Supports `unmanaged structs`, `double[]`, `double[,]`, `double[][]`, fast scalar double, fast scalar struct and more.
+    - Every property is a single `double` so 4 Properties can be a `BarValue`. Most indicators return has 1 property.
+- Supports `unmanaged structs`, `double[]`, `double[,]`, `double[][]`, fast scalar double, fast scalar struct and more.<br>
 Our graphing techniques are pretty straight forward with C#'s built in `event` system. Although IL builder is planned.
 
 With all the abilities mentioned above, this makes FinanceSharp performance-ready for all the tasks required
