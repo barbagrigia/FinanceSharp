@@ -24,8 +24,7 @@ namespace FinanceSharp.Graphing {
     /// <summary>
     ///     Provides various methods to join <see cref="IUpdatable"/>'s output into a single <see cref="DoubleArray"/>.
     /// </summary>
-    public partial class Cruncher {
-        //TODO: rename to Concatenator
+    public partial class Concat {
         protected int counter;
         protected bool[] signalCounter;
         protected int length;
@@ -42,14 +41,14 @@ namespace FinanceSharp.Graphing {
         /// <summary>
         ///     The configuration type for this cruncher.
         /// </summary>
-        public CrunchingOptions Options { get; protected set; }
+        public ConcatOptions Options { get; protected set; }
 
         /// <summary>
         ///     The working target that gets updated and pushed/cloned on <see cref="Updated"/> event.
         /// </summary>
         public DoubleArray WorkingTarget => workingTarget;
 
-        protected Cruncher() { }
+        protected Concat() { }
 
         /// <summary>
         ///     Triggers <see cref="Updated"/>.
@@ -62,7 +61,7 @@ namespace FinanceSharp.Graphing {
             Updated?.Invoke(time, CloneCrunched ? (DoubleArray) new DoubleArray2DManaged((double[,]) workingTarget.InternalArray.Clone()) : workingTarget);
         }
 
-        protected static Cruncher BindValues(Cruncher c) {
+        protected static Concat BindValues(Concat c) {
             var crunching = c.crunching;
             var props = c.Properties;
             var workingTarget = c.workingTarget;
@@ -111,11 +110,11 @@ namespace FinanceSharp.Graphing {
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnAllUpdatedOnce(IEnumerable<IUpdatable> updatables, int properties = 1, string name = null) {
+        public static Concat OnAllUpdatedOnce(IEnumerable<IUpdatable> updatables, int properties = 1, string name = null) {
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher();
-            c.Name = name ?? "Cruncher";
-            c.Options = CrunchingOptions.OnAllUpdatedOnce;
+            var c = new Concat();
+            c.Name = name ?? "Concat";
+            c.Options = ConcatOptions.OnAllUpdatedOnce;
             var obsing = c.observing = updatables.ToArray();
             c.crunching = c.observing.ToArray();
             var len = c.length = c.crunching.Length;
@@ -179,19 +178,19 @@ namespace FinanceSharp.Graphing {
         /// </summary>
         /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
-        /// <param name="interval">The interval for how many fires must any of <paramref name="updatables"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Cruncher's update event.</param>
+        /// <param name="interval">The interval for how many fires must any of <paramref name="updatables"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Concat's update event.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnEveryUpdate(IEnumerable<IUpdatable> updatables, int interval = 1, int properties = 1, string name = null) {
+        public static Concat OnEveryUpdate(IEnumerable<IUpdatable> updatables, int interval = 1, int properties = 1, string name = null) {
             if (interval <= 0) throw new ArgumentOutOfRangeException(nameof(interval));
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher();
-            c.Name = name ?? "Cruncher";
-            c.Options = CrunchingOptions.OnEveryUpdate;
+            var c = new Concat();
+            c.Name = name ?? "Concat";
+            c.Options = ConcatOptions.OnEveryUpdate;
             var obsing = c.observing = updatables.ToArray();
             c.crunching = c.observing.ToArray();
             var len = c.length = c.crunching.Length;
@@ -242,15 +241,15 @@ namespace FinanceSharp.Graphing {
         /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
         /// <param name="crunchTrigger">The <see cref="IUpdatable"/> to observe for fires of <see cref="IUpdatable.Updated"/>.</param>
-        /// <param name="interval">The interval for how many fires must <paramref name="crunchTrigger"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Cruncher's update event.</param>
+        /// <param name="interval">The interval for how many fires must <paramref name="crunchTrigger"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Concat's update event.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
-        /// <param name="triggerMustBeReady">Does <paramref name="crunchTrigger"/> must be ready to trigger Cruncher's update event?</param>
+        /// <param name="triggerMustBeReady">Does <paramref name="crunchTrigger"/> must be ready to trigger Concat's update event?</param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable crunchTrigger, int interval = 1, int properties = 1, string name = null, bool triggerMustBeReady = true) {
+        public static Concat OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable crunchTrigger, int interval = 1, int properties = 1, string name = null, bool triggerMustBeReady = true) {
             return OnSpecificUpdate(updatables, new IUpdatable[] {crunchTrigger}, interval, properties, name, new bool[] {triggerMustBeReady});
         }
 
@@ -260,19 +259,19 @@ namespace FinanceSharp.Graphing {
         /// <param name="name">Name of the cruncher for debugging purposes.</param>
         /// <param name="updatables">The updatables to observe and crunch.</param>
         /// <param name="crunchTriggers">The <see cref="IUpdatable"/>s to observe for fires of <see cref="IUpdatable.Updated"/>.</param>
-        /// <param name="interval">The interval for how many fires must <paramref name="crunchTriggers"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Cruncher's update event.</param>
+        /// <param name="interval">The interval for how many fires must <paramref name="crunchTriggers"/> trigger <see cref="IUpdatable.Updated"/> in order to trigger Concat's update event.</param>
         /// <param name="properties">
         ///     How many properties all of the <paramref name="updatables"/> emit.
         ///     this can be less than their minimal properties.
         ///     e.g. if <paramref name="updatables"/> emit <see cref="BarValue"/> (4 properties), selecting 1 will take only <see cref="BarValue.Close"/>.
         /// </param>
-        /// <param name="triggerMustBeReady">Does <paramref name="crunchTriggers"/> must be ready to trigger Cruncher's update event? By default </param>
+        /// <param name="triggerMustBeReady">Does <paramref name="crunchTriggers"/> must be ready to trigger Concat's update event? By default </param>
         /// <returns>A new cruncher configured.</returns>
-        public static Cruncher OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable[] crunchTriggers, int interval = 1, int properties = 1, string name = null, bool[] triggerMustBeReady = null) {
+        public static Concat OnSpecificUpdate(IEnumerable<IUpdatable> updatables, IUpdatable[] crunchTriggers, int interval = 1, int properties = 1, string name = null, bool[] triggerMustBeReady = null) {
             if (interval <= 0) throw new ArgumentOutOfRangeException(nameof(interval));
             // ReSharper disable once UseObjectOrCollectionInitializer
-            var c = new Cruncher {Name = name ?? "Cruncher"};
-            c.Options = CrunchingOptions.OnSpecificUpdated;
+            var c = new Concat {Name = name ?? "Concat"};
+            c.Options = ConcatOptions.OnSpecificUpdated;
             c.observing = crunchTriggers;
             c.crunching = updatables.ToArray();
             var len = c.length = c.crunching.Length;

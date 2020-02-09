@@ -18,7 +18,7 @@ using System;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp.Graphing {
-    public partial class Cruncher : IUpdatable {
+    public partial class Concat : IUpdatable {
         /// <summary>
         /// 	 Event handler that fires after this updatable is updated.
         /// </summary>
@@ -37,7 +37,7 @@ namespace FinanceSharp.Graphing {
         /// <param name="input">The value to use to update this updatable</param>
         /// <returns>True if this updatable is ready, false otherwise</returns>
         bool IUpdatable.Update(long time, DoubleArray input) {
-            throw new IndicatorNotUpdatableDirectlyException("Cruncher can't be updated directy. It rather binds to IUpdatables during construction.");
+            throw new IndicatorNotUpdatableDirectlyException("Concat can't be updated directy. It rather binds to IUpdatables during construction.");
         }
 
         /// <summary>

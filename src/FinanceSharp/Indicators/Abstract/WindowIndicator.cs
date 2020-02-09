@@ -14,14 +14,16 @@
  * limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace FinanceSharp.Indicators {
     /// <summary>
-    /// 	 Represents an indicator that acts on a rolling window of data
+    /// 	 Represents an indicator that acts on a rolling window of data in a <see cref="List{T}"/>
     /// </summary>
     public abstract class WindowIndicator : IndicatorBase {
         // a window of data over a certain look back period
         private readonly RollingWindow<DoubleArray> _window;
-        private readonly RollingWindow<long> _windowTimes;
+        private readonly RollingWindow<long> _windowTimes; 
 
         /// <summary>
         /// 	 Gets the period of this window indicator

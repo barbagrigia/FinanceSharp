@@ -17,9 +17,9 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
-            var b = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max2, max3, max3});
-            var finalCruncher = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {a, b});
+            var a = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+            var b = Concat.OnAllUpdatedOnce(new IUpdatable[] {max2, max3, max3});
+            var finalCruncher = Concat.OnAllUpdatedOnce(new IUpdatable[] {a, b});
             
             input.FeedTradeBar(200, 1, 0.1);
             Console.WriteLine(finalCruncher.Samples);
@@ -30,7 +30,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max1 = new Maximum(3).Of(input);
             var max2 = new Maximum(3).Of(input);
 
-            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+            var a = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
 
             
 
@@ -46,8 +46,8 @@ namespace FinanceSharp.Tests.Graphing {
             var max1 = new Maximum(3).Of(input);
             var max2 = new Maximum(3).Of(input);
 
-            var a = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
-            var ba = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, a}, name: "Target");
+            var a = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2});
+            var ba = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, a}, name: "Target");
 
             input.FeedTradeBar(10, 1, 0.1);
             input.Update(ba.CurrentTime + 1000, 100d);
@@ -64,7 +64,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var cruncher = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, max3});
+            var cruncher = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, max3});
             cruncher.Samples.Should().Be(0);
             max1.Feed(6, 1d, 0.1);
             cruncher.Samples.Should().Be(0);
@@ -88,7 +88,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var cruncher = Cruncher.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, max3});
+            var cruncher = Concat.OnAllUpdatedOnce(new IUpdatable[] {max1, max2, max3});
             cruncher.Samples.Should().Be(0);
             max1.Feed(6, 1d, 0.1);
             cruncher.Samples.Should().Be(0);
@@ -112,7 +112,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var cruncher = Cruncher.OnEveryUpdate(new IUpdatable[] {max1, max2, max3});
+            var cruncher = Concat.OnEveryUpdate(new IUpdatable[] {max1, max2, max3});
             cruncher.Samples.Should().Be(0);
             input.FeedToReady(mustBeReady: new IUpdatable[] {max1, max2, max3});
             var baseSamples = cruncher.Samples;
@@ -140,7 +140,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var cruncher = Cruncher.OnSpecificUpdate(new IUpdatable[] {max1, max2, max3}, max3, triggerMustBeReady: false);
+            var cruncher = Concat.OnSpecificUpdate(new IUpdatable[] {max1, max2, max3}, max3, triggerMustBeReady: false);
             cruncher.Samples.Should().Be(0);
             //input.FeedToReady(mustBeReady: new IUpdatable[] {max1, max2, max3});
             var baseSamples = cruncher.Samples;
@@ -171,7 +171,7 @@ namespace FinanceSharp.Tests.Graphing {
             var max2 = new Maximum(12).Of(ema);
             var max3 = new Maximum(24).Of(ema);
 
-            var cruncher = Cruncher.OnSpecificUpdate(new IUpdatable[] {max1, max2, max3}, max3, triggerMustBeReady: true);
+            var cruncher = Concat.OnSpecificUpdate(new IUpdatable[] {max1, max2, max3}, max3, triggerMustBeReady: true);
             cruncher.Samples.Should().Be(0);
             //input.FeedToReady(mustBeReady: new IUpdatable[] {max1, max2, max3});
             var baseSamples = cruncher.Samples;

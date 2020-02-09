@@ -16,9 +16,9 @@
 
 namespace FinanceSharp.Graphing {
     /// <summary>
-    ///     <see cref="Cruncher"/>'s update trigger behavior.
+    ///     <see cref="Concat"/>'s update trigger behavior.
     /// </summary>
-    public enum CrunchingOptions {
+    public enum ConcatOptions {
         /// <summary>
         ///     All inputs must be updated atleast once.
         /// </summary>
