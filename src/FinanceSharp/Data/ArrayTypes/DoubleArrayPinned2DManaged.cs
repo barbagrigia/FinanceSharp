@@ -29,7 +29,7 @@ namespace FinanceSharp {
         public DoubleArrayPinned2DManaged(double[,] values) : this(values, GCHandle.Alloc(values, GCHandleType.Pinned)) { }
 
         /// <param name="values">The structure value that'll be wrapped.</param>
-        /// <remarks>This constructor copies given <paramref name="values"/> to a <see cref="double[Count, Properties]"/></remarks>
+        /// <remarks>This constructor copies given <paramref name="values"/> to a double[Count, Properties]</remarks>
         public DoubleArrayPinned2DManaged(double[][] values) : this(DoubleArray2DManaged.ToMultiDimArray(values)) { }
 
         public DoubleArrayPinned2DManaged(int count, int properties) : this(new double[count, properties]) { }

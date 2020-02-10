@@ -17,16 +17,19 @@
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using FinanceSharp.Delegates;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {
     public unsafe class DoubleArrayManaged : DoubleArray {
         protected internal double[] values;
 
-        /// <param name="struct">The structure value that'll be wrapped.</param>
+        /// <param name="count">The number of items in this array.</param>
+        /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
+        public DoubleArrayManaged(int count, int properties) : this(new double[count * properties], properties) { }
+
         public DoubleArrayManaged(params double[] values) : this(values, 1) { }
 
-        /// <param name="struct">The structure value that'll be wrapped.</param>
         public DoubleArrayManaged(double[] values, int properties) : base(values.Length / properties, properties) {
             this.values = values;
         }

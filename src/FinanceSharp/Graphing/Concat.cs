@@ -21,6 +21,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using FinanceSharp.Delegates;
 using FinanceSharp.Exceptions;
+using FinanceSharp.Helpers;
 
 namespace FinanceSharp.Graphing {
     /// <summary>
@@ -73,43 +74,48 @@ namespace FinanceSharp.Graphing {
             Updated?.Invoke(time, CloneCrunched ? (DoubleArray) new DoubleArray2DManaged((double[,]) workingTarget.InternalArray.Clone()) : workingTarget);
         }
 
-        protected virtual Concat BindValues() {
-            var c = this;
-            var crunching = c.concatenating;
-            var props = c.Properties;
-            var workingTarget = c.workingTarget;
-            var properties = c.Properties;
-
+        /// <summary>
+        ///     Binds the <see cref="IUpdatable"/> to their respective memory cell inside the <see cref="workingTarget"/> so when they are updated, they'll write the data into <see cref="workingTarget"/>.
+        /// </summary>
+        protected virtual void BindValues() {
             unsafe {
-                fixed (double* storageAddr = workingTarget.InternalArray) {
-                    //the array is pinned so we can fix it and still use the address after we exit fixing.
-                    for (var i = 0; i < crunching.Length; i++) {
-                        IUpdatable srcUpdatable = crunching[i];
-                        double* targetAddr = storageAddr
-                                             + crunching.Take(i)
-                                                 .Select(upd => upd.OutputCount)
-                                                 .Append(0)
-                                                 .Sum(outputCnt => outputCnt * properties);
-                        var outputCount = srcUpdatable.OutputCount;
-                        //case when values collected are indicator output (single value)
-                        if (srcUpdatable.OutputCount == 1 && properties == 1) {
-                            srcUpdatable.Updated += (time, updated) => { *targetAddr = updated.Value; };
-                            srcUpdatable.Resetted += sender => { *targetAddr = 0d; };
-                        } else {
-                            //case when values collected are multi-valued output (tradebar value)
-                            srcUpdatable.Updated += (time, updated) => {
-                                Debug.Assert(updated.Properties >= props);
-                                fixed (double* src = updated)
-                                    Unsafe.CopyBlock(destination: targetAddr, source: src
-                                        , (uint) (outputCount * (props > updated.Properties ? updated.Properties : props) * sizeof(double)));
-                            };
-                            srcUpdatable.Resetted += sender => { new Span<double>(targetAddr, props).Fill(0d); };
-                        }
+
+                //the array is pinned so we can fix it and still use the address after we exit fixing.
+                double* storageAddr = workingTarget.Address;
+                var properties = Properties; //local copy
+
+                for (var i = 0; i < concatenating.Length; i++) {
+                    IUpdatable srcUpdatable = concatenating[i];
+                    var offset = concatenating.Take(i)
+                        .Select(upd => upd.OutputCount * properties)
+                        .Append(0)
+                        .Sum();
+
+                    double* targetAddr = storageAddr + offset;
+
+                    Guard.AssertTrue(targetAddr < storageAddr + workingTarget.LinearLength);
+
+                    var outputCount = srcUpdatable.OutputCount;
+                    //case when values collected are indicator output (single value)
+                    if (srcUpdatable.OutputCount == 1 && properties == 1) {
+                        srcUpdatable.Updated += (time, updated) => {
+                            Guard.AssertTrue(updated != null);
+                            *targetAddr = updated.Value;
+                        };
+                        srcUpdatable.Resetted += sender => { *targetAddr = 0d; };
+                    } else {
+                        //case when values collected are multi-valued output (tradebar value)
+                        srcUpdatable.Updated += (time, updated) => {
+                            Guard.AssertTrue(updated != null);
+                            Guard.AssertTrue(updated.Properties >= properties);
+                            fixed (double* src = updated)
+                                Unsafe.CopyBlock(destination: targetAddr, source: src
+                                    , (uint) (outputCount * (properties > updated.Properties ? updated.Properties : properties) * sizeof(double)));
+                        };
+                        srcUpdatable.Resetted += sender => { new Span<double>(targetAddr, properties).Fill(0d); };
                     }
                 }
             }
-
-            return c;
         }
 
         /// <summary>
@@ -208,8 +214,9 @@ namespace FinanceSharp.Graphing {
             c.concatenating = c.observing.ToArray();
             var len = c.length = c.concatenating.Length;
             var props = c.Properties = properties;
+            var outputCount = c.outputCount = c.concatenating.Sum(upd => upd.OutputCount);
             c.signalCounter = null;
-            var workingTarget = new DoubleArrayPinned2DManaged(len, props);
+            var workingTarget = new DoubleArrayPinned2DManaged(outputCount, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
 
@@ -289,8 +296,9 @@ namespace FinanceSharp.Graphing {
             c.concatenating = updatables.ToArray();
             var len = c.length = c.concatenating.Length;
             var props = c.Properties = properties;
+            var outputCount = c.outputCount = c.concatenating.Sum(upd => upd.OutputCount);
             c.signalCounter = null;
-            var workingTarget = new DoubleArrayPinned2DManaged(len, props);
+            var workingTarget = new DoubleArrayPinned2DManaged(outputCount, props);
             c.workingTarget = workingTarget;
             c.counter = interval;
 
@@ -333,6 +341,5 @@ namespace FinanceSharp.Graphing {
 
             return c;
         }
-
     }
 }

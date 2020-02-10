@@ -17,6 +17,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using FinanceSharp.Delegates;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {

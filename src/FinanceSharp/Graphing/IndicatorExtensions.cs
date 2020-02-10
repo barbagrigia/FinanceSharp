@@ -14,8 +14,11 @@
  * limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
+using FinanceSharp.Delegates;
+using MathNet.Numerics.Providers.LinearAlgebra.OpenBlas;
 using static FinanceSharp.Constants;
 
 
@@ -32,8 +35,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
-        public static T Of<T>(this T second, IIndicator first, bool waitForFirstToReady = true)
-            where T : IIndicator {
+        public static T Of<T>(this T second, IUpdatable first, bool waitForFirstToReady = true)
+            where T : IUpdatable {
             if (waitForFirstToReady) {
                 first.Updated += (time, consolidated) => {
                     // only send the data along if we're ready
@@ -59,8 +62,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <returns>The reference to the second indicator to allow for method chaining</returns>
-        public static T Then<T>(this IIndicator first, T second, bool waitForFirstToReady = true)
-            where T : IIndicator {
+        public static T Then<T>(this IUpdatable first, T second, bool waitForFirstToReady = true)
+            where T : IUpdatable {
             if (waitForFirstToReady) {
                 first.Updated += (time, consolidated) => {
                     // only send the data along if we're ready
@@ -78,13 +81,95 @@ namespace FinanceSharp.Indicators {
             return second;
         }
 
+        private static string ResolveName(IUpdatable first, string argumentedName) {
+            if (!(string.IsNullOrEmpty(argumentedName)))
+                return argumentedName;
+            if (first is IIndicator ind) {
+                argumentedName = ($"function({ind.Name})");
+            } else {
+                argumentedName = ($"function({first.GetType().Name})");
+            }
+
+            return argumentedName;
+        }
+
+        /// <summary>
+        ///     Performs a math <paramref name="op"/> over <see cref="DoubleArray.Value"/> or value from <paramref name="selector"/>. The result is stored in a <see cref="Identity"/>.
+        /// </summary>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the math <paramref name="op"/></param>
+        /// <param name="op">The operation to perform on <see cref="DoubleArray.Value"/>.</param>
+        /// <param name="selector">A selector to choose what <see cref="double"/> to pass to math <paramref name="op"/>. By default <see cref="DoubleArray.Value"/> is used.</param>
+        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="name">Name of the new returned <see cref="Identity"/> representing the <paramref name="op"/>.</param>
+        public static Identity Function(this IUpdatable first, UnaryFunctionHandler op, SelectorFunctionHandler selector = null, bool waitForFirstToReady = true, string name = null) {
+            if (op == null) throw new ArgumentNullException(nameof(op));
+
+            var idn = new Identity(ResolveName(first, name));
+            if (selector == null) {
+                if (waitForFirstToReady) {
+                    first.Updated += (time, updated) => {
+                        if (first.IsReady)
+                            idn.Update(time, op(updated.Value));
+                    };
+                } else
+                    first.Updated += (time, updated) => idn.Update(time, op(updated.Value));
+            } else {
+                if (waitForFirstToReady) {
+                    first.Updated += (time, updated) => {
+                        if (first.IsReady)
+                            idn.Update(time, new DoubleArrayScalar(op(selector(updated))));
+                    };
+                } else
+                    first.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(op(selector(updated))));
+            }
+
+            first.Resetted += sender => idn.Reset();
+
+            return idn;
+        }
+
+        /// <summary>
+        ///     Performs a math <paramref name="op"/> over <see cref="DoubleArray"/> or the value from <paramref name="selector"/>. The result is stored in a <see cref="Identity"/>.
+        /// </summary>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the math <paramref name="op"/></param>
+        /// <param name="op">The operation to perform on the <see cref="DoubleArray"/> passed from <paramref name="first"/>.</param>
+        /// <param name="selector">A selector to choose what <see cref="DoubleArray"/> to pass to math <paramref name="op"/>. By default, the unchanged <see cref="DoubleArray"/> is used.</param>
+        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="name">Name of the new returned <see cref="Identity"/> representing the <paramref name="op"/>.</param>
+        public static Identity Function(this IUpdatable first, UnaryArrayFunctionHandler op, ArraySelectorFunctionHandler selector = null, bool waitForFirstToReady = true, string name = null) {
+            if (op == null) throw new ArgumentNullException(nameof(op));
+
+            var idn = new Identity(ResolveName(first, name));
+            if (selector == null) {
+                if (waitForFirstToReady) {
+                    first.Updated += (time, updated) => {
+                        if (first.IsReady)
+                            idn.Update(time, op(updated));
+                    };
+                } else
+                    first.Updated += (time, updated) => idn.Update(time, op(updated));
+            } else {
+                if (waitForFirstToReady) {
+                    first.Updated += (time, updated) => {
+                        if (first.IsReady)
+                            idn.Update(time, op(selector(updated)));
+                    };
+                } else
+                    first.Updated += (time, updated) => idn.Update(time, op(selector(updated)));
+            }
+
+            first.Resetted += sender => idn.Reset();
+
+            return idn;
+        }
+
         /// <summary>
         /// 	 Will collect updates from <paramref name="first"/> into the returned <see cref="List{T}"/>.
         /// </summary>
         /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <param name="resetListOnIndicatorReset">Should the returned <see cref="List{T}"/> be cleared when <paramref name="first"/> is Resetted.</param>
-        public static List<DoubleArray> ThenToList(this IIndicator first, bool waitForFirstToReady = true, bool resetListOnIndicatorReset = false) {
+        public static List<DoubleArray> ThenToList(this IUpdatable first, bool waitForFirstToReady = true, bool resetListOnIndicatorReset = false) {
             var ret = new List<DoubleArray>();
             if (waitForFirstToReady) {
                 first.Updated += (time, consolidated) => {
@@ -103,6 +188,7 @@ namespace FinanceSharp.Indicators {
 
             return ret;
         }
+
 
         /// <summary>
         /// 	 Creates a new CompositeIndicator such that the result will be average of a first indicator weighted by a second one

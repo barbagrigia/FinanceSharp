@@ -14,13 +14,15 @@ namespace FinanceSharp.Graphing {
         private static Concat BindToConcatenatingList(Concat concat) {
             var bindTo = concat.Concatenating;
             var len = bindTo.Length;
-            concat.UpdateHandler = (time, input) => {
-                for (int i = 0; i < len; i++) {
+            concat.UpdateHandler = ConcatUpdateHandler;
+
+            bool ConcatUpdateHandler(long time, DoubleArray input) {
+                for (int i = 0; i < len; i++) 
                     bindTo[i].Update(time, input);
-                }
 
                 return concat.IsReady;
-            };
+            }
+
 
             return concat;
         }

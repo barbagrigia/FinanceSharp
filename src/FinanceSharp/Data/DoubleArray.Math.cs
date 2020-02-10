@@ -16,18 +16,9 @@
 
 using System;
 using System.Diagnostics.Contracts;
+using FinanceSharp.Delegates;
 
 namespace FinanceSharp {
-    public delegate double BinaryFunctionHandler(double lhs, double rhs);
-
-    public delegate double UnaryFunctionHandler(double value);
-
-    public delegate void ForFunctionHandler(double value);
-
-    public delegate void ForIndexedFunctionHandler(int index, double value);
-
-    public delegate void ReferenceForFunctionHandler(ref double value);
-
     public abstract unsafe partial class DoubleArray {
         /// <summary>
         ///     Performs a binary function on lhs and rhs.

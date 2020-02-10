@@ -145,7 +145,7 @@ namespace FinanceSharp {
             if (this.Properties == 1) {
                 sb.Append($"[");
                 for (int i = 0; i < this.Count; i++) {
-                    sb.Append($"{this[i, 0]:#.#####}");
+                    sb.Append($"{this[i, 0]:0.#####}");
                     if (i != this.Count - 1) {
                         sb.Append($", ");
                     }
@@ -157,17 +157,13 @@ namespace FinanceSharp {
                 for (int i = 0; i < this.Count; i++) {
                     sb.Append($"[");
                     for (int j = 0; j < this.Properties; j++) {
-                        sb.Append($"{this[i, j]:#.#####}");
-                        if (i != this.Count - 1) {
-                            sb.Append($", ");
-                        }
+                        sb.Append($"{this[i, j]:0.#####}");
+                        if (j != this.Properties - 1) sb.Append($", ");
                     }
 
                     sb.Append($"]");
 
-                    if (i != this.Count - 1) {
-                        sb.Append($", ");
-                    }
+                    if (i != this.Count - 1) sb.Append($", ");
                 }
 
                 sb.Append($"]");

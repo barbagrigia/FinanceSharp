@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using FinanceSharp.Delegates;
 using FinanceSharp.Exceptions;
 
 namespace FinanceSharp {

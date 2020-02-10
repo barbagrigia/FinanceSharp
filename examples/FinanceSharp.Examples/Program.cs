@@ -35,13 +35,15 @@ namespace FinanceSharp.Examples {
             }
 
             //build model
-            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
+            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = MuhModel.Create();
+            //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
             //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = HeikinAshi();
             //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMA();
 
 
             //feed the model data
-            foreach (var tick in ticks) {
+            for (var i = 0; i < ticks.Length; i++) {
+                var tick = ticks[i];
                 model.Input.Update(tick.Time, tick.Value);
             }
 

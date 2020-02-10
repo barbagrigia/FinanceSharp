@@ -14,6 +14,6 @@
  * limitations under the License.
 */
 
-namespace FinanceSharp {
+namespace FinanceSharp.Delegates {
     public unsafe delegate void ManipulateStructHandler<TStruct>(TStruct* input) where TStruct : unmanaged, DataStruct;
 }
