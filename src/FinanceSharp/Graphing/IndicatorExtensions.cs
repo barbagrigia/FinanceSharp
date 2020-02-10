@@ -82,12 +82,12 @@ namespace FinanceSharp.Indicators {
         }
 
         private static string ResolveName(IUpdatable first, string argumentedName) {
-            if (!(string.IsNullOrEmpty(argumentedName)))
+            if (!string.IsNullOrEmpty(argumentedName))
                 return argumentedName;
             if (first is IIndicator ind) {
-                argumentedName = ($"function({ind.Name})");
+                argumentedName = $"function({ind.Name})";
             } else {
-                argumentedName = ($"function({first.GetType().Name})");
+                argumentedName = $"function({first.GetType().Name})";
             }
 
             return argumentedName;
@@ -157,6 +157,54 @@ namespace FinanceSharp.Indicators {
                 } else
                     first.Updated += (time, updated) => idn.Update(time, op(selector(updated)));
             }
+
+            first.Resetted += sender => idn.Reset();
+
+            return idn;
+        }
+
+        /// <summary>
+        ///     Selects a <see cref="DoubleArray"/> to a <see cref="double"/>. The result is stored in a <see cref="Identity"/>.
+        /// </summary>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
+        /// <param name="selector">A selector to choose a <see cref="double"/>. </param>
+        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
+        public static Identity Select(this IUpdatable first, SelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+            var idn = new Identity(ResolveName(first, name));
+
+            if (waitForFirstToReady) {
+                first.Updated += (time, updated) => {
+                    if (first.IsReady)
+                        idn.Update(time, new DoubleArrayScalar(selector(updated)));
+                };
+            } else
+                first.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(selector(updated)));
+
+            first.Resetted += sender => idn.Reset();
+
+            return idn;
+        }
+
+        /// <summary>
+        ///     Selects a <see cref="DoubleArray"/> to another <see cref="DoubleArray"/>. The result is stored in a <see cref="Identity"/>.
+        /// </summary>
+        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
+        /// <param name="selector">A selector to choose what <see cref="DoubleArray"/>.</param>
+        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
+        public static Identity Select(this IUpdatable first, ArraySelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
+            if (selector == null) throw new ArgumentNullException(nameof(selector));
+            var idn = new Identity(ResolveName(first, name));
+
+            if (waitForFirstToReady) {
+                first.Updated += (time, updated) => {
+                    if (first.IsReady)
+                        idn.Update(time, selector(updated));
+                };
+            } else
+                first.Updated += (time, updated) => idn.Update(time, selector(updated));
 
             first.Resetted += sender => idn.Reset();
 

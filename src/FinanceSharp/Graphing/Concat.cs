@@ -79,7 +79,6 @@ namespace FinanceSharp.Graphing {
         /// </summary>
         protected virtual void BindValues() {
             unsafe {
-
                 //the array is pinned so we can fix it and still use the address after we exit fixing.
                 double* storageAddr = workingTarget.Address;
                 var properties = Properties; //local copy
@@ -95,7 +94,6 @@ namespace FinanceSharp.Graphing {
 
                     Guard.AssertTrue(targetAddr < storageAddr + workingTarget.LinearLength);
 
-                    var outputCount = srcUpdatable.OutputCount;
                     //case when values collected are indicator output (single value)
                     if (srcUpdatable.OutputCount == 1 && properties == 1) {
                         srcUpdatable.Updated += (time, updated) => {
@@ -105,6 +103,7 @@ namespace FinanceSharp.Graphing {
                         srcUpdatable.Resetted += sender => { *targetAddr = 0d; };
                     } else {
                         //case when values collected are multi-valued output (tradebar value)
+                        var outputCount = srcUpdatable.OutputCount;
                         srcUpdatable.Updated += (time, updated) => {
                             Guard.AssertTrue(updated != null);
                             Guard.AssertTrue(updated.Properties >= properties);

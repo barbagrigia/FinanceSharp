@@ -35,8 +35,7 @@ namespace FinanceSharp.Examples {
             }
 
             //build model
-            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = MuhModel.Create();
-            //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
+            (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMAx3();
             //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = HeikinAshi();
             //(IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) model = EMA();
 
