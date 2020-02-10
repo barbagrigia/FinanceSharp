@@ -14,7 +14,10 @@
  * limitations under the License.
 */
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace FinanceSharp.Indicators {
+    [SuppressMessage("ReSharper", "CompareOfFloatsByEqualityOperator")]
     public abstract partial class IndicatorBase {
         public static bool operator ==(IndicatorBase lhs, IndicatorBase rhs) {
             if (lhs is null || rhs is null)

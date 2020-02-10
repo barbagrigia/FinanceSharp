@@ -63,7 +63,6 @@ namespace FinanceSharp.Examples {
             return (tickCons, new IUpdatable[] {ema}, new List<DoubleArray>[] {bars, emas});
         }
 
-
         public static (IUpdatable Input, IUpdatable[] Outputs, List<DoubleArray>[] Datas) EMAx3() {
             var tickCons = new TickConsolidator(TimeSpan.FromMinutes(1d));
             var ema6 = tickCons.Then(new ExponentialMovingAverage(6));
