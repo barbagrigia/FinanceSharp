@@ -56,6 +56,10 @@ namespace FinanceSharp {
         /// Volume
         public const int VolumeIdx = V;
 
+        public const int BidPrice = 1;
+        public const int AskPrice = 2;
+        public const int BidSize = 3;
+        public const int AskSize = 5;
 
         static Constants() { }
     }
