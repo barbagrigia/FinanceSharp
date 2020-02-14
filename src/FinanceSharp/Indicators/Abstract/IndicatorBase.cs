@@ -23,7 +23,6 @@ namespace FinanceSharp.Indicators {
     /// <summary>
     /// 	 Provides a base type for all indicators
     /// </summary>
-    /// <typeparam name="T">The type of data input into this indicator</typeparam>
     [DebuggerDisplay("{" + nameof(ToDetailedString) + "()}")]
     public abstract partial class IndicatorBase : IIndicator {
         /// <summary>

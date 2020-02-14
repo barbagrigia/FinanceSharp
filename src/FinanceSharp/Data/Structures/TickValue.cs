@@ -25,17 +25,17 @@ namespace FinanceSharp {
         public const int Properties = 6;
         public double Value;
         public double BidPrice;
-        public double BidSize;
         public double AskPrice;
+        public double BidSize;
         public double Volume;
         public double AskSize;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
-        public TickValue(double value, double bidPrice, double bidSize, double askPrice, double volume, double askSize) {
+        public TickValue(double value, double bidPrice, double askPrice, double bidSize, double volume, double askSize) {
             Value = value;
             BidPrice = bidPrice;
-            BidSize = bidSize;
             AskPrice = askPrice;
+            BidSize = bidSize;
             Volume = volume;
             AskSize = askSize;
         }
@@ -43,13 +43,13 @@ namespace FinanceSharp {
         /// <summary>Creates a new object that is a copy of the current instance.</summary>
         /// <returns>A new object that is a copy of this instance.</returns>
         public object Clone() {
-            return new TickValue(Value, BidPrice, BidSize, AskPrice, Volume, AskSize);
+            return new TickValue(Value, BidPrice, AskPrice, BidSize, Volume, AskSize);
         }
 
         /// <summary>Returns the fully qualified type name of this instance.</summary>
         /// <returns>The fully qualified type name.</returns>
         public override string ToString() {
-            return $"{nameof(Value)}: {Value}, {nameof(BidPrice)}: {BidPrice}, {nameof(BidSize)}: {BidSize}, {nameof(AskPrice)}: {AskPrice}, {nameof(Volume)}: {Volume}, {nameof(AskSize)}: {AskSize}, {nameof(Properties)}: {Properties}";
+            return $"{nameof(Value)}: {Value}, {nameof(BidPrice)}: {BidPrice}, {nameof(AskPrice)}: {AskPrice}, {nameof(BidSize)}: {BidSize}, {nameof(Volume)}: {Volume}, {nameof(AskSize)}: {AskSize}, {nameof(Properties)}: {Properties}";
         }
 
         #region Explicit Interfaces
