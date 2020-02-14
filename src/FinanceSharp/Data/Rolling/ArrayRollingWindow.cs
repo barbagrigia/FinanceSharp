@@ -25,10 +25,11 @@ namespace FinanceSharp {
         protected DoubleArray _mostRecentlyRemoved;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object"></see> class.</summary>
-        public ArrayRollingWindow(int outputCount, int properties) {
+        public ArrayRollingWindow(int outputCount, int properties, string name = null) {
             OutputCount = outputCount;
             InputProperties = Properties = properties;
             Current = new DoubleArray2DManaged(OutputCount, Properties);
+            Name = name ?? $"WINDOW({OutputCount}, {Properties})";
         }
 
         /// <summary>
