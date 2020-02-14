@@ -39,20 +39,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of this indicator</param>
         /// <param name="computeNextValue">A function accepting the input value and returning this indicator's output value</param>
         /// <param name="isReady">A function accepting this indicator and returning true if the indicator is ready, false otherwise</param>
-        public FunctionalIndicator(string name, Func<long, DoubleArray, DoubleArray> computeNextValue, Func<IndicatorBase, bool> isReady)
-            : base(name) {
-            _computeNextValue = computeNextValue;
-            _isReady = isReady;
-        }
-
-        /// <summary>
-        /// 	 Creates a new FunctionalIndicator using the specified functions as its implementation.
-        /// </summary>
-        /// <param name="name">The name of this indicator</param>
-        /// <param name="computeNextValue">A function accepting the input value and returning this indicator's output value</param>
-        /// <param name="isReady">A function accepting this indicator and returning true if the indicator is ready, false otherwise</param>
         /// <param name="reset">Function called to reset this indicator and any indicators this is dependent on</param>
-        public FunctionalIndicator(string name, Func<long, DoubleArray, DoubleArray> computeNextValue, Func<IndicatorBase, bool> isReady, Action reset)
+        public FunctionalIndicator(string name, Func<long, DoubleArray, DoubleArray> computeNextValue, Func<IndicatorBase, bool> isReady = null, Action reset = null)
             : base(name) {
             _computeNextValue = computeNextValue;
             _isReady = isReady;
@@ -63,7 +51,7 @@ namespace FinanceSharp.Indicators {
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
         /// </summary>
         public override bool IsReady {
-            get { return _isReady(this); }
+            get { return _isReady?.Invoke(this) ?? Samples > 0; }
         }
 
         /// <summary>
@@ -80,10 +68,8 @@ namespace FinanceSharp.Indicators {
         /// 	 Resets this indicator to its initial state, optionally using the reset action passed via the constructor
         /// </summary>
         public override void Reset() {
-            if (_reset != null) {
-                // if a reset function was specified then use that
-                _reset.Invoke();
-            }
+            // if a reset function was specified then use that
+            _reset?.Invoke();
 
             base.Reset();
         }

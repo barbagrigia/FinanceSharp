@@ -36,10 +36,10 @@ namespace FinanceSharp.Graphing {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this updatable</param>
         /// <returns>True if this updatable is ready, false otherwise</returns>
-        public bool Update(long time, DoubleArray input) {
+        public void Update(long time, DoubleArray input) {
             if (UpdateHandler == null)
                 throw new IndicatorNotUpdatableDirectlyException("Concat can't be updated directy. It rather binds to IUpdatables during construction.");
-            return UpdateHandler(time, input);
+            UpdateHandler(time, input);
         }
 
         /// <summary>

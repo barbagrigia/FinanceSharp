@@ -32,22 +32,30 @@ namespace FinanceSharp {
         /// <summary>
         ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
         /// </summary>
-        /// <param name="index">The index to slice from this <see cref="DoubleArray"/>.</param>
-        /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
-        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
-        public virtual DoubleArray SliceIndex(int index) {
-            AssertTrue(index >= 0 && index < Count, "Index is out of range.");
-            return new SlicedDoubleArray(this, index, index + 1);
-        }
-
-        /// <summary>
-        ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
-        /// </summary>
         /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
         /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
         /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
         public DoubleArray Slice(int stop) {
             return Slice(0, stop);
+        }
+
+        /// <summary>
+        ///     Slices (or wraps with a slice wrapper) the <see cref="Count"/> dimension.
+        /// </summary>
+        /// <param name="index">The index to slice from this <see cref="DoubleArray"/>.</param>
+        /// <param name="copy">Should the returned slice be copied.</param>
+        /// <returns>Returns a sliced array shaped (newCount, <see cref="Properties"/>)</returns>
+        /// <remarks>This slicing mechanism is similar to numpy's slice and will behave like the following: <code>thisArray[start:stop:1, :]</code></remarks>
+        public virtual DoubleArray SliceIndex(int index, bool copy = false) {
+            AssertTrue(index >= 0 && index < Count, "Index is out of range.");
+            if (copy && this.Properties == 1) {
+                return new DoubleArrayScalar(this[index, 0]);
+            } else {
+                var ret = new SlicedDoubleArray(this, index, index + 1);
+                if (copy)
+                    return ret.Clone();
+                return ret;
+            }
         }
     }
 }

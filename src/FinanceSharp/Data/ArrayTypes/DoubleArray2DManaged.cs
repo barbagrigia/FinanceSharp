@@ -26,24 +26,30 @@ namespace FinanceSharp {
         protected internal double[,] values;
 
         /// <param name="values">The structure value that'll be wrapped.</param>
-        public DoubleArray2DManaged(double[,] values) : base(values.GetLength(0), values.GetLength(1)) {
+        public DoubleArray2DManaged(double[,] values) {
             this.values = values;
+            Count = values.GetLength(0);
+            Properties = values.GetLength(1);
         }
 
         /// <param name="values">The structure value that'll be wrapped.</param>
         /// <remarks>This constructor copies given <paramref name="values"/> to a <see cref="double[Count, Properties]"/></remarks>
-        public DoubleArray2DManaged(double[][] values) : base() {
+        public DoubleArray2DManaged(double[][] values) {
             this.values = ToMultiDimArray(values);
             Count = this.values.GetLength(0);
             Properties = this.values.GetLength(1);
         }
 
-        public DoubleArray2DManaged(int count, int properties) : base(count, properties) {
+        public DoubleArray2DManaged(int count, int properties) {
             this.values = new double[count, properties];
+            Count = count;
+            Properties = properties;
         }
 
-        public DoubleArray2DManaged() : base(1, 1) {
+        public DoubleArray2DManaged() {
             this.values = new double[1, 1];
+            Count = 1;
+            Properties = 1;
         }
 
         /// <summary>
@@ -68,7 +74,6 @@ namespace FinanceSharp {
         public DoubleArrayPinned2DManaged ToPinned(bool copy) {
             return new DoubleArrayPinned2DManaged(copy ? (double[,]) values.Clone() : values);
         }
-        //TODO overload the rest iteration classes to optimize performance to max.
 
         public override double this[int property] {
             get {
@@ -151,7 +156,7 @@ namespace FinanceSharp {
                 throw new ReshapeException($"Unable to reshape ({Count}, {Properties}) to ({count}, {properties})");
 
             var data = new double[count, properties];
-            fixed (double* src = values, dst = data) 
+            fixed (double* src = values, dst = data)
                 Unsafe.CopyBlock(dst, src, (uint) (sizeof(double) * LinearLength));
 
             if (copy) {

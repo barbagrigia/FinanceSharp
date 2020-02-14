@@ -59,7 +59,7 @@ namespace FinanceSharp {
         /// <param name="time">The timestamp represented in milliseconds-epoch-1970.</param>
         /// <param name="input">The value to use to update this updatable</param>
         /// <returns>True if this updatable is ready, false otherwise</returns>
-        public unsafe bool Update(long time, DoubleArray input) {
+        public unsafe void Update(long time, DoubleArray input) {
             CurrentTime = time;
             if (Properties > 1) {
                 var cnt = (int) Math.Min(OutputCount, Samples);
@@ -98,7 +98,6 @@ namespace FinanceSharp {
 
             Samples++;
             OnUpdated(time, Current);
-            return IsReady;
         }
 
         /// <summary>

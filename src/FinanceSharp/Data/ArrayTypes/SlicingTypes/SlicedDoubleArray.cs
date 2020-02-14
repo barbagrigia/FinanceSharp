@@ -81,9 +81,9 @@ namespace FinanceSharp {
         public override unsafe DoubleArray Clone() {
             var ret = new DoubleArray2DManaged(Count, Properties);
             fixed (double* src = internalArray, dst = ret)
-                Unsafe.CopyBlock(src, dst, (uint) (sizeof(double) * LinearLength));
+                Unsafe.CopyBlock(dst, src + start, (uint) (sizeof(double) * LinearLength));
 
-            return internalArray.Clone();
+            return ret;
         }
 
         public override unsafe void ForEach(ReferenceForFunctionHandler function) {

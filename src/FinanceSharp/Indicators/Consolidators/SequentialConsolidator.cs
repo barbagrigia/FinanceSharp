@@ -95,8 +95,8 @@ namespace FinanceSharp.Consolidators {
         /// </summary>
         /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public bool Update(long time, DoubleArray data) {
-            return First.Update(time, data);
+        public void Update(long time, DoubleArray data) {
+            First.Update(time, data);
         }
 
         /// <summary>

@@ -14,12 +14,15 @@
  * limitations under the License.
 */
 
+using System.Diagnostics;
+
 namespace FinanceSharp {
     /// <summary>
     ///     Represents an object that can be updated.
     /// </summary>
     /// <remarks>Serves as a graphing component.</remarks>
-    public interface IUpdatable {
+    public interface IUpdatable
+    {
         /// <summary>
         /// 	 Event handler that fires after this updatable is updated.
         /// </summary>
@@ -37,7 +40,7 @@ namespace FinanceSharp {
         /// <param name="time">The timestamp represented in milliseconds-epoch-1970.</param>
         /// <param name="input">The value to use to update this updatable</param>
         /// <returns>True if this updatable is ready, false otherwise</returns>
-        bool Update(long time, DoubleArray input);
+        void Update(long time, DoubleArray input);
 
         /// <summary>
         /// 	 Resets this updatable to its initial state

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using FinanceSharp.Indicators;
 using FinanceSharp;
 using System.Linq;
+using FluentAssertions;
 using Python.Runtime;
 
 namespace FinanceSharp.Tests.Indicators {
@@ -379,7 +380,6 @@ namespace FinanceSharp.Tests.Indicators {
             indicatorB1.Plus(indicatorB2);
             indicatorB1.Of(indicatorB2);
         }
-
 
         private class TestIndicatorA : IndicatorBase {
             public TestIndicatorA(string name) : base(name) { }

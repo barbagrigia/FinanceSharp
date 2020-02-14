@@ -17,6 +17,7 @@
 using System;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using FinanceSharp.Helpers;
 
 namespace FinanceSharp {
     public abstract unsafe partial class DoubleArray {
@@ -124,6 +125,27 @@ namespace FinanceSharp {
         [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static DoubleArray From(double* pointer, int count, int properties, bool zeroValues = true, Action disposer = null) {
             return new DoubleArrayUnmanaged(pointer, count, properties, zeroValues, disposer);
+        }
+
+        /// <summary>
+        ///     Creates an <see cref="DoubleArray"/> sized <code>(1, Math.Floor((start - stop) / step)) </code>
+        /// </summary>
+        /// <param name="start">Starting value</param>
+        /// <param name="stop">Stopping value</param>
+        /// <param name="step">Step size</param>
+        public static DoubleArray ARange(double start, double stop, double step) {
+            var len = (int) Math.Floor((stop - start) / step);
+            if (len <= 0) throw new ArgumentOutOfRangeException("start and stop");
+
+            var ret = new DoubleArray2DManaged(len, 1);
+            fixed (double* dst = ret) {
+                double value = start;
+                for (int i = 0; i < len; i++, value += step) {
+                    dst[i] = value;
+                }
+            }
+
+            return ret;
         }
     }
 }

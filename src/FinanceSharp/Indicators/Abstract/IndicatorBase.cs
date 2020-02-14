@@ -96,32 +96,32 @@ namespace FinanceSharp.Indicators {
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
-        public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time, DoubleArray.From(data));
+        public void Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
+            Update(time, DoubleArray.From(data));
         }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
-        internal bool Update<TStruct>(DateTime time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time.ToEpochTime(), DoubleArray.From(data));
+        internal void Update<TStruct>(DateTime time, TStruct data) where TStruct : unmanaged, DataStruct {
+            Update(time.ToEpochTime(), DoubleArray.From(data));
         }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
-        internal bool Update<TStruct>((DateTime Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            return Update(tuple.Time.ToEpochTime(), DoubleArray.From(tuple.Value));
+        internal void Update<TStruct>((DateTime Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
+            Update(tuple.Time.ToEpochTime(), DoubleArray.From(tuple.Value));
         }
 
         /// <summary>
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
-        internal bool Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            return Update(tuple.Time, new DoubleArrayStructScalar<TStruct>(tuple.Value));
+        internal void Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
+            Update(tuple.Time, new DoubleArrayStructScalar<TStruct>(tuple.Value));
         }
 
         /// <summary>
@@ -131,8 +131,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="time">The time associated with the value</param>
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public bool Update(long time, double value) {
-            return Update((long) time, new DoubleArrayScalar(value));
+        public void Update(long time, double value) {
+            Update((long) time, new DoubleArrayScalar(value));
         }
 
         /// <summary>
@@ -142,8 +142,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="time">The time associated with the value</param>
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        internal bool Update(DateTime time, double value) {
-            return Update(time.ToEpochTime(), new DoubleArrayScalar(value));
+        internal void Update(DateTime time, double value) {
+            Update(time.ToEpochTime(), new DoubleArrayScalar(value));
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public virtual bool Update(long time, DoubleArray input) {
+        public virtual void Update(long time, DoubleArray input) {
             // compute a new value and update our previous time
             Samples++;
 
@@ -162,8 +162,6 @@ namespace FinanceSharp.Indicators {
 
             // let others know we've produced a new data point
             OnUpdated(time, Current);
-
-            return IsReady;
         }
 
         /// <summary>

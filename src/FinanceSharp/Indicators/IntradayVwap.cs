@@ -45,14 +45,14 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public override bool Update(long time, DoubleArray input) {
+        public override void Update(long time, DoubleArray input) {
 #if DEBUG
             if (this.InputProperties > input.Properties)
                 throw new ArgumentException($"Unable to update with given input because atleast {InputProperties} properties required but got input with {input.Properties} properties.");
 #endif
             double volume, averagePrice;
             if (!TryGetVolumeAndAveragePrice(input, out volume, out averagePrice)) {
-                return IsReady;
+                return;
             }
 
             // reset vwap on daily boundaries
@@ -72,13 +72,12 @@ namespace FinanceSharp.Indicators {
                 // if we have no trade volume then use the current price as VWAP
                 Current = input.Clone();
                 OnUpdated(time, Current);
-                return IsReady;
+                return;
             }
 
             Current = _sumOfPriceTimesVolume / _sumOfVolume;
             
             OnUpdated(time, Current);
-            return IsReady;
         }
 
         /// <summary>

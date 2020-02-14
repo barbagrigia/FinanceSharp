@@ -25,7 +25,7 @@ namespace FinanceSharp.Tests.Indicators {
         public void CompositeIsReadyWhenBothAre() {
             var left = new Delay(1);
             var right = new Delay(2);
-            var composite = new CompositeIndicator(left, right, (l, r) => l + r);
+            var composite = new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
 
             left.Update(DateTime.Today.AddSeconds(0), 1d);
             right.Update(DateTime.Today.AddSeconds(0), 1d);
@@ -59,7 +59,7 @@ namespace FinanceSharp.Tests.Indicators {
             var composite = new CompositeIndicator(left, right, (l, r) => {
                 Assert.AreEqual(left, l);
                 Assert.AreEqual(right, r);
-                return l + r;
+                return l.Current + r.Current;
             });
 
             left.Update(DateTime.Today, 1d);
@@ -71,7 +71,7 @@ namespace FinanceSharp.Tests.Indicators {
         public void ResetsProperly() {
             var left = new Maximum("left", 2);
             var right = new Minimum("right", 2);
-            var composite = new CompositeIndicator(left, right, (l, r) => l + r);
+            var composite = new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
 
             left.Update(DateTime.Today, 1d);
             right.Update(DateTime.Today, -1d);

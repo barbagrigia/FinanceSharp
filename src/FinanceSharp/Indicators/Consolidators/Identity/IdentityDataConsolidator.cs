@@ -60,16 +60,13 @@ namespace FinanceSharp.Consolidators {
         /// </summary>
         /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public override bool Update(long time, DoubleArray data) {
+        public override void Update(long time, DoubleArray data) {
             Samples++;
             if (_last == null || _last_time != time) {
                 OnDataConsolidated(time, data);
                 _last = data;
                 _last_time = time;
-                return true;
             }
-
-            return false;
         }
 
         /// <summary>

@@ -101,8 +101,8 @@ namespace FinanceSharp.Consolidators {
         /// 	 Updates this consolidator with the specified data
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
-        public bool Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
-            return Update(time, DoubleArray.From(data));
+        public void Update<TStruct>(long time, TStruct data) where TStruct : unmanaged, DataStruct {
+            Update(time, DoubleArray.From(data));
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace FinanceSharp.Consolidators {
         /// </summary>
         /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public abstract bool Update(long time, DoubleArray data);
+        public abstract void Update(long time, DoubleArray data);
 
         /// <summary>
         /// 	 Event invocator for the DataConsolidated event. This should be invoked

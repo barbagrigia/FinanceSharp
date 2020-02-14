@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using FinanceSharp.Delegates;
+using FinanceSharp.Graphing;
 using MathNet.Numerics.Providers.LinearAlgebra.OpenBlas;
 using static FinanceSharp.Constants;
 
@@ -166,23 +168,23 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         ///     Selects a <see cref="DoubleArray"/> to a <see cref="double"/>. The result is stored in a <see cref="Identity"/>.
         /// </summary>
-        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
+        /// <param name="input">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
         /// <param name="selector">A selector to choose a <see cref="double"/>. </param>
-        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="waitForFirstToReady">Input must be ready in order to push the updates forward.</param>
         /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
-        public static Identity Select(this IUpdatable first, SelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
+        public static Identity Select(this IUpdatable input, SelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
             if (selector == null) throw new ArgumentNullException(nameof(selector));
-            var idn = new Identity(ResolveName(first, name));
+            var idn = new Identity(ResolveName(input, name));
 
             if (waitForFirstToReady) {
-                first.Updated += (time, updated) => {
-                    if (first.IsReady)
+                input.Updated += (time, updated) => {
+                    if (input.IsReady)
                         idn.Update(time, new DoubleArrayScalar(selector(updated)));
                 };
             } else
-                first.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(selector(updated)));
+                input.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(selector(updated)));
 
-            first.Resetted += sender => idn.Reset();
+            input.Resetted += sender => idn.Reset();
 
             return idn;
         }
@@ -190,23 +192,23 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         ///     Selects a <see cref="DoubleArray"/> to another <see cref="DoubleArray"/>. The result is stored in a <see cref="Identity"/>.
         /// </summary>
-        /// <param name="first">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
+        /// <param name="input">The indicator that sends data via <see cref="IUpdatable.Updated"/></param>
         /// <param name="selector">A selector to choose what <see cref="DoubleArray"/>.</param>
-        /// <param name="waitForFirstToReady">First must be ready in order to push the updates forward.</param>
+        /// <param name="waitForFirstToReady">Input must be ready in order to push the updates forward.</param>
         /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
-        public static Identity Select(this IUpdatable first, ArraySelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
+        public static Identity Select(this IUpdatable input, ArraySelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
             if (selector == null) throw new ArgumentNullException(nameof(selector));
-            var idn = new Identity(ResolveName(first, name));
+            var idn = new Identity(ResolveName(input, name));
 
             if (waitForFirstToReady) {
-                first.Updated += (time, updated) => {
-                    if (first.IsReady)
+                input.Updated += (time, updated) => {
+                    if (input.IsReady)
                         idn.Update(time, selector(updated));
                 };
             } else
-                first.Updated += (time, updated) => idn.Update(time, selector(updated));
+                input.Updated += (time, updated) => idn.Update(time, selector(updated));
 
-            first.Resetted += sender => idn.Reset();
+            input.Resetted += sender => idn.Reset();
 
             return idn;
         }
@@ -245,8 +247,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="weight">Indicator that provides the average weights</param>
         /// <param name="period">Average period</param>
         /// <returns>Indicator that results of the average of first by weights given by second</returns>
-        public static CompositeIndicator WeightedBy<TWeight>(this IndicatorBase value, TWeight weight, int period)
-            where TWeight : IndicatorBase {
+        public static CompositeIndicator WeightedBy<TWeight>(this IUpdatable value, TWeight weight, int period)
+            where TWeight : IUpdatable {
             var x = new WindowIdentity(period);
             var y = new WindowIdentity(period);
             var numerator = new Sum("Sum_xy", period);
@@ -260,17 +262,17 @@ namespace FinanceSharp.Indicators {
             };
 
             weight.Updated += (time, consolidated) => {
-                y.Update((long) time, (DoubleArray) consolidated);
+                y.Update(time, consolidated);
                 if (x.Samples == y.Samples) {
                     numerator.Update(time, consolidated * x.Current[0, C]);
                 }
 
-                denominator.Update((long) time, (DoubleArray) consolidated);
+                denominator.Update(time, consolidated);
             };
 
             value.Resetted += sender => weight.Reset();
 
-            return numerator.Over(denominator);
+            return numerator.Over((IUpdatable) denominator);
         }
 
         /// <summary>
@@ -282,9 +284,25 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The addend</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator Plus(this IndicatorBase left, double constant) {
+        public static CompositeIndicator Plus(this IUpdatable left, double constant) {
             var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
-            return left.Plus(constantIndicator);
+            return left.Plus((IUpdatable) constantIndicator);
+        }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator such that the result will be the sum of the left and right
+        /// </summary>
+        /// <remarks>
+        /// 	 value = left + right
+        /// </remarks>
+        /// <param name="left">The left indicator</param>
+        /// <param name="right">The right indicator</param>
+        /// <returns>The sum of the left and right indicators</returns>
+        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+
+            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
         }
 
         /// <summary>
@@ -297,7 +315,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
         public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => l + r);
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+
+            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
         }
 
         /// <summary>
@@ -310,8 +331,11 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (DoubleArray) l + r);
+        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right, string name) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+
+            return new CompositeIndicator(name, left, right, (l, r) => l.Current + r.Current);
         }
 
         /// <summary>
@@ -323,9 +347,25 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The subtrahend</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator Minus(this IndicatorBase left, double constant) {
+        public static CompositeIndicator Minus(this IUpdatable left, double constant) {
             var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
-            return left.Minus(constantIndicator);
+            return left.Minus((IUpdatable) constantIndicator);
+        }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator such that the result will be the difference of the left and right
+        /// </summary>
+        /// <remarks>
+        /// 	 value = left - right
+        /// </remarks>
+        /// <param name="left">The left indicator</param>
+        /// <param name="right">The right indicator</param>
+        /// <returns>The difference of the left and right indicators</returns>
+        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
+
+            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current);
         }
 
         /// <summary>
@@ -338,7 +378,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
         public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l - r);
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
+
+            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current);
         }
 
         /// <summary>
@@ -351,8 +394,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (DoubleArray) l - r);
+        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right, string name) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
+            return new CompositeIndicator(name, left, right, (l, r) => l.Current - r.Current);
         }
 
         /// <summary>
@@ -364,9 +409,24 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The constant value denominator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator Over(this IndicatorBase left, double constant) {
+        public static CompositeIndicator Over(this IUpdatable left, double constant) {
             var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
-            return left.Over(constantIndicator);
+            return left.Over((IUpdatable) constantIndicator);
+        }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator such that the result will be the ratio of the left to the right
+        /// </summary>
+        /// <remarks>
+        /// 	 value = left/right
+        /// </remarks>
+        /// <param name="left">The left indicator</param>
+        /// <param name="right">The right indicator</param>
+        /// <returns>The ratio of the left to the right indicator</returns>
+        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
+            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
         }
 
         /// <summary>
@@ -379,7 +439,10 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
         public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((DoubleArray) ((DoubleArray) l / r)));
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
+
+            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
         }
 
         /// <summary>
@@ -392,8 +455,11 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => r == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult((DoubleArray) ((DoubleArray) l / r)));
+        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right, string name) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
+
+            return new CompositeIndicator(name, left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
         }
 
         /// <summary>
@@ -405,9 +471,24 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="constant">The constant value to multiple by</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator Times(this IndicatorBase left, double constant) {
+        public static CompositeIndicator Times(this IUpdatable left, double constant) {
             var constantIndicator = new ConstantIndicator(constant.ToString(CultureInfo.InvariantCulture), constant);
-            return left.Times(constantIndicator);
+            return left.Times((IUpdatable) constantIndicator);
+        }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator such that the result will be the product of the left to the right
+        /// </summary>
+        /// <remarks>
+        /// 	 value = left*right
+        /// </remarks>
+        /// <param name="left">The left indicator</param>
+        /// <param name="right">The right indicator</param>
+        /// <returns>The product of the left to the right indicators</returns>
+        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
+            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current);
         }
 
         /// <summary>
@@ -420,7 +501,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
         public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right) {
-            return new CompositeIndicator(left, right, (l, r) => (DoubleArray) l * r);
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
+            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current);
         }
 
         /// <summary>
@@ -433,9 +516,82 @@ namespace FinanceSharp.Indicators {
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right, string name) {
-            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) ((DoubleArray) l * r));
+        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right, string name) {
+            if (AreDoubleScalar(left, right))
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
+            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) (l.Current * r.Current));
         }
+
+        /// <summary>
+        /// 	 Creates a <see cref="CountSelector"/> for every <paramref name="input"/>'s <see cref="IUpdatable.OutputCount"/> ordered by ascending index.
+        /// </summary>
+        /// <param name="input">An indicator</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if input.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>an array of <see cref="CountSelector"/> for every <paramref name="input"/>'s <see cref="IUpdatable.OutputCount"/> ordered by ascending index.</returns>
+        public static CountSelector[] Explode(this IUpdatable input, bool waitForFirstToReady = true) {
+            var ret = new CountSelector[input.OutputCount];
+            for (int i = 0; i < input.OutputCount; i++) {
+                ret[i] = new CountSelector(i, $"SELECT(index: {i})").Of(input, waitForFirstToReady);
+            }
+
+            return ret;
+        }
+
+        /// <summary>
+        /// 	 Slices <paramref name="input"/> at range from <paramref name="start"/> to <paramref name="stop"/> on the <see cref="IUpdatable.OutputCount"/> axis/dimension.
+        /// </summary>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <param name="input">The indicator to slice.</param>
+        /// <param name="name">The name of this indicator</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if input.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>A sliced <see cref="IIndicator"/></returns>
+        public static SliceSelector Slice(this IUpdatable input, int start, int stop, string name = null, bool waitForFirstToReady = true) {
+            return new SliceSelector(start, stop, name ?? $"SELECT(start: {start}, stop: {stop})").Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
+        /// 	 Slices <paramref name="input"/> at range from <paramref name="start"/> to <paramref name="stop"/> on the <see cref="IUpdatable.OutputCount"/> axis/dimension.
+        /// </summary>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <param name="input">The indicator to slice.</param>
+        /// <param name="name">The name of this indicator</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if ןמפוא.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>A sliced <see cref="IIndicator"/></returns>
+        public static CountSelector Slice(this IUpdatable input, int index, string name = null, bool waitForFirstToReady = true) {
+            return new CountSelector(index, name ?? $"SELECT(start: {index}, stop: {index + 1})").Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
+        /// 	 Slices properties of <paramref name="input"/> at range from <paramref name="start"/> to <paramref name="stop"/> on the <see cref="IUpdatable.OutputCount"/> axis/dimension.
+        /// </summary>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <param name="input">The indicator to slice.</param>
+        /// <param name="name">The name of this indicator</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if ןמפוא.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>A sliced <see cref="IIndicator"/></returns>
+        public static PropertySelector SliceProperty(this IUpdatable input, int start, int stop, string name = null, bool waitForFirstToReady = true) {
+            return new PropertySelector(start, stop, name ?? $"SELECT(start: {start}, stop: {stop})").Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator such that the result will be the product of the left to the right
+        /// </summary>
+        /// <remarks>
+        /// 	 value = left*right
+        /// </remarks>
+        /// <param name="start">Start of interval. The interval includes this value. The default start value is 0.</param>
+        /// <param name="stop">End of interval. The interval does not include this value, except in some cases where step is not an integer and floating point round-off affects the length of out.</param>
+        /// <param name="input">The left indicator</param>
+        /// <param name="name">The name of this indicator</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
+        /// <returns>The product of the left to the right indicators</returns>
+        public static PropertySelector SliceProperty(this IUpdatable input, int index, string name = null, bool waitForFirstToReady = true) {
+            return new PropertySelector(index, name ?? $"SELECT(start: {index}, stop: {index + 1})").Of(input, waitForFirstToReady);
+        }
+
 
         /// <summary>Creates a new ExponentialMovingAverage indicator with the specified period and smoothingFactor from the left indicator
         /// </summary>
@@ -444,9 +600,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="smoothingFactor">The percentage of data from the previous value to be carried into the next value</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if left.IsReady returns true, false to alway send updates</param>
         /// <returns>A reference to the ExponentialMovingAverage indicator to allow for method chaining</returns>
-        public static ExponentialMovingAverage EMA(this IndicatorBase left, int period, double? smoothingFactor = null, bool waitForFirstToReady = true) {
+        public static ExponentialMovingAverage EMA(this IUpdatable left, int period, double? smoothingFactor = null, bool waitForFirstToReady = true) {
             double k = smoothingFactor.HasValue ? k = smoothingFactor.Value : ExponentialMovingAverage.SmoothingFactorDefault(period);
-            return new ExponentialMovingAverage($"EMA{period}_Of_{left.Name}", period, k).Of(left, waitForFirstToReady);
+            return new ExponentialMovingAverage($"EMA{period}_Of_{left.ExtractName()}", period, k).Of(left, waitForFirstToReady);
         }
 
         /// <summary>Creates a new Maximum indicator with the specified period from the left indicator
@@ -455,8 +611,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period of the Maximum indicator</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if left.IsReady returns true, false to alway send updates</param>
         /// <returns>A reference to the Maximum indicator to allow for method chaining</returns>
-        public static Maximum MAX(this IIndicator left, int period, bool waitForFirstToReady = true) {
-            return new Maximum($"MAX{period}_Of_{left.Name}", period).Of(left, waitForFirstToReady);
+        public static IIndicator MAX(this IUpdatable left, int period, bool waitForFirstToReady = true) {
+            return new Maximum($"MAX{period}_Of_{left.ExtractName()}", period).Of(left, waitForFirstToReady);
         }
 
         /// <summary>Creates a new Minimum indicator with the specified period from the left indicator
@@ -465,8 +621,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period of the Minimum indicator</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if left.IsReady returns true, false to alway send updates</param>
         /// <returns>A reference to the Minimum indicator to allow for method chaining</returns>
-        public static Minimum MIN(this IndicatorBase left, int period, bool waitForFirstToReady = true) {
-            return new Minimum($"MIN{period}_Of_{left.Name}", period).Of(left, waitForFirstToReady);
+        public static IIndicator MIN(this IUpdatable left, int period, bool waitForFirstToReady = true) {
+            return (period <= 0 ? (IIndicator) new PeriodlessMinimum($"MIN{period}_Of_{left.ExtractName()}") : new Minimum($"MIN{period}_Of_{left.ExtractName()}", period)).Of(left, waitForFirstToReady);
         }
 
         /// <summary>Initializes a new instance of the SimpleMovingAverage class with the specified name and period from the left indicator
@@ -475,8 +631,24 @@ namespace FinanceSharp.Indicators {
         /// <param name="period">The period of the SMA</param>
         /// <param name="waitForFirstToReady">True to only send updates to the second if first.IsReady returns true, false to alway send updates to second</param>
         /// <returns>The reference to the SimpleMovingAverage indicator to allow for method chaining</returns>
-        public static SimpleMovingAverage SMA(this IndicatorBase left, int period, bool waitForFirstToReady = true) {
-            return new SimpleMovingAverage($"SMA{period}_Of_{left.Name}", period).Of(left, waitForFirstToReady);
+        public static SimpleMovingAverage SMA(this IUpdatable left, int period, bool waitForFirstToReady = true) {
+            return new SimpleMovingAverage($"SMA{period}_Of_{left.ExtractName()}", period).Of(left, waitForFirstToReady);
+        }
+
+        /// <summary>
+        ///     Resolves the name of given <paramref name="updatable"/>
+        /// </summary>
+        public static string ExtractName(this IUpdatable updatable) {
+            if (updatable is IIndicator ind) {
+                return ind.Name;
+            }
+
+            return updatable.GetType().Name;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool AreDoubleScalar(IUpdatable left, IUpdatable right) {
+            return left.Properties == 1 && right.Properties == 1 && left.OutputCount == 1 && right.OutputCount == 1;
         }
     }
 }

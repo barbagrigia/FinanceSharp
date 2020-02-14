@@ -1,15 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using FinanceSharp.Indicators;
-using FinanceSharp;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 
-namespace FinanceSharp.Tests {
-    public class DevTests {
+namespace FinanceSharp.Tests.Data {
+    public class DoubleArrayTests {
         [Test]
-        public unsafe void Dev() {
+        public void ARange() {
             var lhs = DoubleArray.ARange(0, 10, 1);
             lhs.AsDoubleSpan.ToArray().Should().BeEquivalentTo(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
             lhs.Properties.Should().Be(1);

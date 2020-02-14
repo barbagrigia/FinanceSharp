@@ -39,7 +39,7 @@ namespace FinanceSharp.Graphing {
         /// <summary>
         ///     Should the cruncher clone <see cref="Current"/> when <see cref="Updated"/> is fired.
         /// </summary>
-        public bool CloneCrunched { get; set; } = false;
+        public bool CloneCrunched { get; set; } = true;
 
         /// <summary>
         ///     The configuration type for this cruncher.
@@ -142,6 +142,9 @@ namespace FinanceSharp.Graphing {
             var workingTarget = new DoubleArrayPinned2DManaged(outputCount, props);
             c.workingTarget = workingTarget;
             c.counter = len;
+
+            //debug handle
+
 
             //bind the values to their repsective memory address.
             c.BindValues();

@@ -16,13 +16,10 @@ namespace FinanceSharp.Graphing {
             var len = bindTo.Length;
             concat.UpdateHandler = ConcatUpdateHandler;
 
-            bool ConcatUpdateHandler(long time, DoubleArray input) {
+            void ConcatUpdateHandler(long time, DoubleArray input) {
                 for (int i = 0; i < len; i++) 
                     bindTo[i].Update(time, input);
-
-                return concat.IsReady;
             }
-
 
             return concat;
         }

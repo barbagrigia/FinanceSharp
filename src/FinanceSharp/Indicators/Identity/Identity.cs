@@ -35,6 +35,24 @@ namespace FinanceSharp.Indicators {
         }
 
         /// <summary>
+        /// 	 Updates the state of this indicator with the given value and returns true
+        /// 	 if this indicator is ready, false otherwise
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="input">The value to use to update this indicator</param>
+        /// <returns>True if this indicator is ready, false otherwise</returns>
+        public override void Update(long time, DoubleArray input) {
+            // compute a new value and update our previous time
+            Samples++;
+
+            Current = input;
+            CurrentTime = time;
+
+            // let others know we've produced a new data point
+            OnUpdated(time, Current);
+        }
+
+        /// <summary>
         ///     Computes the next value of this indicator from the given state
         /// </summary>
         /// <param name="time"></param>

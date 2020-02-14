@@ -95,8 +95,9 @@ namespace FinanceSharp.Consolidators {
         /// 	 included in the bar starting at 10:00.
         /// </summary>
         /// <exception cref="InvalidOperationException">Thrown when multiple symbols are being consolidated.</exception>
+        /// <param name="time"></param>
         /// <param name="data">The new data for the consolidator</param>
-        public override bool Update(long time, DoubleArray data) {
+        public override void Update(long time, DoubleArray data) {
             Samples++;
             //Decide to fire the event
             var fireDataConsolidated = false;
@@ -150,8 +151,6 @@ namespace FinanceSharp.Consolidators {
                     AggregateBar(ref _workingTime, ref _workingBar, time, data);
                 }
             }
-
-            return fireDataConsolidated;
         }
 
         /// <summary>

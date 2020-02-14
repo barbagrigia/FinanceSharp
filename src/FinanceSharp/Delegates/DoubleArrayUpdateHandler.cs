@@ -6,5 +6,5 @@
     /// <param name="time">The timestamp represented in milliseconds-epoch-1970.</param>
     /// <param name="input">The value to use to update this updatable</param>
     /// <returns>True if this updatable is ready, false otherwise</returns>
-    public delegate bool DoubleArrayUpdateHandler(long time, DoubleArray input);
+    public delegate void DoubleArrayUpdateHandler(long time, DoubleArray input);
 }

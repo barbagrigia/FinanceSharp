@@ -39,7 +39,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <returns>And indicator result representing the composition of the two indicators</returns>
-        public delegate IndicatorResult IndicatorComposer(IndicatorBase left, IndicatorBase right);
+        public delegate IndicatorResult IndicatorComposer(IUpdatable left, IUpdatable right);
 
         /// <summary>function used to compose the individual indicators</summary>
         private readonly IndicatorComposer _composer;
@@ -47,12 +47,12 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         /// 	 Gets the 'left' indicator for the delegate
         /// </summary>
-        public IndicatorBase Left { get; private set; }
+        public IUpdatable Left { get; private set; }
 
         /// <summary>
         /// 	 Gets the 'right' indicator for the delegate
         /// </summary>
-        public IndicatorBase Right { get; private set; }
+        public IUpdatable Right { get; private set; }
 
         /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
@@ -78,8 +78,8 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(string name, IndicatorBase left, IndicatorBase right, IndicatorComposer composer)
-            : base(name) {
+        public CompositeIndicator(string name, IUpdatable left, IUpdatable right, IndicatorComposer composer)
+            : base(name ?? $"COMPOSE({left.ExtractName()},{right.ExtractName()})") {
             _composer = composer;
             Left = left;
             Right = right;
@@ -93,7 +93,17 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(IndicatorBase left, IndicatorBase right, IndicatorComposer composer)
+        public CompositeIndicator(IUpdatable left, IUpdatable right, IndicatorComposer composer)
+            : this($"COMPOSE({left.ExtractName()},{right.ExtractName()})", left, right, composer) { }
+
+        /// <summary>
+        /// 	 Creates a new CompositeIndicator capable of taking the output from the left and right indicators
+        /// 	 and producing a new value via the composer delegate specified
+        /// </summary>
+        /// <param name="left">The left indicator for the 'composer'</param>
+        /// <param name="right">The right indidcator for the 'composoer'</param>
+        /// <param name="composer">Function used to compose the left and right indicators</param>
+        public CompositeIndicator(IIndicator left, IIndicator right, IndicatorComposer composer)
             : this($"COMPOSE({left.Name},{right.Name})", left, right, composer) { }
 
         /// <summary>
@@ -103,23 +113,20 @@ namespace FinanceSharp.Indicators {
         /// <param name="time"></param>
         /// <param name="input">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
-        public override bool Update(long time, DoubleArray input) {
+        public override void Update(long time, DoubleArray input) {
             // compute a new value and update our previous time
             Samples++;
 
             var result = _composer.Invoke(Left, Right);
             if (result.Status != IndicatorStatus.Success)
-                return IsReady;
+                return;
 
             Current = result.Value;
             CurrentTime = time;
 
             // let others know we've produced a new data point
             OnUpdated(time, Current);
-
-            return IsReady;
         }
-
 
         /// <summary>
         /// 	 Computes the next value of this indicator from the given state
@@ -141,8 +148,8 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         private void ConfigureEventHandlers() {
             // if either of these are constants then there's no reason
-            bool leftIsConstant = Left.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator));
-            bool rightIsConstant = Right.GetType().IsSubclassOfGeneric(typeof(ConstantIndicator));
+            bool leftIsConstant = Left is ConstantIndicator;
+            bool rightIsConstant = Right is ConstantIndicator;
 
             // wire up the Updated events such that when we get a new piece of data from both left and right
             // we'll call update on this indicator. It's important to note that the CompositeIndicator only uses
@@ -156,7 +163,7 @@ namespace FinanceSharp.Indicators {
 
                 // if we have left and right data (or if right is a constant) then we need to update
                 if (newRightData != null || rightIsConstant) {
-                    Update(MaxTime(time, updated), updated);
+                    Update(MaxTime(time), updated);
                     // reset these to null after each update
                     newLeftData = null;
                     newRightData = null;
@@ -168,15 +175,23 @@ namespace FinanceSharp.Indicators {
 
                 // if we have left and right data (or if left is a constant) then we need to update
                 if (newLeftData != null || leftIsConstant) {
-                    Update(time, updated);
+                    Update(MaxTime(time), updated);
                     // reset these to null after each update
                     newLeftData = null;
                     newRightData = null;
                 }
             };
+
+            void OnResetted(IUpdatable sender) {
+                newLeftData = null;
+                newRightData = null;
+            }
+
+            Left.Resetted += OnResetted;
+            Right.Resetted += OnResetted;
         }
 
-        private long MaxTime(long time, DoubleArray updated) {
+        private long MaxTime(long time) {
             return Math.Max(time, Math.Max(Right.CurrentTime, Left.CurrentTime));
         }
     }
