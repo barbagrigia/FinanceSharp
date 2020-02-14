@@ -27,6 +27,7 @@ namespace FinanceSharp.Graphing {
     /// <summary>
     ///     Provides various methods to join <see cref="IUpdatable"/>'s output into a single <see cref="DoubleArray"/>.
     /// </summary>
+    [DebuggerDisplay("{" + nameof(ToDetailedString) + "()}")]
     public partial class Concat : IIndicator {
         protected int counter;
         protected bool[] signalCounter;
@@ -342,6 +343,14 @@ namespace FinanceSharp.Graphing {
             }
 
             return c;
+        }
+        
+        /// <summary>
+        /// 	 Provides a more detailed string of this indicator in the form of {Name} - {Value}
+        /// </summary>
+        /// <returns>A detailed string of this indicator's current state</returns>
+        public string ToDetailedString() {
+            return $"{Name} - ({OutputCount}, {Properties}) - {Current}";
         }
     }
 }

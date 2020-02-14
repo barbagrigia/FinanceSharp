@@ -15,12 +15,14 @@
 */
 
 using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace FinanceSharp {
     /// <summary>
     ///     Serves a similar purpose to <see cref="RollingWindow{T}"/> but the data is rolled inside <see cref="Current"/> (a <see cref="DoubleArray"/>).
     /// </summary>
+    [DebuggerDisplay("{" + nameof(ToDetailedString) + "()}")]
     public class ArrayRollingWindow : IIndicator {
         protected DoubleArray _mostRecentlyRemoved;
 
@@ -163,6 +165,14 @@ namespace FinanceSharp {
         /// <param name="consolidated">This is the new piece of data produced by this indicator</param>
         protected virtual void OnUpdated(long time, DoubleArray consolidated) {
             Updated?.Invoke(time, consolidated);
+        }
+
+        /// <summary>
+        /// 	 Provides a more detailed string of this indicator in the form of {Name} - {Value}
+        /// </summary>
+        /// <returns>A detailed string of this indicator's current state</returns>
+        public string ToDetailedString() {
+            return $"{Name} - ({OutputCount}, {Properties}) - {Current}";
         }
     }
 }
