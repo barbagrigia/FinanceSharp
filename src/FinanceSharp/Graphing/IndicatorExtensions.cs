@@ -648,6 +648,30 @@ namespace FinanceSharp.Indicators {
         }
 
         /// <summary>
+        /// 	 An indicator that creates a <see cref="RollingWindow{T}"/> with <paramref name="period"/> for every item it receives via <see cref="IUpdatable.Update"/>.
+        /// </summary>
+        /// <param name="input">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the WindowIdentity</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if input.IsReady returns true, false to alway send updates to second</param>
+        /// <param name="period">The period to delay input, must be greater than zero</param>
+        /// <param name="name">Name of the returned <see cref="FinanceSharp.Indicators.Delay"/>.</param>
+        /// <returns>The reference to the second indicator to allow for method chaining</returns>
+        public static WindowIdentity Window(this IUpdatable input, int period, bool waitForFirstToReady = true, string name = null) {
+            return new WindowIdentity(name ?? $"DELAY({period})", period).Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
+        /// 	 An indicator that creates a <see cref="ArrayRollingWindow"/> with <paramref name="period"/> for every item it receives via <see cref="IUpdatable.Update"/>.
+        /// </summary>
+        /// <param name="input">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the ArrayRollingWindow</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if input.IsReady returns true, false to alway send updates to second</param>
+        /// <param name="period">The period to delay input, must be greater than zero</param>
+        /// <param name="name">Name of the returned <see cref="FinanceSharp.Indicators.Delay"/>.</param>
+        /// <returns>The reference to the second indicator to allow for method chaining</returns>
+        public static ArrayRollingWindow ArrayWindow(this IUpdatable input, int period, bool waitForFirstToReady = true, string name = null) {
+            return new ArrayRollingWindow(period, input.Properties, name ?? $"DELAY({period})").Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
         ///     Resolves the name of given <paramref name="updatable"/>
         /// </summary>
         public static string ExtractName(this IUpdatable updatable) {
