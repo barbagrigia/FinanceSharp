@@ -636,6 +636,18 @@ namespace FinanceSharp.Indicators {
         }
 
         /// <summary>
+        /// 	 An indicator that delays its input for a certain period
+        /// </summary>
+        /// <param name="input">The indicator that sends data via <see cref="IUpdatable.Updated"/> even to the second</param>
+        /// <param name="waitForFirstToReady">True to only send updates to the second if input.IsReady returns true, false to alway send updates to second</param>
+        /// <param name="period">The period to delay input, must be greater than zero</param>
+        /// <param name="name">Name of the returned <see cref="FinanceSharp.Indicators.Delay"/>.</param>
+        /// <returns>The reference to the second indicator to allow for method chaining</returns>
+        public static Delay Delay(this IUpdatable input, int period, bool waitForFirstToReady = true, string name = null) {
+            return new Delay(name ?? $"DELAY({period})", period).Of(input, waitForFirstToReady);
+        }
+
+        /// <summary>
         ///     Resolves the name of given <paramref name="updatable"/>
         /// </summary>
         public static string ExtractName(this IUpdatable updatable) {
