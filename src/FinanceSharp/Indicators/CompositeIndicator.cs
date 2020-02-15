@@ -19,6 +19,22 @@ using System;
 
 namespace FinanceSharp.Indicators {
     /// <summary>
+    ///     Provides methods in-which how to handle composition of two indicators.
+    /// </summary>
+    public enum CompositionMethod {
+        /// <summary>
+        ///     Boths left and right indicators must be updated at-least once in order to update the <see cref="CompositeIndicator"/>.
+        /// </summary>
+        /// <remarks>This is the default behavior used by QuantConnect/Lean.</remarks>
+        OnBothUpdated,
+
+        /// <summary>
+        ///     Any of left or right indicators trigger <see cref="CompositeIndicator"/>'s update.
+        /// </summary>
+        OnAnyUpdated
+    }
+
+    /// <summary>
     /// 	 This indicator is capable of wiring up two separate indicators into a single indicator
     /// 	 such that the output of each will be sent to a user specified function.
     /// </summary>
@@ -78,12 +94,13 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(string name, IUpdatable left, IUpdatable right, IndicatorComposer composer)
+        /// <param name="method">What method to composite the two indicators.</param>
+        public CompositeIndicator(string name, IUpdatable left, IUpdatable right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
             : base(name ?? $"COMPOSE({left.ExtractName()},{right.ExtractName()})") {
             _composer = composer;
             Left = left;
             Right = right;
-            ConfigureEventHandlers();
+            ConfigureEventHandlers(method);
         }
 
         /// <summary>
@@ -93,8 +110,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(IUpdatable left, IUpdatable right, IndicatorComposer composer)
-            : this($"COMPOSE({left.ExtractName()},{right.ExtractName()})", left, right, composer) { }
+        /// <param name="method">What method to composite the two indicators.</param>
+        public CompositeIndicator(IUpdatable left, IUpdatable right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
+            : this($"COMPOSE({left.ExtractName()},{right.ExtractName()})", left, right, composer, method) { }
 
         /// <summary>
         /// 	 Creates a new CompositeIndicator capable of taking the output from the left and right indicators
@@ -103,8 +121,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator for the 'composer'</param>
         /// <param name="right">The right indidcator for the 'composoer'</param>
         /// <param name="composer">Function used to compose the left and right indicators</param>
-        public CompositeIndicator(IIndicator left, IIndicator right, IndicatorComposer composer)
-            : this($"COMPOSE({left.Name},{right.Name})", left, right, composer) { }
+        /// <param name="method">What method to composite the two indicators.</param>
+        public CompositeIndicator(IIndicator left, IIndicator right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
+            : this($"COMPOSE({left.Name},{right.Name})", left, right, composer, method) { }
 
         /// <summary>
         /// 	 Updates the state of this indicator with the given value and returns true
@@ -146,49 +165,62 @@ namespace FinanceSharp.Indicators {
         /// 	 Configures the event handlers for Left.Updated and Right.Updated to update this instance when
         /// 	 they both have new data.
         /// </summary>
-        private void ConfigureEventHandlers() {
-            // if either of these are constants then there's no reason
+        private void ConfigureEventHandlers(CompositionMethod method) {
+            // if either of these are constants then there's no reason to handle it as OnBothUpdated
             bool leftIsConstant = Left is ConstantIndicator;
             bool rightIsConstant = Right is ConstantIndicator;
+            if (leftIsConstant || rightIsConstant)
+                method = CompositionMethod.OnAnyUpdated;
 
-            // wire up the Updated events such that when we get a new piece of data from both left and right
-            // we'll call update on this indicator. It's important to note that the CompositeIndicator only uses
-            // the timestamp that gets passed into the Update function, his compuation is soley a function
-            // of the left and right indicator via '_composer'
+            if (method == CompositionMethod.OnBothUpdated) {
+                // wire up the Updated events such that when we get a new piece of data from both left and right
+                // we'll call update on this indicator. It's important to note that the CompositeIndicator only uses
+                // the timestamp that gets passed into the Update function, his compuation is soley a function
+                // of the left and right indicator via '_composer'
 
-            DoubleArray newLeftData = null;
-            DoubleArray newRightData = null;
-            Left.Updated += (time, updated) => {
-                newLeftData = updated;
+                DoubleArray newLeftData = null;
+                DoubleArray newRightData = null;
+                Left.Updated += (time, updated) => {
+                    newLeftData = updated;
 
-                // if we have left and right data (or if right is a constant) then we need to update
-                if (newRightData != null || rightIsConstant) {
-                    Update(MaxTime(time), updated);
-                    // reset these to null after each update
+                    // if we have left and right data (or if right is a constant) then we need to update
+                    if (newRightData != null || rightIsConstant) {
+                        Update(MaxTime(time), updated);
+                        // reset these to null after each update
+                        newLeftData = null;
+                        newRightData = null;
+                    }
+                };
+
+                Right.Updated += (time, updated) => {
+                    newRightData = updated;
+
+                    // if we have left and right data (or if left is a constant) then we need to update
+                    if (newLeftData != null || leftIsConstant) {
+                        Update(MaxTime(time), updated);
+                        // reset these to null after each update
+                        newLeftData = null;
+                        newRightData = null;
+                    }
+                };
+
+                void OnResetted(IUpdatable sender) {
                     newLeftData = null;
                     newRightData = null;
                 }
-            };
 
-            Right.Updated += (time, updated) => {
-                newRightData = updated;
-
-                // if we have left and right data (or if left is a constant) then we need to update
-                if (newLeftData != null || leftIsConstant) {
-                    Update(MaxTime(time), updated);
-                    // reset these to null after each update
-                    newLeftData = null;
-                    newRightData = null;
+                Left.Resetted += OnResetted;
+                Right.Resetted += OnResetted;
+            } else if (method == CompositionMethod.OnAnyUpdated) {
+                void PipeUpdate(long time, DoubleArray updated) {
+                    Update(MaxTime(time), null);
                 }
-            };
 
-            void OnResetted(IUpdatable sender) {
-                newLeftData = null;
-                newRightData = null;
+                Left.Updated += PipeUpdate;
+                Right.Updated += PipeUpdate;
+            } else {
+                throw new NotSupportedException(method.ToString());
             }
-
-            Left.Resetted += OnResetted;
-            Right.Resetted += OnResetted;
         }
 
         private long MaxTime(long time) {

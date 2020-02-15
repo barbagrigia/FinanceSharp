@@ -18,8 +18,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.CompilerServices;
+using System.Xml.Serialization;
 using FinanceSharp.Delegates;
 using FinanceSharp.Graphing;
+using FinanceSharp.Helpers;
 using MathNet.Numerics.Providers.LinearAlgebra.OpenBlas;
 using static FinanceSharp.Constants;
 
@@ -246,8 +248,9 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">Indicator that will be averaged</param>
         /// <param name="weight">Indicator that provides the average weights</param>
         /// <param name="period">Average period</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>Indicator that results of the average of first by weights given by second</returns>
-        public static CompositeIndicator WeightedBy<TWeight>(this IUpdatable value, TWeight weight, int period)
+        public static CompositeIndicator WeightedBy<TWeight>(this IUpdatable value, TWeight weight, int period, CompositionMethod method = CompositionMethod.OnBothUpdated)
             where TWeight : IUpdatable {
             var x = new WindowIdentity(period);
             var y = new WindowIdentity(period);
@@ -272,7 +275,7 @@ namespace FinanceSharp.Indicators {
 
             value.Resetted += sender => weight.Reset();
 
-            return numerator.Over((IUpdatable) denominator);
+            return numerator.Over((IUpdatable) denominator, method);
         }
 
         /// <summary>
@@ -297,12 +300,13 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right) {
+        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value, method);
 
-            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
+            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current, method);
         }
 
         /// <summary>
@@ -313,12 +317,13 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right) {
+        public static CompositeIndicator Plus(this IndicatorBase left, IndicatorBase right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value, method);
 
-            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current);
+            return new CompositeIndicator(left, right, (l, r) => l.Current + r.Current, method);
         }
 
         /// <summary>
@@ -330,12 +335,13 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The sum of the left and right indicators</returns>
-        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right, string name) {
+        public static CompositeIndicator Plus(this IUpdatable left, IUpdatable right, string name, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value + r.Current.Value, method);
 
-            return new CompositeIndicator(name, left, right, (l, r) => l.Current + r.Current);
+            return new CompositeIndicator(name, left, right, (l, r) => l.Current + r.Current, method);
         }
 
         /// <summary>
@@ -360,12 +366,13 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right) {
+        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value, method);
 
-            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current);
+            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current, method);
         }
 
         /// <summary>
@@ -376,12 +383,13 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right) {
+        public static CompositeIndicator Minus(this IndicatorBase left, IndicatorBase right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value, method);
 
-            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current);
+            return new CompositeIndicator(left, right, (l, r) => l.Current - r.Current, method);
         }
 
         /// <summary>
@@ -393,11 +401,12 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The difference of the left and right indicators</returns>
-        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right, string name) {
+        public static CompositeIndicator Minus(this IUpdatable left, IUpdatable right, string name, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value);
-            return new CompositeIndicator(name, left, right, (l, r) => l.Current - r.Current);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value - r.Current.Value, method);
+            return new CompositeIndicator(name, left, right, (l, r) => l.Current - r.Current, method);
         }
 
         /// <summary>
@@ -422,11 +431,12 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right) {
+        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
-            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value), method);
+            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current), method);
         }
 
         /// <summary>
@@ -437,12 +447,13 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right) {
+        public static CompositeIndicator Over(this IndicatorBase left, IndicatorBase right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value), method);
 
-            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
+            return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current), method);
         }
 
         /// <summary>
@@ -454,12 +465,13 @@ namespace FinanceSharp.Indicators {
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The ratio of the left to the right indicator</returns>
-        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right, string name) {
+        public static CompositeIndicator Over(this IUpdatable left, IUpdatable right, string name, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value));
+                return new CompositeIndicator(left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current.Value / r.Current.Value), method);
 
-            return new CompositeIndicator(name, left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current));
+            return new CompositeIndicator(name, left, right, (l, r) => r.Current == Constants.Zero ? new IndicatorResult(Constants.Zero, IndicatorStatus.MathError) : new IndicatorResult(l.Current / r.Current), method);
         }
 
         /// <summary>
@@ -484,11 +496,12 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right) {
+        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
-            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value, method);
+            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current, method);
         }
 
         /// <summary>
@@ -499,27 +512,29 @@ namespace FinanceSharp.Indicators {
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right) {
+        public static CompositeIndicator Times(this IndicatorBase left, IndicatorBase right, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
-            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current);
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value, method);
+            return new CompositeIndicator(left, right, (l, r) => l.Current * r.Current, method);
         }
 
         /// <summary>
         /// 	 Creates a new CompositeIndicator such that the result will be the product of the left to the right
         /// </summary>
         /// <remarks>
-        /// 	 value = left*right
+        /// 	 value = left * right
         /// </remarks>
         /// <param name="left">The left indicator</param>
         /// <param name="right">The right indicator</param>
         /// <param name="name">The name of this indicator</param>
+        /// <param name="method">What method to composite the two indicators.</param>
         /// <returns>The product of the left to the right indicators</returns>
-        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right, string name) {
+        public static CompositeIndicator Times(this IUpdatable left, IUpdatable right, string name, CompositionMethod method = CompositionMethod.OnBothUpdated) {
             if (AreDoubleScalar(left, right))
-                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value);
-            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) (l.Current * r.Current));
+                return new CompositeIndicator(left, right, (l, r) => l.Current.Value * r.Current.Value, method);
+            return new CompositeIndicator(name, left, right, (l, r) => (IndicatorResult) (l.Current * r.Current), method);
         }
 
         /// <summary>
