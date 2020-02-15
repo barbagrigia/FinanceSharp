@@ -131,7 +131,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="value">The value to use to update this indicator</param>
         /// <returns>True if this indicator is ready, false otherwise</returns>
         public void Update(long time, double value) {
-            Update((long) time, new DoubleArrayScalar(value));
+            Update(time, new DoubleArrayScalar(value));
         }
 
         /// <summary>

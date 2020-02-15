@@ -57,6 +57,25 @@ namespace FinanceSharp {
         }
 
         /// <summary>
+        ///     Copies content of this array to <paramref name="target"/>.
+        /// </summary>
+        /// <param name="target">The target array, must be matching <see cref="LinearLength"/> with this.</param>
+        /// <param name="bytes">The number of bytes to copy.</param>
+        public virtual void CopyTo(void* target, int bytes) {
+            fixed (double* src = this) 
+                Unsafe.CopyBlock(target, src, (uint) Math.Min(LinearLength * sizeof(double), bytes));
+        }
+
+        /// <summary>
+        ///     Copies content of this array to <paramref name="target"/>.
+        /// </summary>
+        /// <param name="target">The target array, must be matching <see cref="LinearLength"/> with this.</param>
+        public virtual void CopyTo(void* target) {
+            fixed (double* src = this) 
+                Unsafe.CopyBlock(target, src, (uint) LinearLength * sizeof(double));
+        }
+
+        /// <summary>
         ///     Fills the contents of this <see cref="DoubleArray"/> with the given value.
         /// </summary>
         public void Fill(double value) {
