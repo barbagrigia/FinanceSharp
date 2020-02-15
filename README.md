@@ -2,7 +2,7 @@
 <p align="center">
   <img align="center" src="https://i.imgur.com/6601cb9.png" height=200  />
 </p> 
-High performance financial computation for technical analysis with a versatile and productive piping and consolidation techniques.
+Financial computation for technical analysis with a versatile and productive piping and consolidation techniques.
 The library designed towards performance and complitability with running machine-learning algorithms in Python (via Pythonnet).
 
 With FinanceSharp you can easily design a model within minutes to manipulate, normalize, consolidate the 
