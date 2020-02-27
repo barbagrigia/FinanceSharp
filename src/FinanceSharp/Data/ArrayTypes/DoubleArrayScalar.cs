@@ -23,17 +23,23 @@ namespace FinanceSharp {
     public class DoubleArrayScalar : DoubleArray {
         protected double value;
 
+        public override int Count {
+            get => 1;
+            protected internal set => throw new NotSupportedException();
+        }
+
+        public override int Properties {
+            get => 1;
+            protected internal set => throw new NotSupportedException();
+        }
+
         /// <param name="value">A scalar value.</param>
-        public DoubleArrayScalar(double value)  {
+        public DoubleArrayScalar(double value) {
             this.value = value;
-            Count = 1;
-            Properties = 1;
         }
 
         public DoubleArrayScalar() {
             this.value = 0d;
-            Count = 1;
-            Properties = 1;
         }
 
         public override void ForEach(ReferenceForFunctionHandler function) {

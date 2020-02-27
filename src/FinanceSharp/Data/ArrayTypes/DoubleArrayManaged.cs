@@ -24,6 +24,9 @@ namespace FinanceSharp {
     public unsafe class DoubleArrayManaged : DoubleArray {
         protected internal double[] values;
 
+        public override int Count { get; protected internal set; }
+        public override int Properties { get; protected internal set; }
+
         /// <param name="count">The number of items in this array.</param>
         /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>
         public DoubleArrayManaged(int count, int properties) : this(new double[count * properties], properties) { }
@@ -58,7 +61,6 @@ namespace FinanceSharp {
                 values[property] = value;
             }
         }
-
 
         public override double this[int index, int property] {
             get {

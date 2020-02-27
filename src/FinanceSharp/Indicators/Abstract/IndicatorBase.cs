@@ -120,7 +120,7 @@ namespace FinanceSharp.Indicators {
         /// </summary>
         /// <param name="data">The new data for the consolidator</param>
         internal void Update<TStruct>((long Time, TStruct Value) tuple) where TStruct : unmanaged, DataStruct {
-            Update(tuple.Time, new DoubleArrayStructScalar<TStruct>(tuple.Value));
+            Update(tuple.Time, new DoubleArrayStructScalar<TStruct>(in tuple.Value));
         }
 
         /// <summary>
@@ -258,7 +258,6 @@ namespace FinanceSharp.Indicators {
         protected void OnUpdated(long time, DoubleArray consolidated) {
             Updated?.Invoke(time, consolidated);
         }
-
 
         /// <summary>
         ///     Asserts for DEBUG runs..

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using FinanceSharp.Indicators;
 using FinanceSharp;
 using System.Linq;
+using FinanceSharp.Tests.Data;
 using FluentAssertions;
 using Python.Runtime;
 
@@ -379,6 +380,58 @@ namespace FinanceSharp.Tests.Indicators {
             indicatorB1.Times(indicatorB2);
             indicatorB1.Plus(indicatorB2);
             indicatorB1.Of(indicatorB2);
+        }
+
+        [Test]
+        public void Select_1Dto1D() {
+            var input = new Identity("1");
+            var subject = input.Select(value => DoubleArray.From(new TestStructX2(value[0], value[0] + 1d)), properties: 2);
+
+            subject.OutputCount.Should().Be(1);
+            subject.Properties.Should().Be(2);
+
+            input.Update(0, 1);
+            subject.Current.Count.Should().Be(1);
+            subject.Current.Properties.Should().Be(2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(1, 2);
+
+            input.Update(0, 2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(2, 3);
+        }
+
+        [Test]
+        public void Select_2x2Dto1x2D() {
+            var input = new Identity("1");
+            var subject = input.Select(value => DoubleArray.From(new TestStructX2(value[0], value[0] + 1d), new TestStructX2(value[0] + 2d, value[0] + 3d)), outputCount: 2, properties: 2);
+            subject = subject.Select(value => DoubleArray.From(new TestStructX2(value[0, 0], value[0, 0] + 1d)), properties: 2);
+
+            subject.OutputCount.Should().Be(1);
+            subject.Properties.Should().Be(2);
+
+            input.Update(0, 1);
+            subject.Current.Count.Should().Be(1);
+            subject.Current.Properties.Should().Be(2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(1, 2);
+
+            input.Update(0, 2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(2, 3);
+        }
+
+        [Test]
+        public void Select_1x1Dto2x2D() {
+            var input = new Identity("1");
+            var subject = input.Select(value => DoubleArray.From(new TestStructX2(value[0], value[0] + 1d), new TestStructX2(value[0] + 2d, value[0] + 3d)), outputCount: 2, properties: 2);
+
+            subject.OutputCount.Should().Be(2);
+            subject.Properties.Should().Be(2);
+
+            input.Update(0, 1);
+            subject.Current.Count.Should().Be(2);
+            subject.Current.Properties.Should().Be(2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(1, 2, 3, 4);
+
+            input.Update(0, 2);
+            subject.Current.AsDoubleSpan.ToArray().Should().BeEquivalentTo(2, 3, 4, 5);
         }
 
         private class TestIndicatorA : IndicatorBase {

@@ -1,3 +1,3 @@
 ﻿namespace FinanceSharp.Delegates {
-    public delegate void ForIndexedFunctionHandler(int index, double value);
+    public delegate void ForIndexedFunctionHandler(int index, int property, double value);
 }

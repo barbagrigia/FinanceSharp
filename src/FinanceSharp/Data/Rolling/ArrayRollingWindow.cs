@@ -142,7 +142,7 @@ namespace FinanceSharp {
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
         /// </summary>
-        public int Properties { get; protected set; }
+        public int Properties { get; protected internal set; }
 
         /// <summary>
         /// 	 Gets a name for this indicator

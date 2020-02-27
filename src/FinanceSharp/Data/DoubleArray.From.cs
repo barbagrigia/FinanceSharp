@@ -87,18 +87,8 @@ namespace FinanceSharp {
         /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
         /// <param name="scalar">A value to wrap.</param>
         [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray From<TStruct>(TStruct scalar) where TStruct : unmanaged, DataStruct {
-            return new DoubleArrayStructScalar<TStruct>(ref scalar);
-        }
-
-        /// <summary>
-        ///     Wraps a copy of given <typeparamref name="TStruct"/>.
-        /// </summary>
-        /// <typeparam name="TStruct">An unmanaged structure inherieting DataStruct.</typeparam>
-        /// <param name="scalar">A value to wrap.</param>
-        [DebuggerStepThrough, MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static DoubleArray From<TStruct>(ref TStruct scalar) where TStruct : unmanaged, DataStruct {
-            return new DoubleArrayStructScalar<TStruct>(ref scalar);
+        public static DoubleArray From<TStruct>(in TStruct scalar) where TStruct : unmanaged, DataStruct {
+            return new DoubleArrayStructScalar<TStruct>(in scalar);
         }
 
         /// <summary>

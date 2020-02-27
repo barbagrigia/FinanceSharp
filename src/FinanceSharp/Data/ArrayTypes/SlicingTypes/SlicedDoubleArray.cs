@@ -14,6 +14,10 @@ namespace FinanceSharp {
         protected int start;
         protected int stop;
 
+        public override int Count { get; protected internal set; }
+
+        public override int Properties { get; protected internal set; }
+
         public SlicedDoubleArray(DoubleArray slicedArray, int start, int stop) : base(stop - start, slicedArray.Properties) {
             this.internalArray = slicedArray;
             this.start = start;

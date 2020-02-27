@@ -52,6 +52,10 @@ namespace FinanceSharp {
             Properties = 1;
         }
 
+        public override int Count { get; protected internal set; }
+
+        public override int Properties { get; protected internal set; }
+
         /// <summary>
         ///     Returns a reference to the unmanaged array stored internally.
         /// </summary>

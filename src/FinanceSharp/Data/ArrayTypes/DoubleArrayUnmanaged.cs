@@ -31,6 +31,10 @@ namespace FinanceSharp {
         /// The disposer method to deallocate <see cref="Address"/>, can be null.
         protected Action disposer;
 
+        public override int Count { get; protected internal set; }
+
+        public override int Properties { get; protected internal set; }
+
         /// <summary>
         ///     
         /// </summary>

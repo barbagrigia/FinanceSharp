@@ -32,10 +32,10 @@ namespace FinanceSharp {
     /// </remarks>
     public abstract unsafe partial class DoubleArray : ICloneable, IDisposable {
         /// The number of items in this array, each having n <see cref="Properties"/>.
-        public int Count;
+        public abstract int Count { get; protected internal set; }
 
         /// The count of properties for every 
-        public int Properties;
+        public abstract int Properties { get; protected internal set; }
 
         /// <param name="count">The number of items in this array.</param>
         /// <param name="properties">How many properties typed double are for every <see cref="count"/></param>

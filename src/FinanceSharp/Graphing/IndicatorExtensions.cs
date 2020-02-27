@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Xml.Serialization;
@@ -109,6 +110,8 @@ namespace FinanceSharp.Indicators {
             if (op == null) throw new ArgumentNullException(nameof(op));
 
             var idn = new Identity(ResolveName(first, name));
+
+
             if (selector == null) {
                 if (waitForFirstToReady) {
                     first.Updated += (time, updated) => {
@@ -176,17 +179,46 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
         public static Identity Select(this IUpdatable input, SelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
             if (selector == null) throw new ArgumentNullException(nameof(selector));
-            var idn = new Identity(ResolveName(input, name));
+            var idn = new Identity(ResolveName(input, name), setReady: true);
 
-            if (waitForFirstToReady) {
-                input.Updated += (time, updated) => {
-                    if (input.IsReady)
-                        idn.Update(time, new DoubleArrayScalar(selector(updated)));
-                };
-            } else
-                input.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(selector(updated)));
+            if (input.OutputCount > 1) {
+                unsafe {
+                    if (waitForFirstToReady) {
+                        input.Updated += (time, updated) => {
+                            if (input.IsReady) {
+                                var ret = new DoubleArray2DManaged(updated.Count, 1);
+                                fixed (double* dst = ret, src = updated)
+                                    for (int i = 0; i < updated.Count; i++)
+                                        dst[i] = selector(src[i * updated.Properties]);
 
-            input.Resetted += sender => idn.Reset();
+                                idn.Update(time, ret);
+                            }
+                        };
+                    } else {
+                        input.Updated += (time, updated) => {
+                            var ret = new DoubleArray2DManaged(updated.Count, 1);
+                            fixed (double* dst = ret, src = updated)
+                                for (int i = 0; i < updated.Count; i++)
+                                    dst[i] = selector(src[i * updated.Properties]);
+
+                            idn.Update(time, ret);
+                        };
+                    }
+
+                    input.Resetted += sender => idn.Reset();
+                }
+            } else {
+                if (waitForFirstToReady) {
+                    input.Updated += (time, updated) => {
+                        if (input.IsReady)
+                            idn.Update(time, new DoubleArrayScalar(selector(updated)));
+                    };
+                } else {
+                    input.Updated += (time, updated) => idn.Update(time, new DoubleArrayScalar(selector(updated)));
+                }
+
+                input.Resetted += sender => idn.Reset();
+            }
 
             return idn;
         }
@@ -198,9 +230,48 @@ namespace FinanceSharp.Indicators {
         /// <param name="selector">A selector to choose what <see cref="DoubleArray"/>.</param>
         /// <param name="waitForFirstToReady">Input must be ready in order to push the updates forward.</param>
         /// <param name="name">Name of the new returned <see cref="Identity"/>.</param>
-        public static Identity Select(this IUpdatable input, ArraySelectorFunctionHandler selector, bool waitForFirstToReady = true, string name = null) {
+        public static Identity Select(this IUpdatable input, ArraySelectorFunctionHandler selector, int outputCount = 1, int properties = 1, bool waitForFirstToReady = true, string name = null) {
             if (selector == null) throw new ArgumentNullException(nameof(selector));
-            var idn = new Identity(ResolveName(input, name));
+            outputCount = outputCount > 0 ? outputCount : input.OutputCount;
+            var idn = new Identity(ResolveName(input, name), outputCount, properties);
+
+            if (outputCount > 1) {
+                unsafe {
+                    if (waitForFirstToReady) {
+                        input.Updated += (time, updated) => {
+                            if (input.IsReady) {
+                                var ret = new DoubleArray2DManaged(outputCount, properties);
+                                fixed (double* dst = ret, selectSrc = updated)
+                                    for (int i = 0; i < updated.Count; i++) {
+                                        var result = selector(selectSrc[i * updated.Properties]);
+                                        Guard.AssertTrue(result.Count == outputCount, "Passed outputCount must be matching to the updated array.");
+                                        Guard.AssertTrue(properties == result.Properties, "Properties must match the properties argument passed.");
+                                        fixed (double* src = result)
+                                            Unsafe.CopyBlock(dst + i, src, (uint) (result.LinearLength * sizeof(double)));
+                                    }
+
+                                idn.Update(time, ret);
+                            }
+                        };
+                    } else {
+                        input.Updated += (time, updated) => {
+                            var ret = new DoubleArray2DManaged(updated.Count, properties);
+                            fixed (double* dst = ret, selectSrc = updated)
+                                for (int i = 0; i < outputCount; i++) {
+                                    var result = selector(selectSrc[i * updated.Properties]);
+                                    Guard.AssertTrue(result.Count == outputCount, "Passed outputCount must be matching to the updated array.");
+                                    Guard.AssertTrue(properties == result.Properties, "Properties must match the properties argument passed.");
+                                    fixed (double* src = result)
+                                        Unsafe.CopyBlock(dst, src, (uint) (result.LinearLength * sizeof(double)));
+                                }
+
+                            idn.Update(time, ret);
+                        };
+                    }
+
+                    input.Resetted += sender => idn.Reset();
+                }
+            }
 
             if (waitForFirstToReady) {
                 input.Updated += (time, updated) => {
@@ -695,6 +766,39 @@ namespace FinanceSharp.Indicators {
             }
 
             return updatable.GetType().Name;
+        }
+
+        private class UpdateCounter {
+            public int Interval;
+            public int Updates;
+        }
+
+        /// <summary>
+        ///     Makes the give <paramref name="updatable"/> to trigger <see cref="Debugger.Break"/> when <see cref="IUpdatable.Updated"/> is fired.
+        /// </summary>
+        /// <param name="interval">On every n updates to break. by default 1.</param>
+        public static T BreakOnUpdate<T>(this T updatable, int interval = 1) where T : IUpdatable {
+            if (interval < 0) throw new ArgumentOutOfRangeException(nameof(interval));
+            if (interval > 1) {
+                var cnt = new UpdateCounter {Interval = interval, Updates = 0};
+                updatable.Updated += (time, updated) => {
+                    if (++cnt.Updates < cnt.Interval)
+                        return;
+                    _breakOnUpdate(updatable, time, updated);
+                    cnt.Updates = 0;
+                };
+
+                return updatable;
+            }
+
+            updatable.Updated += (time, updated) => _breakOnUpdate(updatable, time, updated);
+            return updatable;
+        }
+
+        [DebuggerStepThrough]
+        private static void _breakOnUpdate(IUpdatable updatable, long time, DoubleArray updated) {
+            if (Debugger.IsAttached)
+                Debugger.Break();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

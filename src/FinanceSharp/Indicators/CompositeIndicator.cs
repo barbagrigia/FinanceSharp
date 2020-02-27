@@ -31,7 +31,7 @@ namespace FinanceSharp.Indicators {
         /// <summary>
         ///     Any of left or right indicators trigger <see cref="CompositeIndicator"/>'s update.
         /// </summary>
-        OnAnyUpdated
+        OnAnyUpdated,
     }
 
     /// <summary>
@@ -71,6 +71,19 @@ namespace FinanceSharp.Indicators {
         public IUpdatable Right { get; private set; }
 
         /// <summary>
+        ///     The number of items <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public override int OutputCount {
+            get => Math.Max(Left.OutputCount, Right.OutputCount);
+            protected set => throw new NotSupportedException();
+        }
+
+        /// <summary>
+        ///     The number of properties <see cref="IUpdatable.Current"/> will have.
+        /// </summary>
+        public override int Properties => Math.Max(Left.Properties, Right.Properties);
+
+        /// <summary>
         /// 	 Gets a flag indicating when this indicator is ready and fully initialized
         /// </summary>
         public override bool IsReady {
@@ -96,7 +109,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="composer">Function used to compose the left and right indicators</param>
         /// <param name="method">What method to composite the two indicators.</param>
         public CompositeIndicator(string name, IUpdatable left, IUpdatable right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
-            : base(name ?? $"COMPOSE({left.ExtractName()},{right.ExtractName()})") {
+            : base(name ?? $"COMPOSE({left.ExtractName()}, {right.ExtractName()})") {
             _composer = composer;
             Left = left;
             Right = right;
@@ -112,7 +125,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="composer">Function used to compose the left and right indicators</param>
         /// <param name="method">What method to composite the two indicators.</param>
         public CompositeIndicator(IUpdatable left, IUpdatable right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
-            : this($"COMPOSE({left.ExtractName()},{right.ExtractName()})", left, right, composer, method) { }
+            : this($"COMPOSE({left.ExtractName()}, {right.ExtractName()})", left, right, composer, method) { }
 
         /// <summary>
         /// 	 Creates a new CompositeIndicator capable of taking the output from the left and right indicators
@@ -123,7 +136,7 @@ namespace FinanceSharp.Indicators {
         /// <param name="composer">Function used to compose the left and right indicators</param>
         /// <param name="method">What method to composite the two indicators.</param>
         public CompositeIndicator(IIndicator left, IIndicator right, IndicatorComposer composer, CompositionMethod method = CompositionMethod.OnBothUpdated)
-            : this($"COMPOSE({left.Name},{right.Name})", left, right, composer, method) { }
+            : this($"COMPOSE({left.Name}, {right.Name})", left, right, composer, method) { }
 
         /// <summary>
         /// 	 Updates the state of this indicator with the given value and returns true

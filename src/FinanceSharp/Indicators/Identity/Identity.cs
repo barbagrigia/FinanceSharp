@@ -20,6 +20,7 @@ namespace FinanceSharp.Indicators {
     ///     always returns the same value as it is given.
     /// </summary>
     public class Identity : Indicator {
+        private readonly bool _readyOverride;
         /// <summary>
         ///     The number of properties <see cref="IUpdatable.Current"/> will have.
         /// </summary>
@@ -31,18 +32,18 @@ namespace FinanceSharp.Indicators {
         /// <param name="name">The name of the indicator</param>
         /// <param name="outputCount">Sets the <see cref="IUpdatable.OutputCount"/> of this <see cref="Identity"/></param>
         /// <param name="outputProperties">Sets the <see cref="IUpdatable.Properties"/> of this <see cref="Identity"/></param>
-        public Identity(string name, int outputCount = 1, int outputProperties = 1)
+        /// <param name="setReady">If set to true, <see cref="IsReady"/> will be always true</param>
+        public Identity(string name, int outputCount = 1, int outputProperties = 1, bool setReady = false)
             : base(name) {
             OutputCount = outputCount;
             Properties = outputProperties;
+            _readyOverride = setReady;
         }
 
         /// <summary>
         ///     Gets a flag indicating when this indicator is ready and fully initialized
         /// </summary>
-        public override bool IsReady {
-            get { return Samples > 0; }
-        }
+        public override bool IsReady => _readyOverride || Samples > 0;
 
         /// <summary>
         /// 	 Updates the state of this indicator with the given value and returns true

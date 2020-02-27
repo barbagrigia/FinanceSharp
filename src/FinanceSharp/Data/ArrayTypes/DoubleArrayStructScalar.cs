@@ -23,6 +23,16 @@ namespace FinanceSharp {
     public unsafe class DoubleArrayStructScalar<TStruct> : DoubleArray where TStruct : unmanaged, DataStruct {
         protected internal TStruct value;
 
+        public override int Count {
+            get => 1;
+            protected internal set => throw new NotSupportedException();
+        }
+
+        public override int Properties {
+            get => DataStructInfo<TStruct>.Properties;
+            protected internal set => throw new NotSupportedException();
+        }
+
         static DoubleArrayStructScalar() {
             //verify staticly that this struct indeed has only made from doubles fields.
             if (DataStructInfo<TStruct>.DoubleFieldsCount != DataStructInfo<TStruct>.Properties
@@ -31,21 +41,16 @@ namespace FinanceSharp {
         }
 
         /// <param name="struct">The structure value that'll be wrapped.</param>
-        public DoubleArrayStructScalar(TStruct @struct) : base(1, DataStructInfo<TStruct>.Properties) {
+        public DoubleArrayStructScalar(in TStruct @struct) {
             value = @struct;
         }
 
-        /// <param name="struct">The structure value that'll be wrapped.</param>
-        public DoubleArrayStructScalar(ref TStruct @struct) : base(1, DataStructInfo<TStruct>.Properties) {
-            value = @struct;
-        }
-
-        public DoubleArrayStructScalar() : base(1, DataStructInfo<TStruct>.Properties) {
+        public DoubleArrayStructScalar() {
             value = new TStruct();
         }
 
         public override void ForEach(ReferenceForFunctionHandler function) {
-            var cnt = DataStructInfo<TStruct>.Properties;
+            var cnt = Properties;
             fixed (double* ptr = this)
                 for (int i = 0; i < cnt; i++)
                     function(ref ptr[i]);
@@ -145,7 +150,7 @@ namespace FinanceSharp {
         }
 
         public override DoubleArray Clone() {
-            return new DoubleArrayStructScalar<TStruct>(value);
+            return new DoubleArrayStructScalar<TStruct>(in value);
         }
     }
 }

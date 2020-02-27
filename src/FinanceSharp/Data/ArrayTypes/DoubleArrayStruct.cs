@@ -24,6 +24,13 @@ namespace FinanceSharp {
     public unsafe class DoubleArrayStruct<TStruct> : DoubleArray where TStruct : unmanaged, DataStruct {
         protected internal TStruct[] values;
 
+        public override int Count { get; protected internal set; }
+
+        public override int Properties {
+            get => DataStructInfo<TStruct>.Properties;
+            protected internal set => throw new NotSupportedException();
+        }
+
         static DoubleArrayStruct() {
             //verify staticly that this struct indeed has only made from doubles
             if (DataStructInfo<TStruct>.DoubleFieldsCount != DataStructInfo<TStruct>.FieldsCount)
@@ -31,12 +38,16 @@ namespace FinanceSharp {
         }
 
         /// <param name="struct">The structure value that'll be wrapped.</param>
-        public DoubleArrayStruct(params TStruct[] @struct) : base(@struct.Length, DataStructInfo<TStruct>.Properties) {
+        public DoubleArrayStruct(params TStruct[] @struct) {
             values = @struct;
+            // ReSharper disable once VirtualMemberCallInConstructor
+            Count = @struct.Length;
         }
 
-        public DoubleArrayStruct() : base(1, DataStructInfo<TStruct>.Properties) {
+        public DoubleArrayStruct() {
             values = new TStruct[] {new TStruct()};
+            // ReSharper disable once VirtualMemberCallInConstructor
+            Count = 1;
         }
 
         public override void ForEach(ReferenceForFunctionHandler function) {
